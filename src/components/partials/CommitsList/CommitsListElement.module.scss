@@ -1,0 +1,28 @@
+@import "../../../style/abstracts/_all.scss";
+
+:local(.commitsListElement) {
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid #eee;
+  padding: 8px 16px;
+  :local(.avatar){
+    img {
+      width: 30px;
+      border-radius: 50%;
+    }
+  }
+  :local(.text){
+    padding: 0 10px;
+    :local(.message) {
+      display: block;
+      color: $color-default-text;
+      text-decoration: none;
+    }
+    :local(.authorName) {
+      display: block;
+      color: $color-default-text;
+      font-size: .9em;
+      text-decoration: none;
+    }
+  }
+}
