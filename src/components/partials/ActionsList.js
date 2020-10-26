@@ -10,7 +10,7 @@ import ActionsListElement from 'components/partials/ActionsList/ActionsListEleme
 import {fetchActions} from 'actions/ActionActions';
 
 // Stylesheets
-import style from 'components/partials/ActionList.module.scss';
+
 
 class ActionsList extends Component {
   constructor(props) {
@@ -21,7 +21,7 @@ class ActionsList extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchActions(this.props.owner, this.props.repo).then(() => {
+    this.props.fetchActions().then(() => {
       this.setState({waitingForActionsResponse: false})
     });
   }
@@ -34,17 +34,19 @@ class ActionsList extends Component {
       : '';
   }
 
-  render() {   
-    return 'fisk'
+  render() {
+    const actionsForRepo = !this.state.waitingForActionsResponse && this.props.actions
+      ? this.props.actions
+      : null;
+    return actionsForRepo
+      ? (<div>
+        {this.renderActionsListElements(actionsForRepo)}
+      </div>)
+      : '';
   }
 }
 
-ActionsList.propTypes = {
-  owner: PropTypes.string.isRequired,
-  repo: PropTypes.string.isRequired
-};
-
-const mapStateToProps = state => ({commits: state.commits});
+const mapStateToProps = state => ({actions: state.actions});
 
 const mapDispatchToProps = {
   fetchActions

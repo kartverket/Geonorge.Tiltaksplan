@@ -1,13 +1,121 @@
-import {FETCH_COMMITS} from 'constants/types';
+import {FETCH_ACTIONS} from 'constants/types';
 
-export const fetchActions = (owner, repo) => (dispatch, getState) => {
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits`;
-  let commits = getState().commits;
-  if (!commits[owner]) {
-    commits[owner] = {};
-  }
-  return fetch(apiUrl).then(res => res.json()).then(newCommits => {
-    commits[owner][repo] = newCommits;
-    dispatch({type: FETCH_COMMITS, payload: commits})
+export const fetchActions = () => (dispatch, getState) => {   
+  const apiUrl = `[{
+	id: 1,
+	name: "Tiltak 1"
+	progress: "Fremgang",
+	volume: 2,
+	status: 1,
+	trafficLight: 3,
+	results: "Resultater",
+	comment: "Kommentar",
+	activities: [
+		{
+			id: 1,
+			actionPlanId: 1,
+			name: "Aktivitet 1",
+			title: "Tittel 1",
+			description: "Beskrivelse 1",
+			implementationStart: "2020-11-01T00:00:00",
+			implementationEnd: "2020-12-31T00:00:00",
+			participants: [
+				{
+					id: 1,
+					activityId: 1,
+					name: "Kartverket"
+				},
+				{
+					id: 2,
+					activityId: 1,
+					name: "NVE"
+				}
+			],
+			status: 2
+		},
+		{
+			id: 2,
+			actionPlanId: 1,
+			name: "Aktivitet 2",
+			title: "Tittel 2",
+			description: "Beskrivelse 2",
+			implementationStart: "2020-12-01T00:00:00",
+			implementationEnd: "2021-01-31T00:00:00",
+			participants: [
+				{
+					id: 3,
+					activityId: 2,
+					name: "Kartverket"
+				},
+				{
+					id: 4,
+					activityId: 2,
+					name: "NVE"
+				}
+			],
+			status: 2
+		}
+	]
+},
+{
+	id: 2,
+	name: "Tiltak 2"
+	progress: "Fremgang 2",
+	volume: 3,
+	status: 2,
+	trafficLight: 2,
+	results: "Resultater 2",
+	comment: "Kommentar 2",
+	activities: [
+		{
+			id: 3,
+			actionPlanId: 2,
+			name: "Aktivitet 1",
+			title: "Tittel 1",
+			description: "Beskrivelse 1",
+			implementationStart: "2020-11-01T00:00:00",
+			implementationEnd: "2020-12-31T00:00:00",
+			participants: [
+				{
+					id: 5,
+					activityId: 1,
+					name: "Kartverket"
+				},
+				{
+					id: 6,
+					activityId: 1,
+					name: "NVE"
+				}
+			],
+			status: 2
+		},
+		{
+			id: 4,
+			actionPlanId: 2,
+			name: "Aktivitet 2",
+			title: "Tittel 2",
+			description: "Beskrivelse 2",
+			implementationStart: "2020-12-01T00:00:00",
+			implementationEnd: "2021-01-31T00:00:00",
+			participants: [
+				{
+					id: 7,
+					activityId: 2,
+					name: "Kartverket"
+				},
+				{
+					id: 8,
+					activityId: 2,
+					name: "NVE"
+				}
+			],
+			status: 2
+		}
+	]
+}]`;
+  let actions = getState().actions;  
+  return fetch(apiUrl).then(res => res.json()).then(newActions => {
+    actions = newActions;
+    dispatch({type: FETCH_ACTIONS, payload: actions})
   });
 }
