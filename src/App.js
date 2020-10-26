@@ -11,7 +11,9 @@ import configureStore, {history} from 'utils/configureStore';
 // Routes
 import Home from 'components/routes/Home';
 import Commits from 'components/routes/Commits';
+import Actions from 'components/routes/Actions';
 import NotFound from 'components/routes/NotFound';
+
 
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
@@ -34,6 +36,7 @@ class App extends Component {
           <Route exact={true} path="/commits/:commitId" render={(props) => (<Commits {...props}/>)}/>
           <Route exact={true} path="/commits" render={(props) => (<Commits {...props}/>)}/>
           <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
+          <Route exact={true} path="/actions" render={(props) => (<Actions {...props} />)}/>
           <Route render={() => (<NotFound/>)}/>
         </Switch>
       </ConnectedRouter>
