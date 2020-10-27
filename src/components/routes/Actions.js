@@ -5,6 +5,7 @@ import {connect} from 'react-redux';
 
 // Template
 import ActionsList from 'components/partials/ActionsList';
+import Action from 'components/partials/Action';
 import Container from 'components/template/Container';
 
 
@@ -21,10 +22,18 @@ class Actions extends Component {
     }
   
     render() {
-      return (<Container>
+        const selectedActionId = this.props.match && this.props.match.params && this.props.match.params.actionId
+        ? this.props.match.params.actionId
+        : null;
+      return selectedActionId ?  (<Container>
+        <h1>Detaljer</h1>
+        <Action actionId = {selectedActionId} />
+      </Container>) : (
+        <Container>
         <h1>Actions</h1>
         <ActionsList  />
-      </Container>)
+      </Container>
+      )
     }
   }
 

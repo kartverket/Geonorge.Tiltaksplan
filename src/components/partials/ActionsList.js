@@ -21,12 +21,10 @@ class ActionsList extends Component {
   }
 
   componentDidMount() {
-    this.props.fetchActions().then(() => {
-      this.setState({waitingForActionsResponse: false})
-    });
+    this.props.fetchActions();
   }
 
-  renderActionListElements(actions) {
+  renderActionsListElements(actions) {
     return actions && actions.length
       ? actions.map(action => {
         return <ActionsListElement action={action}  />
@@ -35,12 +33,9 @@ class ActionsList extends Component {
   }
 
   render() {
-    const actionsForRepo = !this.state.waitingForActionsResponse && this.props.actions
-      ? this.props.actions
-      : null;
-    return actionsForRepo
+    return this.props.actions
       ? (<div>
-        {this.renderActionsListElements(actionsForRepo)}
+        {this.renderActionsListElements(this.props.actions)}
       </div>)
       : '';
   }

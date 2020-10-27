@@ -34,6 +34,7 @@ class App extends Component {
         <NavigationBar />
         <Switch>
           <Route exact={true} path="/commits/:commitId" render={(props) => (<Commits {...props}/>)}/>
+          <Route exact={true} path="/actions/:actionId" render={(props) => (<Actions {...props}/>)}/>
           <Route exact={true} path="/commits" render={(props) => (<Commits {...props}/>)}/>
           <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
           <Route exact={true} path="/actions" render={(props) => (<Actions {...props} />)}/>
