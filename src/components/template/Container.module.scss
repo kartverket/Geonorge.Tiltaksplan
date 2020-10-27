@@ -3,6 +3,7 @@
 :local(.container) {
   margin: auto;
   padding: 16px;
+  margin-top: 50px;  
   @media (min-width: $screen-sm) {
     padding: 24px;
     max-width: 1200px;

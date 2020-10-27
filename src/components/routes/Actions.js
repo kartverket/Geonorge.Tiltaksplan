@@ -25,12 +25,10 @@ class Actions extends Component {
         const selectedActionId = this.props.match && this.props.match.params && this.props.match.params.actionId
         ? this.props.match.params.actionId
         : null;
-      return selectedActionId ?  (<Container>
-        <h1>Detaljer</h1>
+      return selectedActionId ?  (<Container>       
         <Action actionId = {selectedActionId} />
       </Container>) : (
-        <Container>
-        <h1>Actions</h1>
+        <Container>        
         <ActionsList  />
       </Container>
       )

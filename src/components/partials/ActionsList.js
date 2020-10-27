@@ -10,7 +10,7 @@ import ActionsListElement from 'components/partials/ActionsList/ActionsListEleme
 import {fetchActions} from 'actions/ActionActions';
 
 // Stylesheets
-
+import style from 'components/partials/ActionsList.module.scss'
 
 class ActionsList extends Component {
   constructor(props) {
@@ -35,6 +35,7 @@ class ActionsList extends Component {
   render() {
     return this.props.actions
       ? (<div>
+        <h1 className={style.header}>Tiltaksplaner</h1>
         {this.renderActionsListElements(this.props.actions)}
       </div>)
       : '';
