@@ -4,10 +4,10 @@ import {connectRouter} from 'connected-react-router';
 
 // Reducers
 import CommitsReducer from 'reducers/CommitsReducer';
-import ActionsReducer from 'reducers/ActionsReducer';
+import MeasuresReducer from 'reducers/MeasuresReducer';
 
 export default(history) => combineReducers({
   router: connectRouter(history),
   commits: CommitsReducer,
-  actions: ActionsReducer
+  measures: MeasuresReducer
 });

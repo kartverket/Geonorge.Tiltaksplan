@@ -1,2 +1,2 @@
 export const FETCH_COMMITS = 'FETCH_COMMITS';
-export const FETCH_ACTIONS = 'FETCH_ACTIONS';
+export const FETCH_MEASURES = 'FETCH_MEASURES';
