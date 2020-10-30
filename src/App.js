@@ -10,7 +10,6 @@ import configureStore, {history} from 'utils/configureStore';
 
 // Routes
 import Home from 'components/routes/Home';
-import Commits from 'components/routes/Commits';
 import Measures from 'components/routes/Measures';
 import NotFound from 'components/routes/NotFound';
 
@@ -33,11 +32,9 @@ class App extends Component {
       <ConnectedRouter history={history}>
         <NavigationBar />
         <Switch>
-          <Route exact={true} path="/commits/:commitId" render={(props) => (<Commits {...props}/>)}/>
           <Route exact={true} path="/tiltaksplaner/:planId" render={(props) => (<Measures {...props}/>)}/>
-          <Route exact={true} path="/commits" render={(props) => (<Commits {...props}/>)}/>
-          <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
           <Route exact={true} path="/tiltaksplaner" render={(props) => (<Measures {...props} />)}/>
+          <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
           <Route render={() => (<NotFound/>)}/>
         </Switch>
       </ConnectedRouter>
