@@ -11,6 +11,7 @@ import configureStore, {history} from 'utils/configureStore';
 // Routes
 import Home from 'components/routes/Home';
 import Measures from 'components/routes/Measures';
+import Measure from 'components/routes/Measure';
 import NotFound from 'components/routes/NotFound';
 
 
@@ -32,7 +33,7 @@ class App extends Component {
       <ConnectedRouter history={history}>
         <NavigationBar />
         <Switch>
-          <Route exact={true} path="/tiltaksplaner/:planId" render={(props) => (<Measures {...props}/>)}/>
+          <Route exact={true} path="/tiltaksplaner/:measureId" render={(props) => (<Measure {...props}/>)}/>
           <Route exact={true} path="/tiltaksplaner" render={(props) => (<Measures {...props} />)}/>
           <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
           <Route render={() => (<NotFound/>)}/>
