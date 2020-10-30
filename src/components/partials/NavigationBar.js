@@ -1,7 +1,7 @@
 // Dependencies
 import React, {Component} from 'react';
 import {connect} from 'react-redux';
-import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigation';
+import '@kartverket/geonorge-web-components/MainNavigation';
 
 
 class NavigationBar extends Component {

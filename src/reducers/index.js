@@ -5,7 +5,9 @@ import {connectRouter} from 'connected-react-router';
 // Reducers
 import MeasuresReducer from 'reducers/MeasuresReducer';
 
-export default(history) => combineReducers({
+const reducers = history => combineReducers({
   router: connectRouter(history),
   measures: MeasuresReducer
 });
+
+export default reducers;
