@@ -14,7 +14,6 @@ import Measures from 'components/routes/Measures';
 import Measure from 'components/routes/Measure';
 import NotFound from 'components/routes/NotFound';
 
-
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
 
@@ -29,17 +28,19 @@ const store = configureStore(initialState);
 
 class App extends Component {
   render() {
-    return (<Provider store={store}>
-      <ConnectedRouter history={history}>
-        <NavigationBar />
-        <Switch>
-          <Route exact={true} path="/tiltaksplaner/:measureId" render={(props) => (<Measure {...props}/>)}/>
-          <Route exact={true} path="/tiltaksplaner" render={(props) => (<Measures {...props} />)}/>
-          <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
-          <Route render={() => (<NotFound/>)}/>
-        </Switch>
-      </ConnectedRouter>
-    </Provider>);
+    return (
+      <Provider store={store}>
+        <ConnectedRouter history={history}>
+          <NavigationBar />
+          <Switch>
+            <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props}/>)}/>
+            <Route exact={true} path="/tiltak" render={(props) => (<Measures {...props} />)}/>
+            <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
+            <Route render={() => (<NotFound/>)}/>
+          </Switch>
+        </ConnectedRouter>
+      </Provider>
+    );
   }
 }
 

@@ -1,0 +1,30 @@
+:local(tbody tr) {
+   cursor: pointer;
+   
+   &:hover {
+      background-color: #fbfbfb;
+   }
+
+   td {
+      padding: 8px 0;
+   }
+}
+
+:local(.trafficLight) {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: block;
+
+    &.light-1 {
+        background-color: #de0000;
+    }
+
+    &.light-2 {
+        background-color: #ff9900;
+    }
+
+    &.light-3 {
+        background-color: #009900;
+    }
+}

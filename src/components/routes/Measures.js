@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 
 // Template
-import MeasuresList from 'components/partials/MeasuresList';
+import MeasuresTable from 'components/partials/MeasuresTable';
 import Container from 'components/template/Container';
 
 
@@ -23,7 +23,7 @@ class Measures extends Component {
   render() {
     return (
       <Container>
-        <MeasuresList />
+        <MeasuresTable />
       </Container>
     )
   }

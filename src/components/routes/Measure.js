@@ -1,15 +1,10 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-
-// Template
 import Container from 'components/template/Container';
-
-// Actions
 import { fetchSelectedMeasure } from 'actions/MeasureActions';
 
 class Measure extends Component {
-
     componentDidMount() {
         this.props.fetchSelectedMeasure(this.getSelectedMeasureId())
     }

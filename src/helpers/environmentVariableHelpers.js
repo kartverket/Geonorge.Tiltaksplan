@@ -1,5 +1,5 @@
 // Config
-import config from 'components/config';
+import { config } from 'components/config';
 
 const insertEnvironmentVariableParameters = (environmentVariable, environmentVariableParameters) => {
   const environmentVariableRegex = /{[0-9a-z]*}/ig;

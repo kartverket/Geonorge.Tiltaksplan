@@ -1,1 +1,13 @@
-$default-font: "Roboto", "Helvetica", "Arial", sans-serif;
+@font-face {
+   font-family: Raleway;
+   font-style: normal;
+   font-display: swap;
+   font-weight: 100;
+   src: local("Raleway Thin"), 
+      local("Raleway-Thin"), 
+      url(../../../fonts/raleway-latin-100.woff2) format("woff2"), 
+      url(../../../fonts/raleway-latin-100.woff2) format("woff");
+}
+
+$default-font: Helvetica Neue, Helvetica, Arial, sans-serif;
+

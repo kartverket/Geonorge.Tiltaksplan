@@ -11,6 +11,23 @@ body {
   color: $color-default-text;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  font-size: 14px;
+  line-height: 20px;
+}
+
+h1 {
+   font-family: "Raleway", sans-serif;
+   font-size: 48pt;
+   font-weight: 100;
+   margin: 0;
+
+   &::after {
+      content: "";
+      display: block;
+      width: 100px;
+      border-bottom: 5px solid #fe5000;
+      margin: 45px 0 25px 0;
+   }
 }
 
 code {
