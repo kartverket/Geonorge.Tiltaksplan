@@ -2,8 +2,10 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
+import { withRouter } from 'react-router-dom'
+
 import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scss';
-import { withRouter } from 'react-router-dom'   
+import StarIcon from 'gfx/icon-star.svg'
 
 class MeasuresTableRow extends Component {
    render() {
@@ -13,8 +15,8 @@ class MeasuresTableRow extends Component {
          <tr onClick={this.goToMeasure.bind(this)}>
             <td>{measure.name}</td>
             <td>{measure.progress}</td>
-            <td>{measure.volume}</td>
-            <td>{measure.status}</td>
+            <td>{this.renderStars(measure.volume)}</td>
+            <td>{this.renderStars(measure.status)}</td>
             <td>
                <span className={`${style.trafficLight} ${style['light-' + measure.trafficLight]}`}></span>
             </td>
@@ -22,6 +24,14 @@ class MeasuresTableRow extends Component {
             <td>{measure.comment}</td>
          </tr>
       )
+   }
+
+   renderStars(amount) {
+      return amount > 0 ? (
+         <>
+            {[...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={style.star} src={StarIcon} alt="Stjerne" />)}
+         </>
+      ) : '';
    }
 
    goToMeasure() {

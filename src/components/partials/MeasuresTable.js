@@ -48,13 +48,7 @@ class MeasuresTable extends Component {
          return '';
       }
 
-      return (
-         <div>
-            <h1>Tiltaksplaner</h1>
-
-            {this.renderMeasureTableRows(this.props.measures)}
-         </div>
-      );
+      return this.renderMeasureTableRows(this.props.measures)
    }
 }
 

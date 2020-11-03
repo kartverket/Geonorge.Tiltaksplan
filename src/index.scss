@@ -1,4 +1,5 @@
 @import "./style/abstracts/_all.scss";
+@import "./style/_font-faces.scss";
 
 *, *::before, *::after{
   box-sizing: border-box;
@@ -28,6 +29,55 @@ h1 {
       border-bottom: 5px solid #fe5000;
       margin: 45px 0 25px 0;
    }
+}
+
+.btn, a.btn, button.btn, input[type=button].btn, input[type=submit].btn {
+   background-color: #7da1c4;
+   background-position: 50%;
+   border-radius: 0;
+   border: 1px solid transparent;
+   color: #ffffff;
+   cursor: pointer;
+   font-family: Open Sans,sans-serif;
+   font-size: 12pt;
+   font-style: normal;
+   font-weight: 400;
+   height: 34px;
+   line-height: 16pt;
+   margin-bottom: 7px;
+   text-decoration: none;
+   transition: all .35s linear 0s;
+
+   &.primary {
+      background-color: #fe5000;
+   }
+
+   &:hover,
+   &:focus {
+      background-color: #fe5000;
+      border: 1px solid transparent;
+      color: #ffffff !important;
+      font-size: 12pt;
+      font-style: normal;
+      line-height: 16pt;
+   }
+}
+
+input[type="text"] {
+   padding: 0 10px;
+   border-radius: 0;
+   border: 1px solid #cfcfcf;
+   box-shadow: none;
+   font-family: Open Sans, sans-serif;
+   font-style: normal;
+   font-variant: normal;
+   color: #000000;
+   font-size: 12pt!important;
+   font-weight: 400;
+   min-height: 30px;
+   width: 100%;
+   min-height: 34px;
+   padding: 0 15px;   
 }
 
 code {

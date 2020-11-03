@@ -7,7 +7,15 @@
 
    td {
       padding: 8px 0;
+      border-bottom: 1px solid #cccccc;
    }
+}
+
+:local(.star) {
+   width: 18px;
+   height: 18px;
+   margin-right: 2px;
+   vertical-align: -3px;
 }
 
 :local(.trafficLight) {
