@@ -11,6 +11,8 @@ import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
 import { Measure } from 'models/measure';
+import { makeStyles } from '@material-ui/core/styles';
+import TextField from '@material-ui/core/TextField';
 
 class Measures extends Component {
    constructor(props) {
@@ -18,27 +20,39 @@ class Measures extends Component {
 
       this.state = {
          modalOpen: false,
-         newMeasure: new Measure({}) 
+         newMeasure: new Measure()
       };
 
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
+      this.handleChange = this.handleChange.bind(this);
+
+      /*this.useStyles = makeStyles((theme) => ({
+         root: {
+            '& > *': {
+               margin: theme.spacing(1),
+               width: '25ch',
+            },
+         },
+      }));*/
    }
 
+   /*const */
+
+
+
    openModal() {
-      this.setState({ 
+      this.setState({
          modalOpen: true,
-         newMeasure: new Measure({ name: 'Ny aktivitet' })
+         newMeasure: new Measure()
       });
    }
 
    handleChange(event) {
-      const value = event.target.value;
+      const newMeasure = this.state.newMeasure;
+      newMeasure[event.target.name] = event.target.value;
 
-      /*setState({
-        ...state,
-        [event.target.name]: value
-      });*/
+      this.setState({ newMeasure }, () => console.log(this.state.newMeasure));
    }
 
    closeModal() {
@@ -57,9 +71,12 @@ class Measures extends Component {
             <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
                <DialogTitle id="form-dialog-title">Legg til tiltak</DialogTitle>
                <DialogContent>
+
+                  <TextField label="Navn" variant="outlined" name="name" value={this.state.newMeasure.name} onChange={this.handleChange} />
+
                   <label>
-                     Navn:
-                     <input type="text" name="name" value={this.state.newMeasure.name} onChange={this.handleChange} />
+                     Fremdrift:
+                     <input type="text" name="progress" value={this.state.newMeasure.progress} onChange={this.handleChange} />
                   </label>
                </DialogContent>
                <DialogActions>

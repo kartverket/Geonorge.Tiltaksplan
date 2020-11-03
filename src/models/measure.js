@@ -1,5 +1,5 @@
 export class Measure {
-   constructor({ id, name, progress, volume, status, trafficLight, comment, results }) {
+   constructor({ id, name, progress, volume, status, trafficLight, comment, results } = {}) {
       this.id = id || 0;
       this.name = name || '';
       this.progress = progress || '';
