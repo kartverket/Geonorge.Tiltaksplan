@@ -35,10 +35,10 @@ class Measures extends Component {
    handleChange(event) {
       const value = event.target.value;
 
-      setState({
+      /*setState({
         ...state,
         [event.target.name]: value
-      });
+      });*/
    }
 
    closeModal() {

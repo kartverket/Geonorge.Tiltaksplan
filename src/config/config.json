@@ -1,3 +1,4 @@
 {
-    "environment": "dev"
+    "environment": "dev",
+    "configApiUrl": "https://tiltaksplan.dev.geonorge.no/api/config"
 }
