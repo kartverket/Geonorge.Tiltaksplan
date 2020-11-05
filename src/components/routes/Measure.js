@@ -18,15 +18,33 @@ class Measure extends Component {
         : null;
     }
 
+    getStatustext(status) {
+        switch(status){
+            case 1:
+            return 'Oppstart';
+            case 2:
+            return 'Utredning';
+            case 3:
+            return 'Utarbeidende';
+            case 4:
+            return 'Avsluttende fase';
+            case 5:
+            return 'Gjennomført';
+            default:
+			return '';
+        };
+    }
+
     renderActivities(activities){
         return activities && activities.length ?activities.map(activity => {
             return ( 
                 <tr>
-                    <td>{activity.name}</td>
-                    <td>{activity.title}</td>
+                    <td>{activity.name}</td>                   
                     <td>{activity.description}</td>
+                    <td>{this.getStatustext(activity.status)}</td>
                     <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
                     <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
+                    <td>{activity.participants.length}</td>
                 </tr> )
         }) : null;
     }
@@ -37,13 +55,13 @@ class Measure extends Component {
             <h1>{selectedMeasure.name}</h1>
             <table className={style.activitiesTable}>
                 <thead>
-                    <tr><th>Navn</th><th>tittel</th><th>Beskrivelse</th><th>Start</th><th>Slutt</th></tr>
+                    <tr><th>Navn</th><th>Beskrivelse</th><th>Status</th><th>Start</th><th>Slutt</th><th>Deltakere</th></tr>
                 </thead>
                 <tbody>
                 {this.renderActivities(selectedMeasure.activities)}
                 </tbody>
                 </table>
-        </Container>) : 'hoy'
+        </Container>) : ''
     }
 }
 
