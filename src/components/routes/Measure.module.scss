@@ -3,7 +3,7 @@
     width: 100%;
  
     thead th {
-       border-bottom: 2px solid #fe5000;
+       border-bottom: 2px solid #fe0400;
        color: #3867c8;
        font-weight: normal;
        height: 27px;
@@ -12,4 +12,30 @@
        text-align: left;
        text-transform: uppercase;
     }
+    tbody td {
+        padding: 10px;
+        td {            
+            width: 150px;
+          }
+          td+td {
+            width: auto;
+          }
+    }
+    td {
+  width: 25%;
+}
+td+td {
+  width: auto;
+}
+ }
+ :local(.statusbar) {
+     display: block;
+     height: 10px;
+     width: 100px;
+     background-color: #fe0400;
+ }
+ :local(.block) {
+     background-color:#589d43;
+     width: 20px;
+     height: 10px;
  }

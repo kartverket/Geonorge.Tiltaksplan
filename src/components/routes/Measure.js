@@ -34,17 +34,31 @@ class Measure extends Component {
 			return '';
         };
     }
+    getParticitants(items) {
+        const participants = items.participants.length;
+        return items.participants && items.participants.length ? items.participants.map(participant => {
+            return (
+                
+                participant.name + ' '
+                
+            )
+        }): null;
+    }
+
+    
 
     renderActivities(activities){
+
         return activities && activities.length ?activities.map(activity => {
+            const statusStyle = { width: `${activity.status * 20}%` }
             return ( 
                 <tr>
                     <td>{activity.name}</td>                   
                     <td>{activity.description}</td>
-                    <td>{this.getStatustext(activity.status)}</td>
+                    <td>{this.getParticitants(activity)}</td>
+            <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
                     <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-                    <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-                    <td>{activity.participants.length}</td>
+                    <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>                    
                 </tr> )
         }) : null;
     }
@@ -53,9 +67,10 @@ class Measure extends Component {
         const selectedMeasure = this.props.selectedMeasure;
         return selectedMeasure ? (<Container>
             <h1>{selectedMeasure.name}</h1>
+        <div>{selectedMeasure.comment}</div>
             <table className={style.activitiesTable}>
                 <thead>
-                    <tr><th>Navn</th><th>Beskrivelse</th><th>Status</th><th>Start</th><th>Slutt</th><th>Deltakere</th></tr>
+                    <tr><th>Navn</th><th>Beskrivelse</th><th>Deltakere</th><th>Status</th><th>Start</th><th>Slutt</th></tr>
                 </thead>
                 <tbody>
                 {this.renderActivities(selectedMeasure.activities)}
