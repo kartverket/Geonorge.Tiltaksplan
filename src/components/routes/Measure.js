@@ -52,7 +52,7 @@ class Measure extends Component {
         return activities && activities.length ?activities.map(activity => {
             const statusStyle = { width: `${activity.status * 20}%` }
             return ( 
-                <tr>
+                <tr key={activity.id}>
                     <td>{activity.name}</td>                   
                     <td>{activity.description}</td>
                     <td>{this.getParticitants(activity)}</td>
