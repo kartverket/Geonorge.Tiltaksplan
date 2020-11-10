@@ -36,10 +36,11 @@ class Measure extends Component {
     }
     getParticitants(items) {
         const participants = items.participants.length;
-        return items.participants && items.participants.length ? items.participants.map(participant => {
+        return items.participants && items.participants.length ? items.participants.map((participant, index) => {
+        
             return (
                 
-                participant.name + ' '
+                participant.name + (items.participants.length - index > 1 ? ', ' : ' ')
                 
             )
         }): null;
@@ -67,7 +68,8 @@ class Measure extends Component {
         const selectedMeasure = this.props.selectedMeasure;
         return selectedMeasure ? (<Container>
             <h1>{selectedMeasure.name}</h1>
-        <div>{selectedMeasure.comment}</div>
+        <div>{selectedMeasure.progress}</div>
+        <div>{selectedMeasure.results}</div>
             <table className={style.activitiesTable}>
                 <thead>
                     <tr><th>Navn</th><th>Beskrivelse</th><th>Deltakere</th><th>Status</th><th>Start</th><th>Slutt</th></tr>
