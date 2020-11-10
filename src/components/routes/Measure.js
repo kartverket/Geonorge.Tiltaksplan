@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import Container from 'components/template/Container';
 import { fetchSelectedMeasure } from 'actions/MeasureActions';
 import DayJS from 'react-dayjs';
-import style from 'components/routes/Measure.module.scss'
+import style from 'components/routes/Measure.module.scss';
+import Activity from 'components/partials/ActivityTable/ActivityTableRow';
 
 
 class Measure extends Component {
@@ -18,49 +19,12 @@ class Measure extends Component {
         : null;
     }
 
-    getStatustext(status) {
-        switch(status){
-            case 1:
-            return 'Oppstart';
-            case 2:
-            return 'Utredning';
-            case 3:
-            return 'Utarbeidende';
-            case 4:
-            return 'Avsluttende fase';
-            case 5:
-            return 'Gjennomført';
-            default:
-			return '';
-        };
-    }
-    getParticitants(items) {
-        const participants = items.participants.length;
-        return items.participants && items.participants.length ? items.participants.map((participant, index) => {
-        
-            return (
-                
-                participant.name + (items.participants.length - index > 1 ? ', ' : ' ')
-                
-            )
-        }): null;
-    }
-
-    
-
     renderActivities(activities){
 
         return activities && activities.length ?activities.map(activity => {
-            const statusStyle = { width: `${activity.status * 20}%` }
             return ( 
-                <tr key={activity.id}>
-                    <td>{activity.name}</td>                   
-                    <td>{activity.description}</td>
-                    <td>{this.getParticitants(activity)}</td>
-            <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
-                    <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-                    <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>                    
-                </tr> )
+                <Activity key={activity.id} activity={activity} />
+                 )
         }) : null;
     }
 
