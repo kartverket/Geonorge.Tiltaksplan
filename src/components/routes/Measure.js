@@ -73,12 +73,9 @@ class Measure extends Component {
             <DialogTitle id="form-dialog-title">Legg til aktivitet</DialogTitle>
             <DialogContent>
 
-               <TextField label="Navn" variant="outlined" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
-
-               <label>
-                  Tittel:
-                  <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
-               </label>
+               <div className={style.block}><TextField label="Navn" variant="outlined" name="name" value={this.state.newActivity.name} onChange={this.handleChange} /></div>
+               <div className={style.block}><TextField label="Tittel" variant="outlined" name="title" value={this.state.newActivity.title} onChange={this.handleChange} /></div>
+              
             </DialogContent>
             <DialogActions>
                <button className="btn" onClick={this.closeModal}>Lukk</button>
