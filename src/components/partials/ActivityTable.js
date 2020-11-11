@@ -11,7 +11,8 @@ class ActivityTable extends Component {
          return '';
       }
 
-      return (
+      return (<React.Fragment>         
+
          <table className={style.activitiesTable}>
          <thead>
              <tr>
@@ -27,12 +28,14 @@ class ActivityTable extends Component {
          {activities.map(activity => <ActivityTableRow key={activity.id} activity={activity} />)}
          </tbody>
          </table>
+
+        
+        </React.Fragment>
       );
    }
 
    render() {
-      const activities = this.props.activities;
-        
+      const activities = this.props.activities;        
       return this.renderActivityTableRows(activities)
    }
 }

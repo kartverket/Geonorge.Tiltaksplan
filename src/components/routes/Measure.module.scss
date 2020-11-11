@@ -1,41 +1,4 @@
-:local(.activitiesTable) {
-  border-collapse: collapse;
-  width: 100%;
 
-  thead th {
-    border-bottom: 2px solid #fe0400;
-    color: #3867c8;
-    font-weight: normal;
-    height: 27px;
-    line-height: 18.6667px;
-    padding: 20px 15px 0 0;
-    text-align: left;
-    text-transform: uppercase;
-  }
-  tbody {
-    td {
-      width: 150px;
-      padding: 10px 10px 10px 0;
-    }
-    td + td {
-      width: auto;
-    }
-  }
-  td {
-    width: 25%;
-  }
-  td + td {
-    width: auto;
-  }
-}
-:local(.statusbar) {
-  display: block;
-  height: 10px;
-  width: 100px;
-  background-color: #fe0400;
-}
 :local(.block) {
-  background-color: #589d43;
-  width: 20px;
-  height: 10px;
+  margin: 20px 0;
 }
