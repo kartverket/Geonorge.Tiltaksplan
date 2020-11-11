@@ -17,10 +17,23 @@ const insertEnvironmentVariableParameters = (environmentVariable, environmentVar
   return environmentVariable;
 }
 
+const findNestedPropertyInConfig = (environmentVariables, environmentVariableKeyArray, arrayIndex = 0) => {
+  const environmentVariableKey = environmentVariableKeyArray[arrayIndex];
+  const nestedPropertyInConfig = environmentVariables[environmentVariableKey];
+  arrayIndex++
+  if (arrayIndex < environmentVariableKeyArray.length) {
+    const environmentVariable = environmentVariables[environmentVariableKey];
+    return findNestedPropertyInConfig(environmentVariable, environmentVariableKeyArray, arrayIndex);
+  } else {
+    return nestedPropertyInConfig;
+  }
+}
+
 export const getEnvironmentVariable = (environmentVariableKey, environmentVariableParameters = {}) => {
   const environmentVariables = config;
-  if (environmentVariables && environmentVariables[environmentVariableKey]) {
-    const environmentVariable = environmentVariables[environmentVariableKey];
+  const environmentVariableKeyArray = environmentVariableKey.split('.');
+  if (environmentVariables && environmentVariableKeyArray.length) {
+    const environmentVariable = findNestedPropertyInConfig(environmentVariables, environmentVariableKeyArray);
     return insertEnvironmentVariableParameters(environmentVariable, environmentVariableParameters);
   } else {
     console.warn(`Environment variable for ${environmentVariableKey} is missing`);
