@@ -75,7 +75,26 @@ class Measure extends Component {
 
                <div className={style.block}><TextField label="Navn" variant="outlined" name="name" value={this.state.newActivity.name} onChange={this.handleChange} /></div>
                <div className={style.block}><TextField label="Tittel" variant="outlined" name="title" value={this.state.newActivity.title} onChange={this.handleChange} /></div>
-              
+               <TextField
+                        id="implementationStart"
+                        label="Start"
+                        type="date"
+                        defaultValue={this.state.newActivity.implementationStart}
+                        className={style.block}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                    />
+                <TextField
+                        id="implementationEnd"
+                        label="Slutt"
+                        type="date"
+                        defaultValue={this.state.newActivity.implementationEnd}
+                        className={style.block}
+                        InputLabelProps={{
+                        shrink: true,
+                        }}
+                    />
             </DialogContent>
             <DialogActions>
                <button className="btn" onClick={this.closeModal}>Lukk</button>
