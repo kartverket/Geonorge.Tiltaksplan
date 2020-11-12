@@ -110,11 +110,17 @@ class Measure extends Component {
     }
 
     renderParticipants(participants){
-        return participants && participants.length        
+
+        const participantsList = participants && participants.length        
             ? participants.map((participant, index) => {
                 return <div key={index}>{participant.name}</div>
             }) : ''
-            
+        return participantsList.length ? (
+            <React.Fragment>
+                <h3>Deltagere:</h3>
+                {participantsList}
+            </React.Fragment>
+        ) : '';
     }
 
     render() {
