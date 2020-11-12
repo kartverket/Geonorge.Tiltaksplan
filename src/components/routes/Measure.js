@@ -109,10 +109,11 @@ class Measure extends Component {
     }
 
     renderParticipants(participants){
-        return participants && participants.length
+        return participants && participants.length        
             ? participants.map((participant, index) => {
-                return <h1 key={index}>{participant.name}</h1>
+                return <div key={index}>{participant.name}</div>
             }) : ''
+            
     }
 
     render() {
@@ -183,7 +184,8 @@ class Measure extends Component {
                         <div className={style.block}>
                            
                             <label>
-                                Status:<label>
+                                Status:
+                                <label>
                                 <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 1} value={1} onChange={this.handleChange} />
                                 Oppstart</label>
                                 <label>
