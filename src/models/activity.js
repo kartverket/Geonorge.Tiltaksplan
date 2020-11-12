@@ -3,10 +3,10 @@ export class Activity {
        this.id = id || 0;
        this.name = name || '';
        this.title = title || '';
-       this.description = description || 0;
+       this.description = description || '';
        this.implementationStart = implementationStart || 1;
        this.implementationEnd = implementationEnd || 1;
-       this.participants = participants || '';       
+       this.participants = participants || [];       
        this.culture = 'nb-NO';
     }
  }
