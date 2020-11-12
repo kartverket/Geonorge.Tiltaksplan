@@ -62,6 +62,38 @@ h1 {
       line-height: 16pt;
    }
 }
+input[type=radio] {  
+   visibility: hidden;
+}
+input[type='radio']:after {   
+   width: 20px;
+   height: 20px;
+   border-radius: 15px;
+   top: -2px;
+   left: 2px;
+   position: relative;
+   border-color: #fe5000;
+   background-image: url('../src/gfx/radio-unchecked.svg');
+   content: '';
+   display: inline-block;
+   visibility: visible;
+   
+}
+
+input[type='radio']:checked:after {
+   width: 20px;
+   height: 20px;
+   border-radius: 15px;
+   top: -2px;
+   left: 2px;
+   position: relative;
+   background-image: url('../src/gfx/radio-checked.svg');
+   content: '';
+   display: inline-block;
+   visibility: visible;
+   
+}
+
 
 /*input[type="text"] {
    padding: 0 10px;

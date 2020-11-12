@@ -181,13 +181,23 @@ class Measure extends Component {
                             />
                         </div>
                         <div className={style.block}>
+                           
                             <label>
-                                Status:
-                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 1} value={1} onChange={this.handleChange} />
+                                Status:<label>
+                                <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 1} value={1} onChange={this.handleChange} />
+                                Oppstart</label>
+                                <label>
                                 <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 2} value={2} onChange={this.handleChange} />
+                                Utredning</label>
+                                <label>
                                 <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 3} value={3} onChange={this.handleChange} />
+                                Utarbeidende</label>
+                                <label>
                                 <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 4} value={4} onChange={this.handleChange} />
+                                Avsluttende fase</label>
+                                <label>
                                 <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 5} value={5} onChange={this.handleChange} />
+                                Gjennomført</label>
                             </label>
                         </div>
                         {this.renderParticipants(this.state.newActivity.participants)}
