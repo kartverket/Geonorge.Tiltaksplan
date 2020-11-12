@@ -1,4 +1,24 @@
 
 :local(.block) {
   margin: 20px 0;
+  font-weight: 600;
+  input[type='text'],input[type='number'] {
+      display: block;
+      padding: 5px;
+      font-size: 1.5em;
+      width: 480px;
+  }
+  input[type='radio'] {
+      border: 0px;
+      width: 20px;
+      display: inline;
+      height: 1.5em;
+  }
+}
+:local(.flexblock) {
+  display: flex;
+    justify-content: flex-start;
+  div {
+    margin-right: 10px;
+  }
 }

@@ -47,7 +47,8 @@ class Measure extends Component {
 
     handleChange(event) {
         const newActivity = this.state.newActivity;
-        newActivity[event.target.name] = event.target.value;
+        const targetvalue = event.target.dataset && event.target.dataset.type && event.target.dataset.type === 'number' ? parseInt(event.target.value) : event.target.value;
+      newActivity[event.target.name] = targetvalue;
 
         this.setState({ newActivity }, () => console.log(this.state.newActivity));
     }
@@ -88,29 +89,65 @@ class Measure extends Component {
                 <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Legg til aktivitet</DialogTitle>
                     <DialogContent>
+               
+               <div className={style.block}>
+                     <label>
+                        Navn:
+                        <input type="text" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
+                     </label>
+                  </div>
+                  <div className={style.block}>
+                     <label>
+                        Tittel:
+                        <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
+                     </label>
+                  </div>
+                  <div className={style.block}>
+                     <label>
+                        Beskrivelse:
+                        <input type="text" name="description" value={this.state.newActivity.description} onChange={this.handleChange} />
+                     </label>
+                  </div>
 
-               <div className={style.block}><TextField label="Navn" variant="outlined" name="name" value={this.state.newActivity.name} onChange={this.handleChange} /></div>
-               <div className={style.block}><TextField label="Tittel" variant="outlined" name="title" value={this.state.newActivity.title} onChange={this.handleChange} /></div>
-               <TextField
+                <div className={style.flexblock}>
+                  <TextField
                         id="implementationStart"
                         label="Start"
+                        name="implementationStart"
                         type="date"
-                        defaultValue={this.state.newActivity.implementationStart}
-                        className={style.block}
+                        onChange={this.handleChange}
                         InputLabelProps={{
                         shrink: true,
                         }}
                     />
+                   
                 <TextField
                         id="implementationEnd"
                         label="Slutt"
+                        name="implementationEnd"
                         type="date"
-                        defaultValue={this.state.newActivity.implementationEnd}
-                        className={style.block}
+                        onChange={this.handleChange}                       
                         InputLabelProps={{
                         shrink: true,
                         }}
                     />
+                    </div>
+                    <div className={style.block}>
+                     <label>
+                        Status:
+                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 1} value={1} onChange={this.handleChange} />
+                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 2} value={2} onChange={this.handleChange} />
+                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 3} value={3} onChange={this.handleChange} />
+                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 4} value={4} onChange={this.handleChange} />
+                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 5} value={5} onChange={this.handleChange} />
+                     </label>
+                  </div>
+                  <div className={style.block}>
+                      <label>
+                          Deltakere:
+                          <input type="text" name="participants" value={this.state.newActivity.participants} onChange={this.handleChange} />
+                      </label>
+                  </div>
             </DialogContent>
             <DialogActions>
                <button className="btn" onClick={this.closeModal}>Lukk</button>
