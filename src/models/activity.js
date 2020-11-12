@@ -5,8 +5,8 @@ export class Activity {
        this.name = name || '';
        this.title = title || '';
        this.description = description || '';
-       this.implementationStart = implementationStart || 1;
-       this.implementationEnd = implementationEnd || 1;
+       this.implementationStart = implementationStart || '';
+       this.implementationEnd = implementationEnd || '';
        this.participants = participants || [];       
        this.culture = 'nb-NO';
     }
