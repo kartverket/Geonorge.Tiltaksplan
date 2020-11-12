@@ -16,7 +16,6 @@ export const fetchSelectedMeasure = measureId => (dispatch) => {
     dispatch({ type: FETCH_SELECTED_MEASURE, payload: measure })
   });
 }
-
 export const createMeasure = (measure) => (dispatch) => {
   const apiUrl = apiUrls.measure.create
   return fetch(apiUrl, {

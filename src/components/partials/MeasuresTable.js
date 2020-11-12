@@ -28,12 +28,12 @@ class MeasuresTable extends Component {
             <thead>
                <tr>
                   <th>Tiltak</th>
-                  <th>Fremdrift</th>
+                   <th>Kommentar</th>
                   <th>Volum</th>
                   <th>Status (ift. plan)</th>
                   <th>Trafikklys (iht. plan)</th>
-                  <th>Konkrete resultater</th>
-                  <th>Kommentar</th>
+                  
+                 
                </tr>
             </thead>
             <tbody>

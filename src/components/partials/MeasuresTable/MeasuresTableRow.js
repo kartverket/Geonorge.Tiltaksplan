@@ -14,14 +14,14 @@ class MeasuresTableRow extends Component {
       return (
          <tr onClick={this.goToMeasure.bind(this)}>
             <td>{measure.name}</td>
-            <td>{measure.progress}</td>
+            <td>{measure.comment}</td>
             <td>{this.renderStars(measure.volume)}</td>
             <td>{this.renderStars(measure.status)}</td>
             <td>
                <span className={`${style.trafficLight} ${style['light-' + measure.trafficLight]}`}></span>
             </td>
-            <td>{measure.results}</td>
-            <td>{measure.comment}</td>
+            
+            
          </tr>
       )
    }
