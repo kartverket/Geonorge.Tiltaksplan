@@ -95,6 +95,7 @@ class Measure extends Component {
     saveModal() {
         this.props.createActivity(this.state.newActivity).then(() => {
             this.closeModal();
+            this.props.fetchSelectedMeasure(this.getSelectedMeasureId());
         });
     }
 
