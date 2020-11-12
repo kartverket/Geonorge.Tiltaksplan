@@ -35,22 +35,57 @@ class Measure extends Component {
         this.closeModal = this.closeModal.bind(this);
         this.saveModal = this.saveModal.bind(this);
         this.handleChange = this.handleChange.bind(this);
+        this.handleNewParticipantChange = this.handleNewParticipantChange.bind(this);
 
     }
 
     openModal() {
         this.setState({
             modalOpen: true,
-            newActivity: new Activity()
+            newActivity: new Activity({ measureId: this.props.selectedMeasure.id })
         });
+    }
+
+    getValueTypeForElement(element){
+        return element && element.dataset && element.dataset.type ? element.dataset.type : null;
+    }
+
+    getValueForElement(element){
+        const valueType = this.getValueTypeForElement(element);
+        const value = element.value;
+        switch(valueType) {
+            case 'number':
+                return parseInt(value);
+            case 'date':
+                return new Date(value).toISOString();
+            default:
+                return value
+        }
     }
 
     handleChange(event) {
         const newActivity = this.state.newActivity;
-        const targetvalue = event.target.dataset && event.target.dataset.type && event.target.dataset.type === 'number' ? parseInt(event.target.value) : event.target.value;
-      newActivity[event.target.name] = targetvalue;
+        const targetvalue = this.getValueForElement(event.target);
+        newActivity[event.target.name] = targetvalue;
+        this.setState({ newActivity });
+    }
 
-        this.setState({ newActivity }, () => console.log(this.state.newActivity));
+    handleNewParticipantChange(event) {
+        const newParticipant = event.target.value;
+        this.setState({newParticipant});
+    }
+
+    addNewParticipant(){
+        let participants = this.state.newActivity.participants;
+        const newParticipant = {name: this.state.newParticipant};
+        if (newParticipant){
+            participants.push(newParticipant);
+            const newActivity = {
+                ...this.state.newActivity,
+                participants
+            };
+            this.setState({newActivity});
+        }
     }
 
     closeModal() {
@@ -73,6 +108,13 @@ class Measure extends Component {
             : null;
     }
 
+    renderParticipants(participants){
+        return participants && participants.length
+            ? participants.map((participant, index) => {
+                return <h1 key={index}>{participant.name}</h1>
+            }) : ''
+    }
+
     render() {
         const selectedMeasure = this.props.selectedMeasure;
         return selectedMeasure ? (<Container>
@@ -89,73 +131,81 @@ class Measure extends Component {
                 <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
                     <DialogTitle id="form-dialog-title">Legg til aktivitet</DialogTitle>
                     <DialogContent>
-               
-               <div className={style.block}>
-                     <label>
-                        Navn:
-                        <input type="text" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
-                     </label>
-                  </div>
-                  <div className={style.block}>
-                     <label>
-                        Tittel:
-                        <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
-                     </label>
-                  </div>
-                  <div className={style.block}>
-                     <label>
-                        Beskrivelse:
-                        <input type="text" name="description" value={this.state.newActivity.description} onChange={this.handleChange} />
-                     </label>
-                  </div>
 
-                <div className={style.flexblock}>
-                  <TextField
-                        id="implementationStart"
-                        label="Start"
-                        name="implementationStart"
-                        type="date"
-                        onChange={this.handleChange}
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                   
-                <TextField
-                        id="implementationEnd"
-                        label="Slutt"
-                        name="implementationEnd"
-                        type="date"
-                        onChange={this.handleChange}                       
-                        InputLabelProps={{
-                        shrink: true,
-                        }}
-                    />
-                    </div>
-                    <div className={style.block}>
-                     <label>
-                        Status:
+                        <div className={style.block}>
+                            <label>
+                                Navn:
+                        <input type="text" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
+                            </label>
+                        </div>
+                        <div className={style.block}>
+                            <label>
+                                Tittel:
+                        <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
+                            </label>
+                        </div>
+                        <div className={style.block}>
+                            <label>
+                                Beskrivelse:
+                        <input type="text" name="description" value={this.state.newActivity.description} onChange={this.handleChange} />
+                            </label>
+                        </div>
+
+                        <div className={style.flexblock}>
+                            <TextField
+                                id="implementationStart"
+                                label="Start"
+                                name="implementationStart"
+                                type="date"
+                                inputProps={{
+                                    "data-type": "date"
+                                }}
+                                onChange={this.handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+
+                            <TextField
+                                id="implementationEnd"
+                                label="Slutt"
+                                name="implementationEnd"
+                                type="date"
+                                inputProps={{
+                                    "data-type": "date"
+                                }}
+                                onChange={this.handleChange}
+                                InputLabelProps={{
+                                    shrink: true,
+                                }}
+                            />
+                        </div>
+                        <div className={style.block}>
+                            <label>
+                                Status:
                         <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 1} value={1} onChange={this.handleChange} />
-                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 2} value={2} onChange={this.handleChange} />
-                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 3} value={3} onChange={this.handleChange} />
-                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 4} value={4} onChange={this.handleChange} />
-                        <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 5} value={5} onChange={this.handleChange} />
-                     </label>
-                  </div>
-                  <div className={style.block}>
-                      <label>
-                          Deltakere:
-                          <input type="text" name="participants" value={this.state.newActivity.participants} onChange={this.handleChange} />
-                      </label>
-                  </div>
-            </DialogContent>
-            <DialogActions>
-               <button className="btn" onClick={this.closeModal}>Lukk</button>
-               <button className="btn primary" onClick={this.saveModal}>Lagre</button>
-            </DialogActions>
-         </Dialog>  
-        ) : ''}
-                
+                                <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 2} value={2} onChange={this.handleChange} />
+                                <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 3} value={3} onChange={this.handleChange} />
+                                <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 4} value={4} onChange={this.handleChange} />
+                                <input type="radio" data-type='number' name="status" checked={this.state.newActivity.status === 5} value={5} onChange={this.handleChange} />
+                            </label>
+                        </div>
+                        {this.renderParticipants(this.state.newActivity.participants)}
+                        <div className={style.block}>
+                            <label>
+                                Legg til deltaker:
+                            <input id="newParticipant" type="text" name="participants" value={this.state.newParticipant ? this.state.newParticipant : ''} onChange={this.handleNewParticipantChange} />
+                            </label>
+                            <button onClick={() => this.addNewParticipant()}>Pantbutton</button>
+                        </div>
+                    </DialogContent>
+                    <DialogActions>
+                        <button className="btn" onClick={this.closeModal}>Lukk</button>
+                        <button className="btn primary" onClick={this.saveModal}>Lagre</button>
+                    </DialogActions>
+                </Dialog>
+            ) : ''}
+
         </Container>) : ''
     }
 }
