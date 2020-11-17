@@ -136,23 +136,23 @@ class Measure extends Component {
 
             <ActivityTable activities={selectedMeasure.activities} />
             {this.state.newActivity ? (
-                <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
-                    <DialogTitle id="form-dialog-title">Legg til aktivitet</DialogTitle>
-                    <DialogContent>
+                    <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
+                        <DialogTitle id="form-dialog-title">Legg til aktivitet</DialogTitle>
+                        <DialogContent>
 
-                        <div className={style.block}>
-                            <label>
-                                Navn:
-                        <input type="text" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
-                            </label>
-                        </div>
-                        <div className={style.block}>
-                            <label>
-                                Tittel:
-                        <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
-                            </label>
-                        </div>
-                        <div className={style.block}>
+                            <div className={style.block}>
+                                <label>
+                                    Navn:
+                            <input type="text" name="name" value={this.state.newActivity.name} onChange={this.handleChange} />
+                                </label>
+                            </div>
+                            <div className={style.block}>
+                                <label>
+                                    Tittel:
+                            <input type="text" name="title" value={this.state.newActivity.title} onChange={this.handleChange} />
+                                </label>
+                            </div>
+                            <div className={style.block}>
                             <label>
                                 Beskrivelse:
                         <input type="text" name="description" value={this.state.newActivity.description} onChange={this.handleChange} />
@@ -215,7 +215,7 @@ class Measure extends Component {
                                 Legg til deltaker:
                             <input id="newParticipant" type="text" name="participants" value={this.state.newParticipant ? this.state.newParticipant : ''} onChange={this.handleNewParticipantChange} />
                             </label>
-                            <button onClick={() => this.addNewParticipant()}>Pantbutton</button>
+                            <button className="btn" onClick={() => this.addNewParticipant()}>Legg til deltaker</button>
                         </div>
                     </DialogContent>
                     <DialogActions>

@@ -13,3 +13,15 @@ export const createActivity = (activity) => (dispatch) => {
   })
 
 }
+export const deleteActivity = (activity) => (dispatch) => {
+  const apiUrl = apiUrls.activity.delete;
+  return fetch(apiUrl, {
+    method: 'post',
+    body: JSON.stringify(activity),
+    headers: {
+      'Content-Type': 'application/json'
+    }
+  }).then(res => res.json()).then(activity => {
+    return '';
+  })
+}
