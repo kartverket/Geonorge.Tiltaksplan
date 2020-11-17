@@ -9,13 +9,20 @@ import WebFont from 'webfontloader';
 import configureStore, {history} from 'utils/configureStore';
 
 // Routes
-import Home from 'components/routes/Home';
 import Measures from 'components/routes/Measures';
 import Measure from 'components/routes/Measure';
 import NotFound from 'components/routes/NotFound';
 
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
+
+// font awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faCheckSquare, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faCheckSquare, faTrashAlt, faEdit)
+
 
 WebFont.load({
   google: {

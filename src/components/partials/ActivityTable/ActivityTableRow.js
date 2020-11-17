@@ -7,6 +7,7 @@ import Dialog from '@material-ui/core/Dialog';
 import DialogActions from '@material-ui/core/DialogActions';
 import DialogContent from '@material-ui/core/DialogContent';
 import DialogTitle from '@material-ui/core/DialogTitle';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 class ActivityTableRow extends Component {  
@@ -78,7 +79,9 @@ class ActivityTableRow extends Component {
             <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
             <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
             <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-            <td><button onClick={this.openModal}>Slett</button></td>
+            <td><div className={style.svgblock}>
+            <FontAwesomeIcon onClick={this.openModal} icon="edit" />
+            <FontAwesomeIcon onClick={this.openModal} icon="trash-alt" /></div></td>
             </React.Fragment>)
     }
 
@@ -94,7 +97,7 @@ class ActivityTableRow extends Component {
                 </DialogContent>
                 <DialogActions>
                     <button className="btn" onClick={this.closeModal}>Avbryt</button>
-                    <button className="btn primary" onClick={this.saveModal}>Slett</button>
+                    <button className="btn delete" onClick={this.saveModal}>Slett</button>
                 </DialogActions>
             </Dialog>
         </React.Fragment>

@@ -9,3 +9,7 @@
     width: 20px;
     height: 10px;
 }
+:local(.svgblock){
+    display: flex;
+    justify-content: space-evenly;
+}
