@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import App from 'App';
 import ConfigLoader from 'components/ConfigLoader';
 import * as serviceWorker from './serviceWorker';
-import 'index.scss';
 import 'extensions';
+import 'index.scss';
 
 class Main extends Component {
     render() {

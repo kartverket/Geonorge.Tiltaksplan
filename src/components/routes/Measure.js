@@ -2,11 +2,11 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import Container from 'components/template/Container';
-import { fetchSelectedMeasure } from 'actions/MeasureActions';
+import { fetchMeasure } from 'actions/MeasuresActions';
 
 class Measure extends Component {
     componentDidMount() {
-        this.props.fetchSelectedMeasure(this.getSelectedMeasureId())
+        this.props.fetchMeasure(this.getSelectedMeasureId())
     }
 
     getSelectedMeasureId(){
@@ -22,20 +22,20 @@ class Measure extends Component {
     }
 
     render() {
-        const selectedMeasure = this.props.selectedMeasure;
-        return selectedMeasure ? (<Container>
-            {selectedMeasure.name}
-            {this.renderActivities(selectedMeasure.activities)}
+        const measure = this.props.measure;
+        return measure ? (<Container>
+            {measure.name}
+            {this.renderActivities(measure.activities)}
         </Container>) : 'hoy'
     }
 }
 
 const mapStateToProps = state => ({
-    selectedMeasure: state.selectedMeasure
+    measure: state.measure
 });
 
 const mapDispatchToProps = {
-    fetchSelectedMeasure
+  fetchMeasure
 };
 
 

@@ -1,10 +1,10 @@
-import { FETCH_SELECTED_MEASURE } from 'constants/types';
+import { FETCH_MEASURE } from 'constants/types';
 
 const initialState = {};
 
 const reducer = (state = initialState, measure) => {
 	switch (measure.type) {
-		case FETCH_SELECTED_MEASURE:
+		case FETCH_MEASURE:
 			return measure.payload;
 		default:
 			return state;

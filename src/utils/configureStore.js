@@ -8,7 +8,6 @@ import thunk from 'redux-thunk';
 // Reducers
 import createRootReducer from 'reducers';
 
-
 export const history = createBrowserHistory()
 
 const composeEnhancers = composeWithDevTools({

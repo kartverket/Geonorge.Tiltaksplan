@@ -1,30 +1,22 @@
 // Dependecies
 import React, { Component } from 'react';
-import {Provider} from 'react-redux';
-import {Route, Switch} from 'react-router';
-import {ConnectedRouter} from 'connected-react-router';
-import WebFont from 'webfontloader';
+import { Provider } from 'react-redux';
+import { Route, Switch } from 'react-router';
+import { ConnectedRouter } from 'connected-react-router';
 
 // Utils
-import configureStore, {history} from 'utils/configureStore';
+import configureStore, { history } from 'utils/configureStore';
 
 // Routes
-import Home from 'components/routes/Home';
 import Measures from 'components/routes/Measures';
 import Measure from 'components/routes/Measure';
+import EditMeasure from 'components/routes/EditMeasure';
 import NotFound from 'components/routes/NotFound';
 
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
 
-WebFont.load({
-  google: {
-    families: ['Roboto:400,700&display=swap']
-  }
-});
-
-const initialState = {};
-const store = configureStore(initialState);
+const store = configureStore({});
 
 class App extends Component {
   render() {
@@ -33,10 +25,11 @@ class App extends Component {
         <ConnectedRouter history={history}>
           <NavigationBar />
           <Switch>
-            <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props}/>)}/>
-            <Route exact={true} path="/tiltak" render={(props) => (<Measures {...props} />)}/>
-            <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
-            <Route render={() => (<NotFound/>)}/>
+            <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
+            <Route exact={true} path="/tiltak/nytt" render={(props) => (<EditMeasure {...props} />)} />
+            <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
+            <Route exact={true} path="/tiltak/:measureId/rediger" render={(props) => (<EditMeasure {...props} />)} />
+            <Route render={() => (<NotFound />)} />
           </Switch>
         </ConnectedRouter>
       </Provider>

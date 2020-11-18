@@ -1,17 +1,16 @@
-// Dependencies
 import {combineReducers} from 'redux';
 import {connectRouter} from 'connected-react-router';
 
 // Reducers
 import MeasuresReducer from 'reducers/MeasuresReducer';
-import SelectedMeasureReducer from 'reducers/SelectedMeasureReducer';
-import SetupReducer from 'reducers/SetupReducer';
+import OptionsReducer from 'reducers/OptionsReducer';
+import OrganizationsReducer from 'reducers/OrganizationsReducer';
 
 const reducers = history => combineReducers({
   router: connectRouter(history),
   measures: MeasuresReducer,
-  selectedMeasure: SelectedMeasureReducer,
-  setup: SetupReducer
+  options: OptionsReducer,
+  organizations: OrganizationsReducer
 });
 
-export default reducers;
+export default reducers

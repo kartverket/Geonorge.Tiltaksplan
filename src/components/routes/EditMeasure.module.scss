@@ -1,0 +1,81 @@
+input {
+   height: 10px;
+   font-size: 14px;
+}
+
+.form {
+   display: flex;
+   flex-direction: column;
+}
+
+:local(.volumeSelect) {
+  > button {
+    min-width: 100px !important;
+  }
+
+  > div {
+    min-width: 100px !important;
+  }
+}
+
+:local(.statusSelect) {
+  > button {
+    min-width: 200px !important;
+  }
+
+  > div {
+    min-width: 200px !important;
+  }
+}
+
+:local(.trafficLightSelect) {
+  > button {
+    min-width: 150px !important;
+
+    &::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+
+    &[data-value='1']::before {
+      background-color: #de0000;
+    }
+
+    &[data-value='2']::before {
+      background-color: #ff9900;
+    }
+
+    &[data-value='3']::before {
+      background-color: #009900;
+    }
+  }
+
+  > div > span {
+    &::before {
+      content: "";
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      display: inline-block;
+      vertical-align: -2px;
+      margin-right: 6px;
+    }
+
+    &:nth-child(1)::before {
+      background-color: #de0000;
+    }
+
+    &:nth-child(2)::before {
+      background-color: #ff9900;
+    }
+
+    &:nth-child(3)::before {
+      background-color: #009900;
+    }
+  }
+}

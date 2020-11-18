@@ -1,8 +1,16 @@
 @import "./style/abstracts/_all.scss";
 @import "./style/_font-faces.scss";
+@import "./style/_select-dropdown.scss";
+@import "~bootstrap/scss/bootstrap";
 
-*, *::before, *::after{
+*,
+*::before,
+*::after {
   box-sizing: border-box;
+}
+
+html {
+  
 }
 
 body {
@@ -17,21 +25,21 @@ body {
 }
 
 h1 {
-   font-family: "Raleway", sans-serif;
-   font-size: 48pt;
-   font-weight: 100;
-   margin: 0;
+  font-family: "Raleway", sans-serif;
+  font-size: 48pt;
+  font-weight: 100;
+  margin: 0;
 
-   &::after {
-      content: "";
-      display: block;
-      width: 100px;
-      border-bottom: 5px solid #fe5000;
-      margin: 45px 0 25px 0;
-   }
+  &::after {
+    content: "";
+    display: block;
+    width: 100px;
+    border-bottom: 5px solid #fe5000;
+    margin: 25px 0 30px 0;
+  }
 }
 
-.btn, a.btn, button.btn, input[type=button].btn, input[type=submit].btn {
+/*.btn, a.btn, button.btn, input[type=button].btn, input[type=submit].btn {
    background-color: #7da1c4;
    background-position: 50%;
    border-radius: 0;
@@ -61,6 +69,15 @@ h1 {
       font-style: normal;
       line-height: 16pt;
    }
+}*/
+
+.modal.modal-static .modal-dialog {
+  transform: none !important;
+}
+
+.MuiInputLabel-outlined {
+  font-size: 14px;
+  transform: translate(14px, 16px) scale(1);
 }
 
 /*input[type="text"] {
@@ -81,5 +98,39 @@ h1 {
 }*/
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
+}
+
+.EasyMDEContainer {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+
+  .CodeMirror {
+    border: 1px solid #ced4da;
+    border-right: 0 none;
+    border-left: 0 none;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+  }
+
+  .editor-toolbar {
+    border-top: 1px solid transparent;
+    border-left: 1px solid transparent;
+    border-right: 1px solid transparent;
+    border-top-left-radius: 0;
+    border-top-right-radius: 0;
+  }
+
+  &:focus,
+  &:focus-within {
+    outline: none;
+    border-color: #80bdff;
+    outline: 0;
+    box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+  }
+}
+
+.form-container {
+  margin: 30px 0;
 }
