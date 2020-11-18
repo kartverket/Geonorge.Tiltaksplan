@@ -12,4 +12,7 @@
 :local(.svgblock){
     display: flex;
     justify-content: space-evenly;
+    svg {
+        margin: 5px;
+    }
 }

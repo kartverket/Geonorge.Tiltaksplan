@@ -19,7 +19,7 @@ import { createActivity } from 'actions/ActivityActions';
 // Stylesheets
 import style from 'components/routes/Measure.module.scss';
 
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Activity } from 'models/activity';
 
 
@@ -28,7 +28,7 @@ class Measure extends Component {
         super(props);
 
         this.state = {
-            modalOpen: false,
+            modalOpen: false
         };
 
         this.openModal = this.openModal.bind(this);
@@ -127,8 +127,8 @@ class Measure extends Component {
         const selectedMeasure = this.props.selectedMeasure;
         return selectedMeasure ? (<Container>
             <h1>{selectedMeasure.name}</h1>
-            <div className={style.block}>{selectedMeasure.progress}</div>
-            <div className={style.block}>{selectedMeasure.results}</div>
+            <div className={style.block}>{selectedMeasure.progress} <FontAwesomeIcon onClick={this.openModal} icon="edit" /></div>
+            <div className={style.block}>{selectedMeasure.results} <FontAwesomeIcon onClick={this.openModal} icon="edit" /></div>
 
             <div>
                 <button className="btn" onClick={this.openModal}>Legg til aktivitet</button>
