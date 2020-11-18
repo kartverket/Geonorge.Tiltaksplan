@@ -3,6 +3,11 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
+    "@fortawesome/fontawesome-svg-core": "^1.2.32",
+    "@fortawesome/free-brands-svg-icons": "^5.15.1",
+    "@fortawesome/free-regular-svg-icons": "^5.15.1",
+    "@fortawesome/free-solid-svg-icons": "^5.15.1",
+    "@fortawesome/react-fontawesome": "^0.1.12",
     "@kartverket/geonorge-web-components": "^0.1.12",
     "@reduxjs/toolkit": "^1.4.0",
     "@testing-library/jest-dom": "^5.1.1",
@@ -11,11 +16,16 @@
     "axios": "^0.21.0",
     "connected-react-router": "^6.7.0",
     "copy-webpack-plugin": "^6.2.1",
+    "dayjs": "^1.9.4",
     "history": "4.10.1",
     "node-sass": "^4.13.1",
     "react": "^17.0.1",
     "react-app-rewired": "^2.1.6",
+<<<<<<< HEAD
     "react-bootstrap-typeahead": "^5.1.2",
+=======
+    "react-dayjs": "^0.2.1",
+>>>>>>> f7308171e3975f43a5034cf4eedb3805d32b5efe
     "react-dom": "^17.0.1",
     "react-redux": "^7.1.3",
     "react-router": "^5.1.2",

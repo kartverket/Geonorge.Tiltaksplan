@@ -16,7 +16,22 @@ import NotFound from 'components/routes/NotFound';
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
 
-const store = configureStore({});
+// font awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faCheckSquare, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faCheckSquare, faTrashAlt, faEdit)
+
+
+WebFont.load({
+  google: {
+    families: ['Roboto:400,700&display=swap']
+  }
+});
+
+const initialState = {};
+const store = configureStore(initialState);
 
 class App extends Component {
   render() {
