@@ -21,11 +21,15 @@ class MeasuresTableRow extends Component {
    }
 
    renderStars(amount) {
-      return amount > 0 ? (
-         <>
+      if (amount === 0) {
+         return '';
+      }
+
+      return (
+         <React.Fragment>
             {[...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={style.star} src={StarIcon} alt="Stjerne" />)}
-         </>
-      ) : '';
+         </React.Fragment>
+      );
    }
 
    goToMeasure() {

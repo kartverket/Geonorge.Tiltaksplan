@@ -8,7 +8,7 @@ input {
    flex-direction: column;
 }
 
-:local(.volumeSelect) {
+:local(.defaultSelect) {
   > button {
     min-width: 100px !important;
   }

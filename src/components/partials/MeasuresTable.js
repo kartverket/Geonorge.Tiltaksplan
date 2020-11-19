@@ -44,6 +44,7 @@ class MeasuresTable extends Component {
  }
 }
 
+
 const mapStateToProps = state => ({ measures: state.measures });
 
 const mapDispatchToProps = {
