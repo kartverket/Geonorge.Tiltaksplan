@@ -1,18 +1,25 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogTitle from '@material-ui/core/DialogTitle';
 
 // Template
 import MeasuresTable from 'components/partials/MeasuresTable';
 import Container from 'components/template/Container';
 
-import Dialog from '@material-ui/core/Dialog';
-import DialogActions from '@material-ui/core/DialogActions';
-import DialogContent from '@material-ui/core/DialogContent';
-import DialogTitle from '@material-ui/core/DialogTitle';
+// Models
 import { Measure } from 'models/measure';
-import style from 'components/routes/Measures.module.scss';
+
+// Actions
 import {createMeasure} from 'actions/MeasureActions';
+import {fetchOrganizations} from 'actions/OrganizationActions';
+
+
+// Stylesheets
+import style from 'components/routes/Measures.module.scss';
 
 class Measures extends Component {
    constructor(props) {
@@ -26,6 +33,7 @@ class Measures extends Component {
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.handleChange = this.handleChange.bind(this);
+      this.handleOwnerChange = this.handleOwnerChange.bind(this);
       this.saveModal = this.saveModal.bind(this);
 
       /*this.useStyles = makeStyles((theme) => ({
@@ -38,14 +46,19 @@ class Measures extends Component {
       }));*/
    }
 
-   /*const */
-
-   
-
    openModal() {
+      if (!this.props.organizations || !this.props.organizations.length){
+         this.props.fetchOrganizations();
+      }
       this.setState({
          modalOpen: true,
-         newMeasure: new Measure()
+         newMeasure: new Measure({
+            owner: {
+               id: 16,
+               name: 'Alstahaug kommune',
+               orgNumber: 938712441
+             }
+         })
       });
    }
 
@@ -57,6 +70,22 @@ class Measures extends Component {
       this.setState({ newMeasure }, () => console.log(this.state.newMeasure));
    }
 
+   getOwnernFromId(owners, id){
+      return owners.find(owner => {
+         return owner.id === id
+      });
+   }
+   handleOwnerChange(event) {
+      const ownerId = event && event.target && event.target.value ? event.target.value : null;
+      const owner = ownerId ? this.getOwnernFromId(this.props.organizations, parseInt(ownerId)) : null;
+      this.setState({
+         newMeasure: {
+            ...this.state.newMeasure,
+            owner
+         }
+      })
+   }
+
    closeModal() {
       this.setState({ modalOpen: false });
    }
@@ -64,6 +93,13 @@ class Measures extends Component {
       this.props.createMeasure(this.state.newMeasure).then(() => {
           this.closeModal();
       });
+  }
+
+  renderOrganizationsOptionElements(organizations){
+     return organizations && organizations.length
+      ? organizations.map(organization => {
+         return <option key={organization.id} value={organization.id}>{organization.name}</option>
+      }) : '';
   }
  
 
@@ -78,7 +114,17 @@ class Measures extends Component {
 
             <Dialog open={this.state.modalOpen} onClose={this.closeModal} aria-labelledby="form-dialog-title">
                <DialogTitle id="form-dialog-title">Legg til tiltak</DialogTitle>
-               <DialogContent>                 
+               <DialogContent>  
+                  <div className={style.block}>
+                     <label>
+                        Eier: 
+                        <select 
+                           name="owner" 
+                           value={this.state.newMeasure.owner && this.state.newMeasure.owner.id ? this.state.newMeasure.owner.id : ""} onChange={this.handleOwnerChange}>
+                           {this.renderOrganizationsOptionElements(this.props.organizations)}
+                        </select>
+                     </label>   
+                  </div>               
                   <div className={style.block}>
                      <label>
                         Navn: 
@@ -122,7 +168,7 @@ class Measures extends Component {
                   <div className={style.block}>
                      <label>
                         Resultater:
-                        <input type="text" name="results" value={this.state.newMeasure.results} onChange={this.handleChange} />
+                        <input type="number" data-type='number' name="results" value={this.state.newMeasure.results} onChange={this.handleChange} />
                      </label>
                   </div>
                   <div className={style.block}>
@@ -141,7 +187,13 @@ class Measures extends Component {
       )
    }
 }
+
+const mapStateToProps = state => ({
+   organizations: state.organizations
+});
+
 const mapDispatchToProps = {
-   createMeasure
+   createMeasure,
+   fetchOrganizations
 };
-export default connect(null, mapDispatchToProps)(Measures);
+export default connect(mapStateToProps, mapDispatchToProps)(Measures);
