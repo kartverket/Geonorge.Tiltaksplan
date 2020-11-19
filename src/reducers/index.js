@@ -6,6 +6,7 @@ import MeasuresReducer from 'reducers/MeasuresReducer';
 import SelectedMeasureReducer from 'reducers/SelectedMeasureReducer';
 import OptionsReducer from 'reducers/OptionsReducer';
 import OrganizationsReducer from 'reducers/OrganizationsReducer';
+import { reducer as toastrReducer } from 'react-redux-toastr'
 
 const reducers = history => combineReducers({
   router: connectRouter(history),
@@ -14,6 +15,7 @@ const reducers = history => combineReducers({
   organizations: OrganizationsReducer,
   options: OptionsReducer,
   //setup: SetupReducer
+  toastr: toastrReducer
 });
 
 export default reducers

@@ -1,11 +1,7 @@
-// Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import Container from 'components/template/Container';
-
 import { fetchMeasure } from 'actions/MeasuresActions';
-
-// Components
+import Container from 'components/template/Container';
 import EditMeasure from 'components/partials/EditMeasure';
 
 class Measure extends Component {
@@ -46,7 +42,7 @@ class Measure extends Component {
 }
 
 const mapStateToProps = (state) => ({
-   measure: state.measure
+   measure: state.selectedMeasure
 });
 
 const mapDispatchToProps = {

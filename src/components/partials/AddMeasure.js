@@ -2,11 +2,11 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { fetchOrganizations } from 'actions/OrganizationsActions';
 import { createMeasure } from 'actions/MeasuresActions';
-import Container from 'components/template/Container';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import { toastr } from 'react-redux-toastr'
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 class AddMeasure extends Component {
@@ -16,14 +16,14 @@ class AddMeasure extends Component {
       this.state = {
          dataFetched: false,
          modalOpen: false,
-         model: {}
+         measure: {}
       };
 
       this.handleChange = this.handleChange.bind(this);
       this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
-      this.save = this.save.bind(this);
+      this.saveMeasure = this.saveMeasure.bind(this);
    }
 
    componentDidMount() {
@@ -36,7 +36,7 @@ class AddMeasure extends Component {
    openModal() {
       this.setState({
          modalOpen: true,
-         model: { name: '', owner: { id: 0 } }
+         measure: { name: '', owner: { id: 0 } }
       });
    }
 
@@ -55,19 +55,20 @@ class AddMeasure extends Component {
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
-      const model = this.state.model;
-      model[name] = value;
+      const measure = this.state.measure;
+      measure[name] = value;
 
-      this.setState({ model }, () => console.log(this.state.model));
+      this.setState({ measure });
    }
 
-   save() {
-      this.props.createMeasure(this.state.model)
+   saveMeasure() {
+      this.props.createMeasure(this.state.measure)
          .then(() => {
             this.closeModal();
+            toastr.success('Et nytt tiltak ble lagt til');
          })
-         .catch(error => {
-            throw new Error(error);
+         .catch(_ => {
+            toastr.error('Kunne ikke opprette tiltak');
          });
    }
 
@@ -95,7 +96,7 @@ class AddMeasure extends Component {
                <Modal.Body>
                   <Form.Group controlId="formName">
                      <Form.Label>Navn</Form.Label>
-                     <Form.Control type="text" name="name" value={this.state.model.name} onChange={this.handleChange} />
+                     <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
                   </Form.Group>
 
                   <Form.Group controlId="formName">
@@ -112,7 +113,7 @@ class AddMeasure extends Component {
 
                <Modal.Footer>
                   <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-                  <Button variant="primary" onClick={this.save}>Lagre</Button>
+                  <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
                </Modal.Footer>
             </Modal>
          </React.Fragment>

@@ -1,13 +1,16 @@
 @import "./style/abstracts/_all.scss";
 @import "./style/_font-faces.scss";
 @import "./style/_select-dropdown.scss";
+@import "./style/overrides.scss";
 @import "~bootstrap/scss/bootstrap";
+@import "react-redux-toastr/src/styles/index";
 
 *,
 *::before,
 *::after {
    box-sizing: border-box;
 }
+
 
 body {
    margin: 0;
@@ -67,17 +70,10 @@ h1 {
    }
 }*/
 
-.modal.modal-static .modal-dialog {
-   transform: none !important;
-}
-
-.MuiInputLabel-outlined {
-   font-size: 14px;
-   transform: translate(14px, 16px) scale(1);
-}
 input[type="radio"] {
    visibility: hidden;
 }
+
 input[type="radio"]:after {
    width: 20px;
    height: 20px;
@@ -105,60 +101,8 @@ input[type="radio"]:checked:after {
    visibility: visible;
 }
 
-/*input[type="text"] {
-   padding: 0 10px;
-   border-radius: 0;
-   border: 1px solid #cfcfcf;
-   box-shadow: none;
-   font-family: Open Sans, sans-serif;
-   font-style: normal;
-   font-variant: normal;
-   color: #000000;
-   font-size: 12pt!important;
-   font-weight: 400;
-   min-height: 30px;
-   width: 100%;
-   min-height: 34px;
-   padding: 0 15px;   
-}*/
-
 code {
    font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
-}
-
-.EasyMDEContainer {
-   border: 1px solid #ced4da;
-   border-radius: 0.25rem;
-   transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-
-   .CodeMirror {
-      border: 1px solid #ced4da;
-      border-right: 0 none;
-      border-left: 0 none;
-      border-bottom-left-radius: 0;
-      border-bottom-right-radius: 0;
-      max-height: 200px;
-   }
-
-   .CodeMirror-scroll {
-      max-height: 200px;
-   }
-
-   .editor-toolbar {
-      border-top: 1px solid transparent;
-      border-left: 1px solid transparent;
-      border-right: 1px solid transparent;
-      border-top-left-radius: 0;
-      border-top-right-radius: 0;
-   }
-
-   &:focus,
-   &:focus-within {
-      outline: none;
-      border-color: #80bdff;
-      outline: 0;
-      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-   }
 }
 
 .form-container {

@@ -3,26 +3,30 @@ import { connect } from 'react-redux';
 import { fetchOptions } from 'actions/OptionsActions';
 import { updateMeasure } from 'actions/MeasuresActions';
 import { SelectDropdown } from '../custom-elements';
-import { Remarkable } from 'remarkable';
+import showdown from 'showdown';
+import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 
 import style from 'components/partials/EditMeasure.module.scss'
-import "easymde/dist/easymde.min.css";
+import 'easymde/dist/easymde.min.css';
 
 class EditMeasure extends Component {
    constructor(props) {
       super(props);
 
+      this.handleChange = this.handleChange.bind(this);
+      this.saveMeasure = this.saveMeasure.bind(this);
+      this.converter = new showdown.Converter();
+
+      const measure = props.selectedMeasure;
+      measure.progress = measure.progress ? this.converter.makeMarkdown(measure.progress) : '';
+
       this.state = {
          dataFetched: false,
-         measure: props.initialMeasure
+         measure
       };
-
-      this.handleChange = this.handleChange.bind(this);
-      this.save = this.save.bind(this);
-      this.markdown = new Remarkable();
    }
 
    componentDidMount() {
@@ -40,17 +44,22 @@ class EditMeasure extends Component {
       this.setState({ measure });
    }
 
-   save() {
-      const measure = { ...this.props.initialMeasure, ...this.state.measure }
+   saveMeasure() {
+      const measure = { ...this.props.initialMeasure, ...this.state.measure };
+      const progressHtml = this.converter.makeHtml(measure.progress);
+      measure.progress = progressHtml;
 
       this.props.updateMeasure(measure)
+         .then(() => {
+            toastr.success('Tiltaket ble oppdatert');
+         })
          .catch(_ => {
-            throw new Error("Could not save measure");
+            toastr.error('Kunne ikke oppdatere tiltak');
          });
    }
 
    getMdeInstance(instance) {
-      const container = instance.element.nextSibling
+      const container = instance.element.nextSibling;
       container.setAttribute('tabIndex', '0');
    }
 
@@ -122,14 +131,14 @@ class EditMeasure extends Component {
                </Form.Group>
             </div>
 
-            <Button variant="primary" onClick={this.save}>Lagre</Button>
+            <Button variant="primary" onClick={this.saveMeasure}>Lagre tiltak</Button>
          </React.Fragment>
       );
    }
 }
 
 const mapStateToProps = state => ({
-   initialMeasure: state.measure,
+   selectedMeasure: state.selectedMeasure,
    measureVolume: state.options.measureVolume,
    measureResults: state.options.measureResults,
    trafficLights: state.options.trafficLights,
