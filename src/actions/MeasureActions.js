@@ -14,6 +14,7 @@ export const fetchSelectedMeasure = measureId => (dispatch) => {
 
   return fetch(apiUrl).then(res => res.json()).then(measure => {
     dispatch({ type: FETCH_SELECTED_MEASURE, payload: measure })
+    return measure;
   });
 }
 export const createMeasure = (measure) => (dispatch) => {
