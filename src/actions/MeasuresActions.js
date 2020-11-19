@@ -1,4 +1,4 @@
-import { FETCH_MEASURES, FETCH_MEASURE, CREATE_MEASURE, UPDATE_MEASURE } from 'constants/types';
+import { FETCH_MEASURES, FETCH_SELECTED_MEASURE, CREATE_MEASURE, UPDATE_MEASURE, DELETE_MEASURE } from 'constants/types';
 import { apiUrls } from 'components/config';
 import axios from 'axios';
 
@@ -13,7 +13,7 @@ export const fetchMeasure = measureId => async (dispatch) => {
    const apiUrl = apiUrls.measure.get.format({ id: measureId })
    const response = await axios.get(apiUrl);
 
-   dispatch({ type: FETCH_MEASURE, payload: response.data })
+   dispatch({ type: FETCH_SELECTED_MEASURE, payload: response.data })
 }
 
 export const createMeasure = (measure) => async (dispatch) => {
@@ -34,5 +34,5 @@ export const deleteMeasure = (measureId) => async (dispatch) => {
    const apiUrl = apiUrls.measure.delete.format({ id: measureId });
    const response = await axios.delete(apiUrl);
 
-   dispatch({ type: UPDATE_MEASURE, payload: response.data });
+   dispatch({ type: DELETE_MEASURE, payload: response.data });
 }
