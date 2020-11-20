@@ -35,6 +35,7 @@ class App extends Component {
                <Switch>
                   <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
                   <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
+                  { /*<Route exact={true} path="/tiltak/:measureId/aktivitet/:activityId" render={(props) => (<Measure {...props} />)} /> */ }
                   <Route render={() => (<NotFound />)} />
                </Switch>
             </ConnectedRouter>

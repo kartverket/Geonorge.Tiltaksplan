@@ -3,7 +3,6 @@ import { connect } from 'react-redux';
 import { fetchOptions } from 'actions/OptionsActions';
 import { updateMeasure } from 'actions/MeasuresActions';
 import { SelectDropdown } from '../custom-elements';
-import showdown from 'showdown';
 import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
@@ -18,14 +17,10 @@ class EditMeasure extends Component {
 
       this.handleChange = this.handleChange.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
-      this.converter = new showdown.Converter();
-
-      const measure = props.selectedMeasure;
-      measure.progress = measure.progress ? this.converter.makeMarkdown(measure.progress) : '';
 
       this.state = {
          dataFetched: false,
-         measure
+         measure: props.selectedMeasure
       };
    }
 
@@ -46,8 +41,6 @@ class EditMeasure extends Component {
 
    saveMeasure() {
       const measure = { ...this.props.initialMeasure, ...this.state.measure };
-      const progressHtml = this.converter.makeHtml(measure.progress);
-      measure.progress = progressHtml;
 
       this.props.updateMeasure(measure)
          .then(() => {
