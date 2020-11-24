@@ -1,81 +1,197 @@
-input {
-   height: 10px;
-   font-size: 14px;
-}
+@import "../../style/abstracts/_all.scss";
 
-.form {
-   display: flex;
-   flex-direction: column;
-}
-
-:local(.defaultSelect) {
-  > button {
-    min-width: 100px !important;
+:local(.form) {
+  input {
+    height: 10px;
+    font-size: 14px;
   }
 
-  > div {
-    min-width: 100px !important;
-  }
-}
-
-:local(.statusSelect) {
-  > button {
-    min-width: 200px !important;
+  :local(.star) {
+    width: 18px;
+    height: 18px;
+    margin-right: 2px;
+    vertical-align: -3px;
   }
 
-  > div {
-    min-width: 200px !important;
-  }
-}
+  :local(.trafficLight) {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    display: block;
 
-:local(.trafficLightSelect) {
-  > button {
-    min-width: 150px !important;
-
-    &::before {
-      content: "";
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: inline-block;
-      vertical-align: -2px;
-      margin-right: 6px;
-    }
-
-    &[data-value='1']::before {
+    &.light-1 {
       background-color: #de0000;
     }
 
-    &[data-value='2']::before {
+    &.light-2 {
       background-color: #ff9900;
     }
 
-    &[data-value='3']::before {
+    &.light-3 {
       background-color: #009900;
     }
   }
 
-  > div > span {
-    &::before {
-      content: "";
-      width: 16px;
-      height: 16px;
-      border-radius: 50%;
-      display: inline-block;
-      vertical-align: -2px;
-      margin-right: 6px;
+  label {
+    display: block;
+  }
+  :local(.comboInput) {
+    display: inline-block;
+    position: relative;
+    border: 1px solid transparent;
+    padding-right: 30px;
+    border-radius: 0.25rem;
+
+    :local(svg.editIcon) {
+      display: none;
+      position: absolute;
+      right: 0px;
+      top: 0px;
+      background-color: #ddd;
+      height: 100%;
+      width: 30px;
+      padding: 6px;
     }
 
-    &:nth-child(1)::before {
-      background-color: #de0000;
+    &:hover {
+      border: 1px solid #ddd;
+      :local(svg.editIcon) {
+        display: inline-block;
+      }
+    }
+    &:focus-within {
+      border: 1px solid #ddd;
+      box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
+        :local(svg.editIcon) {
+          display: inline-block;
+        }
+        button {
+          box-shadow: none;
+        }
+        .EasyMDEContainer {
+          box-shadow: none;
+        }
     }
 
-    &:nth-child(2)::before {
-      background-color: #ff9900;
+    > input,
+    > span {
+      font-family: $default-font;
+      font-weight: normal;
+      display: block;
+      border: 1px solid transparent;
+      padding: 5px;
+      font-size: 16px;
+      width: 480px;
+      &:focus + svg {
+        display: inline-block;
+      }
     }
 
-    &:nth-child(3)::before {
-      background-color: #009900;
+    textarea {
+      padding-right: 38px;
+      border: none;
+      &:focus {
+        box-shadow: none;
+      }
+    }
+
+    :local(.defaultSelect) {
+      > button {
+        border: none;
+        min-width: 100px !important;
+        &::after {
+          display: none;
+        }
+      }
+
+      > div {
+        min-width: 100px !important;
+      }
+    }
+
+    :local(.statusSelect) {
+      > button {
+        border: none;
+        min-width: 200px !important;
+        &::after {
+          display: none;
+        }
+      }
+
+      > div {
+        min-width: 200px !important;
+      }
+    }
+
+    :local(.trafficLightSelect) {
+      > button {
+        border: none;
+        min-width: 150px !important;
+
+        &::before {
+          content: "";
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          display: inline-block;
+          vertical-align: -2px;
+          margin-right: 6px;
+        }
+
+        &[data-value="1"]::before {
+          background-color: #de0000;
+        }
+
+        &[data-value="2"]::before {
+          background-color: #ff9900;
+        }
+
+        &[data-value="3"]::before {
+          background-color: #009900;
+        }
+      }
+
+      > div > span {
+        &::before {
+          content: "";
+          width: 16px;
+          height: 16px;
+          border-radius: 50%;
+          display: inline-block;
+          vertical-align: -2px;
+          margin-right: 6px;
+        }
+
+        &:nth-child(1)::before {
+          background-color: #de0000;
+        }
+
+        &:nth-child(2)::before {
+          background-color: #ff9900;
+        }
+
+        &:nth-child(3)::before {
+          background-color: #009900;
+        }
+      }
+    }
+
+    &:hover,
+    &:focus {
+      :local(.defaultSelect) {
+        > button {
+          &::after {
+            display: inline-block;
+          }
+        }
+      }
+    }
+  }
+  :local(.mdePreview) {
+    border: 1px solid transparent;
+    div {
+      background: #fff;
+      border: none;
     }
   }
 }
