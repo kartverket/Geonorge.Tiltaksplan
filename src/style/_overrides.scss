@@ -59,3 +59,13 @@
       margin: 0 !important;
    }   
 }
+button.btn {
+   border-radius: 0;
+   &.btn-primary {
+      background-color: #7da1c4;
+      border-color: #7da1c4;
+   }
+   &:hover {
+      background-color: #fe5000;
+   }
+}
