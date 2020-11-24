@@ -2,6 +2,8 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
+
+import { DataTable } from '@kartverket/geonorge-web-components/DataTable';
 import style from 'components/partials/ActivityTable.module.scss'
 
 class ActivityTable extends Component {
@@ -37,7 +39,7 @@ class ActivityTable extends Component {
 
    render() {
       const activities = this.props.activities;        
-      return this.renderActivityTableRows(activities)
+      return activities ? this.renderActivityTableRows(activities) : ''
    }
 }
 
