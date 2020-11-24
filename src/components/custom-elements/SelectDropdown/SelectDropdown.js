@@ -18,21 +18,23 @@ export default class SelectDropdown extends Component {
   }
 
   componentDidMount() {
-    this.toggleButton = this.dropdownRef.current.querySelector('button');
-    let value = this.props.options[0].value;
-    let label = this.props.options[0].label;
+    if (this.props.options && this.props.options.length){
+      this.toggleButton = this.dropdownRef.current.querySelector('button');
+      let value = this.props.options[0].value;
+      let label = this.props.options[0].label;
 
-    if (this.props.value) {
-      const option = this.props.options.find(option => option.value === this.props.value);
+      if (this.props.value) {
+        const option = this.props.options.find(option => option.value === this.props.value);
 
-      if (option) {
-        value = option.value;
-        label = option.label;
-      } 
+        if (option) {
+          value = option.value;
+          label = option.label;
+        } 
+      }
+
+      this.toggleButton.setAttribute('data-value', value);
+      this.toggleButton.innerText = label;
     }
-
-    this.toggleButton.setAttribute('data-value', value);
-    this.toggleButton.innerText = label;
   }
 
   handleSelect(_, event) {
@@ -54,15 +56,15 @@ export default class SelectDropdown extends Component {
       <DropdownButton 
         id="dropdown-basic-button" 
         name={this.props.name}
-        title={this.props.options[0].label} 
+        title={this.props.options && this.props.options[0] && this.props.options[0].label ? this.props.options[0].label : ''} 
         onSelect={this.handleSelect} 
         ref={this.dropdownRef} 
         className={`${style.dropdown} ${this.props.className}`}
       >
           {
-            this.props.options.map(option => {
+            this.props.options && this.props.options.length ? this.props.options.map(option => {
               return <Dropdown.Item as="span" key={option.value.toString()} data-value={option.value}>{option.label}</Dropdown.Item>
-            })
+            }) : ''
           }
       </DropdownButton>
     );
