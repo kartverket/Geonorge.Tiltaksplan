@@ -1,9 +1,11 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+
+// Components
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
 
-import { DataTable } from '@kartverket/geonorge-web-components/DataTable';
+// Stylesheets
 import style from 'components/partials/ActivityTable.module.scss'
 
 class ActivityTable extends Component {
@@ -42,8 +44,5 @@ class ActivityTable extends Component {
       return activities ? this.renderActivityTableRows(activities) : ''
    }
 }
-
-const mapStateToProps = state => ({ activities: state.activities });
-
 
 export default connect(null, null)(ActivityTable);
