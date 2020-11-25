@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 
 // Components
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
-import { DataTable } from '@kartverket/geonorge-web-components/DataTable';
 
 // Stylesheets
 import style from 'components/partials/ActivityTable.module.scss'

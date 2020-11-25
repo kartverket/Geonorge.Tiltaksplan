@@ -1,11 +1,8 @@
 import React, { Component } from 'react';
-import { connect, ReactReduxContext } from 'react-redux';
+import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayJS from 'react-dayjs';
 import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
