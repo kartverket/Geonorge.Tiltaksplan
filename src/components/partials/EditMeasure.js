@@ -7,7 +7,6 @@ import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { Link } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import StarIcon from 'gfx/icon-star.svg'
 
@@ -238,7 +237,7 @@ class EditMeasure extends Component {
             </div>
 
             <Button variant="primary" onClick={this.saveMeasure}>Lagre tiltak</Button>
-            <Link to="tiltak/ny-aktivitet">Opprett aktivitet</Link>
+            
 
           
          </React.Fragment>
