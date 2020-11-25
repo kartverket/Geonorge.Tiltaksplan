@@ -11,6 +11,7 @@ import configureStore, { history } from 'utils/configureStore';
 // Routes
 import Measures from 'components/routes/Measures';
 import Measure from 'components/routes/Measure';
+import NewActivity from 'components/routes/NewActivity';
 import NotFound from 'components/routes/NotFound';
 
 // Partials
@@ -35,7 +36,7 @@ class App extends Component {
                <Switch>
                   <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
                   <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
-                  { /*<Route exact={true} path="/tiltak/:measureId/aktivitet/:activityId" render={(props) => (<Measure {...props} />)} /> */ }
+                  <Route exact={true} path="/tiltak/:measureId/ny-aktivitet" render={(props) => (<NewActivity {...props} />)} />
                   <Route render={() => (<NotFound />)} />
                </Switch>
             </ConnectedRouter>
