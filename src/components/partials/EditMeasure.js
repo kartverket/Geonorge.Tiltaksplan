@@ -64,6 +64,10 @@ class EditMeasure extends Component {
          });
    }
 
+   getMeasureStatusLabel(planStatuses, measure) {
+      return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
+   }
+
    getMdeInstance(instance) {
       const container = instance.element.nextSibling;
       container.setAttribute('tabIndex', '0');
@@ -175,7 +179,7 @@ class EditMeasure extends Component {
                            </div>
                         )
                         : (
-                        <span>{this.props.planStatuses[this.state.measure.status].label}</span>
+                        <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
                         )
                   }
 
