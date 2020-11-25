@@ -10,7 +10,7 @@ class ActivityTable extends Component {
       
    renderActivityTableRows(activities) {
       if (!activities || !activities.length) {
-         return '';
+         return 'fisk';
       }
 
       return (<React.Fragment>         

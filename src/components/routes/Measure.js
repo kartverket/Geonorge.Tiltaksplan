@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import { fetchMeasure } from 'actions/MeasuresActions';
 import Container from 'components/template/Container';
 import EditMeasure from 'components/partials/EditMeasure';
+import ActivityTable from 'components/partials/ActivityTable';
 
 class Measure extends Component {
    constructor(props) {
@@ -36,6 +37,8 @@ class Measure extends Component {
             <h1>{this.props.measure.name}</h1>
 
             <EditMeasure />
+            
+            <ActivityTable activities={this.props.measure.activities}/>
          </Container>
       );
    }

@@ -170,7 +170,7 @@ class EditMeasure extends Component {
                            </div>
                         )
                         : (
-                           <span>{this.state.measure.status || 1}</span>
+                        <span>{this.props.planStatuses[this.state.measure.status].label}</span>
                         )
                   }
 
@@ -193,7 +193,7 @@ class EditMeasure extends Component {
                            </div>
                         )
                         : (
-                           <span>{this.state.measure.trafficLight || 1}</span>
+                           <span className={`${style.trafficLight} ${style['light-' + this.state.measure.trafficLight]}`}></span>
                         )
                   }
                </Form.Group>
@@ -215,7 +215,7 @@ class EditMeasure extends Component {
                            </div>
                         )
                         : (
-                           <span>{this.state.measure.results || 1}</span>
+                           <span>{this.renderStars(this.state.measure.results || 0)}</span>
                         )
                   }
                </Form.Group>
@@ -239,6 +239,8 @@ class EditMeasure extends Component {
 
             <Button variant="primary" onClick={this.saveMeasure}>Lagre tiltak</Button>
             <Link to="tiltak/ny-aktivitet">Opprett aktivitet</Link>
+
+          
          </React.Fragment>
       );
    }

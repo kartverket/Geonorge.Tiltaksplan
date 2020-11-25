@@ -14,7 +14,7 @@ class MeasuresTableRow extends Component {
       return (
          <tr onClick={this.goToMeasure.bind(this)}>
             <td>{measure.name}</td>
-            <td>{this.renderStars(measure.status)}</td>
+            <td>{this.props.planStatuses[measure.status].label}</td>
             <td>{measure.owner.name}</td>
          </tr>
       )
@@ -40,5 +40,7 @@ class MeasuresTableRow extends Component {
 MeasuresTableRow.propTypes = {
    measure: PropTypes.object.isRequired
 };
-
-export default connect(null, null)(withRouter(MeasuresTableRow));
+const mapStateToProps = state => ({
+   planStatuses: state.options.planStatuses
+});
+export default connect(mapStateToProps, null)(withRouter(MeasuresTableRow));
