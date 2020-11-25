@@ -8,16 +8,9 @@ import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scs
 import StarIcon from 'gfx/icon-star.svg'
 
 class MeasuresTableRow extends Component {
-   render() {
-      const measure = this.props.measure;
 
-      return (
-         <tr onClick={this.goToMeasure.bind(this)}>
-            <td>{measure.name}</td>
-            <td>{this.props.planStatuses[measure.status].label}</td>
-            <td>{measure.owner.name}</td>
-         </tr>
-      )
+   getMeasureStatusLabel(planStatuses, measure) {
+      return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
    }
 
    renderStars(amount) {
@@ -34,6 +27,18 @@ class MeasuresTableRow extends Component {
 
    goToMeasure() {
       this.props.history.push(`/tiltak/${this.props.measure.id}`);
+   }
+
+   render() {
+      const measure = this.props.measure;
+
+      return (
+         <tr onClick={this.goToMeasure.bind(this)}>
+            <td>{measure.name}</td>
+            <td>{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
+            <td>{measure.owner.name}</td>
+         </tr>
+      )
    }
 }
 
