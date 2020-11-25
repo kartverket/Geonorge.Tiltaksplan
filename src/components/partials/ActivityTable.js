@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
+import { DataTable } from '@kartverket/geonorge-web-components/DataTable';
 
 // Stylesheets
 import style from 'components/partials/ActivityTable.module.scss'
@@ -12,7 +13,11 @@ class ActivityTable extends Component {
       
    renderActivityTableRows(activities) {
       if (!activities || !activities.length) {
-         return 'Ingen aktivitere lagt til';
+         return (<React.Fragment>
+            <div className={style.block}>
+            <p>Ingen aktiveterer lagt til dette tiltaket enda.</p>
+            </div>
+         </React.Fragment>);
       }
 
       return (<React.Fragment>         
