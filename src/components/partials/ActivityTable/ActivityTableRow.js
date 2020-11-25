@@ -1,10 +1,13 @@
+// Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayJS from 'react-dayjs';
-import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { withRouter } from 'react-router-dom'
 
+// Stylesheets
+import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
 
 class ActivityTableRow extends Component {
    constructor(props) {
@@ -18,7 +21,6 @@ class ActivityTableRow extends Component {
       this.closeModal = this.closeModal.bind(this);
       this.saveModal = this.saveModal.bind(this);
       this.handleChange = this.handleChange.bind(this);
-
    }
 
    getStatustext(status) {
@@ -42,9 +44,7 @@ class ActivityTableRow extends Component {
       return participants && participants.length ? participants.map((participant, index) => {
 
          return (
-
             participant.name + (participants.length - index > 1 ? ', ' : ' ')
-
          )
       }) : null;
    }
@@ -63,6 +63,16 @@ class ActivityTableRow extends Component {
    }
    saveModal() {
       this.closeModal();
+   }
+
+   getMeasureId() {
+      return this.props.match && this.props.match.params && this.props.match.params.measureId
+         ? this.props.match.params.measureId
+         : null;
+   }
+
+   goToActivity() {
+      this.props.history.push(`/tiltak/${this.getMeasureId()}/aktivitet/${this.props.activity.id}`);
    }
 
    renderActivity() {
@@ -84,7 +94,7 @@ class ActivityTableRow extends Component {
    render() {
       return (
          <React.Fragment>
-            <tr>{this.renderActivity()}</tr>
+            <tr onClick={() => this.goToActivity()}>{this.renderActivity()}</tr>
             { /*<Modal
             show={this.state.modalOpen}
             onHide={this.closeModal}
@@ -115,4 +125,4 @@ ActivityTableRow.propTypes = {
    activity: PropTypes.object.isRequired
 };
 
-export default connect(null, null)(ActivityTableRow);
+export default connect(null, null)(withRouter(ActivityTableRow));
