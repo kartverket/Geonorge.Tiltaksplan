@@ -1,18 +1,24 @@
+// Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchOptions } from 'actions/OptionsActions';
-import { updateMeasure } from 'actions/MeasuresActions';
-import { SelectDropdown } from '../custom-elements';
 import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+// Components
+import { SelectDropdown } from 'components/custom-elements';
+
+// Actions
+import { fetchOptions } from 'actions/OptionsActions';
+import { updateMeasure } from 'actions/MeasuresActions';
+
+// Assets
 import StarIcon from 'gfx/icon-star.svg'
 
-
-
-import style from 'components/partials/EditMeasure.module.scss'
+// Stylesheets
+import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
 
 class EditMeasure extends Component {
@@ -64,7 +70,7 @@ class EditMeasure extends Component {
       console.log(instance);
       if (!this.state.editable) {
          instance.togglePreview()
-         container.classList.add(style.mdePreview);
+         container.classList.add(formsStyle.mdePreview);
       }
    }
 
@@ -82,7 +88,7 @@ class EditMeasure extends Component {
    }
 
    renderStars(amount) {
-      return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={style.star} src={StarIcon} alt="Stjerne" />)
+      return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
    }
 
    render() {
@@ -98,14 +104,14 @@ class EditMeasure extends Component {
                 Aktiver redigering for debugging
             </label>
             </div>
-            <div className={`${style.form} form-container`}>
+            <div className={`${formsStyle.form} form-container`}>
 
                <Form.Group controlId="formProgress">
                   <Form.Label>Fremdrift</Form.Label>
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
                                  onChange={value => this.handleChange({ name: 'progress', value })}
@@ -116,7 +122,7 @@ class EditMeasure extends Component {
                                     'focus': (event) => this.handleMdeFocus(event)
                                  }}
                               />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
@@ -134,15 +140,15 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <SelectDropdown
                                  name="volume"
                                  value={this.state.measure.volume || 0}
                                  options={this.props.measureVolume}
                                  onSelect={this.handleChange}
-                                 className={style.defaultSelect}
+                                 className={formsStyle.defaultSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
@@ -157,15 +163,15 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <SelectDropdown
                                  name="status"
                                  value={this.state.measure.status || 1}
                                  options={this.props.planStatuses}
                                  onSelect={this.handleChange}
-                                 className={style.statusSelect}
+                                 className={formsStyle.statusSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
@@ -180,19 +186,19 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <SelectDropdown
                                  name="trafficLight"
                                  value={this.state.measure.trafficLight || 1}
                                  options={this.props.trafficLights}
                                  onSelect={this.handleChange}
-                                 className={style.trafficLightSelect}
+                                 className={formsStyle.trafficLightSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
-                           <span className={`${style.trafficLight} ${style['light-' + this.state.measure.trafficLight]}`}></span>
+                           <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + this.state.measure.trafficLight]}`}></span>
                         )
                   }
                </Form.Group>
@@ -202,15 +208,15 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <SelectDropdown
                                  name="results"
                                  value={this.state.measure.results || 1}
                                  options={this.props.measureResults}
                                  onSelect={this.handleChange}
-                                 className={style.defaultSelect}
+                                 className={formsStyle.defaultSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
@@ -224,9 +230,9 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={style.comboInput}>
+                           <div className={formsStyle.comboInput}>
                               <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
-                              <FontAwesomeIcon icon="edit" className={style.editIcon} />
+                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>
                         )
                         : (
