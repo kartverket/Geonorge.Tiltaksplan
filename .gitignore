@@ -105,3 +105,6 @@ dist
 
 # config
 src/config/config.local.json
+
+# build
+/build
