@@ -234,7 +234,7 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={formsStyle.comboInput}>
+                           <div className={formsStyle.comboInput + "full-width"}>
                               <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
                               <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                            </div>

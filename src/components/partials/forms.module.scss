@@ -45,7 +45,9 @@
     border: 1px solid transparent;
     padding-right: 30px;
     border-radius: 0.25rem;
-
+    &.full-width {
+      display: block;
+    }
     :local(svg.editIcon) {
       display: none;
       position: absolute;
@@ -198,4 +200,7 @@
       border: none;
     }
   }
+  .editor-preview-full {
+    position: relative;
+  } 
 }
