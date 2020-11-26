@@ -111,7 +111,7 @@ class EditMeasure extends Component {
             <div className={`${formsStyle.form} form-container`}>
 
                <Form.Group controlId="formProgress">
-                  <Form.Label>Fremdrift</Form.Label>
+                  <Form.Label>Fremdrift <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -126,7 +126,7 @@ class EditMeasure extends Component {
                                     'focus': (event) => this.handleMdeFocus(event)
                                  }}
                               />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                             
                            </div>
                         )
                         : (
@@ -140,7 +140,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formVolume">
-                  <Form.Label>Volum</Form.Label>
+                  <Form.Label>Volum <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -152,7 +152,7 @@ class EditMeasure extends Component {
                                  onSelect={this.handleChange}
                                  className={formsStyle.defaultSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                              
                            </div>
                         )
                         : (
@@ -163,7 +163,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formStatus">
-                  <Form.Label>Status</Form.Label>
+                  <Form.Label>Status <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -175,7 +175,7 @@ class EditMeasure extends Component {
                                  onSelect={this.handleChange}
                                  className={formsStyle.statusSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                             
                            </div>
                         )
                         : (
@@ -186,7 +186,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formTrafficLight">
-                  <Form.Label>Trafikklys</Form.Label>
+                  <Form.Label>Trafikklys <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -198,7 +198,7 @@ class EditMeasure extends Component {
                                  onSelect={this.handleChange}
                                  className={formsStyle.trafficLightSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                              
                            </div>
                         )
                         : (
@@ -208,7 +208,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formResults">
-                  <Form.Label>Konkrete resultater</Form.Label>
+                  <Form.Label>Konkrete resultater<span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -220,7 +220,7 @@ class EditMeasure extends Component {
                                  onSelect={this.handleChange}
                                  className={formsStyle.defaultSelect}
                               />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                              
                            </div>
                         )
                         : (
@@ -230,13 +230,12 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formComments">
-                  <Form.Label>Kommentar</Form.Label>
+                  <Form.Label>Kommentar <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
                      this.state.editable
                         ? (
                            <div className={formsStyle.comboInput + "full-width"}>
-                              <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
-                              <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                              <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />                              
                            </div>
                         )
                         : (

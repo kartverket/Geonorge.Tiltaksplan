@@ -204,3 +204,10 @@
     position: relative;
   } 
 }
+:local(.visibl) {
+  visibility: visible;
+}
+
+:local(.hiddn) {
+  visibility: hidden;
+}
