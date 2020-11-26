@@ -6,14 +6,18 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
 import { registerLocale } from "react-datepicker";
-import nb from 'date-fns/locale/nb';
+import nb  from 'date-fns/locale/nb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import DayJS from 'react-dayjs'; 
+
+
 
 // Actions
 import { updateActivity } from 'actions/ActivityActions';
 
 // Stylesheets
-import formsStyle from 'components/partials/forms.module.scss'
+import formsStyle from 'components/partials/forms.module.scss';
+import style from 'components/partials/EditActivity.module.scss';
 import 'easymde/dist/easymde.min.css';
 import "react-datepicker/dist/react-datepicker.css";
 
@@ -50,7 +54,7 @@ class EditActivity extends Component {
                 Aktiver redigering for debugging
             </label>
         </div>
-        <Form.Group controlId="formName">
+        <Form.Group controlId="formName" className={style.form}>
           <Form.Label>Aktivitet</Form.Label>
           {
             this.state.editable
@@ -61,7 +65,7 @@ class EditActivity extends Component {
                 </div>
               )
               : (
-                <span>{this.state.activity.name}</span>
+                <div>{this.state.activity.name}</div>
               )
           }
 
@@ -75,7 +79,7 @@ class EditActivity extends Component {
                 </div>
               )
               : (
-                <span>{this.state.activity.title}</span>
+                <div>{this.state.activity.title}</div>
               )
           }
 
@@ -89,7 +93,7 @@ class EditActivity extends Component {
                 </div>
               )
               : (
-                <span>{this.state.activity.implementationStart}</span>
+                <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
               )
           }
 
@@ -103,15 +107,17 @@ class EditActivity extends Component {
                 </div>
               )
               : (
-                <span>{this.state.activity.implementationEnd}</span>
+                <div><DayJS format="MMMM YYYY" locale="nb">{this.state.activity.implementationEnd}</DayJS></div>
               )
           }
 
           <Form.Label>Deltakere</Form.Label>
          
         </Form.Group>
+        <div className={style.btngroup}>
         <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
         <Button variant="primary" onClick={this.saveActivity}>Lagre</Button>
+        </div>
       </Container>
     ) : ''
 
