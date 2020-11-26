@@ -44,10 +44,19 @@ class EditActivity extends Component {
   saveActivity() {
     this.props.updateActivity(this.state.activity);
   }
+  getParticitants(participants) {
+
+    return participants && participants.length ? participants.map((participant, index) => {
+
+       return (
+          participant.name + (participants.length - index > 1 ? ', ' : ' ')
+       )
+    }) : null;
+ }
 
   render() {
     return this.state.activity ? (
-      <Container>
+      <React.Fragment>
         <div>
           <label>
             <input type="checkbox" checked={this.state.editable} onChange={(event) => { this.setState({ editable: event.target.checked }) }} />
@@ -55,13 +64,13 @@ class EditActivity extends Component {
             </label>
         </div>
         <Form.Group controlId="formName" className={style.form}>
-          <Form.Label>Aktivitet</Form.Label>
+          <Form.Label>Aktivitet <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
                   <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
-                  <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                  
                 </div>
               )
               : (
@@ -69,13 +78,13 @@ class EditActivity extends Component {
               )
           }
 
-          <Form.Label>Tittel</Form.Label>
+          <Form.Label>Tittel <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
                   <Form.Control type="text" name="title" value={this.state.activity.title} onChange={this.handleChange} />
-                  <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
+                  
                 </div>
               )
               : (
@@ -83,13 +92,12 @@ class EditActivity extends Component {
               )
           }
 
-          <Form.Label>Start</Form.Label>
+          <Form.Label>Start <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
                   <DatePicker name="implementationStart" placeholderText="Sett startdato" selected={new Date(this.state.activity.implementationStart)} onChange={this.handleChange} />
-                  <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                 </div>
               )
               : (
@@ -97,13 +105,12 @@ class EditActivity extends Component {
               )
           }
 
-          <Form.Label>Slutt</Form.Label>
+          <Form.Label>Slutt <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
                   <DatePicker name="implementationEnd" placeholderText="Sett sluttdato" selected={new Date(this.state.activity.implementationEnd)} onChange={this.handleChange} />
-                  <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} />
                 </div>
               )
               : (
@@ -111,14 +118,25 @@ class EditActivity extends Component {
               )
           }
 
-          <Form.Label>Deltakere</Form.Label>
-         
+          <Form.Label>Deltakere <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          {
+            this.state.editable
+              ? (
+                <div className={formsStyle.comboInput}>
+                  <Form.Control type="text" name="participants" value={this.state.activity.participants} onChange={this.handleChange} />
+                  
+                </div>
+              )
+              : (
+                <div>{this.getParticitants(this.state.activity.participants)}</div>
+              )
+          }
         </Form.Group>
         <div className={style.btngroup}>
         <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
         <Button variant="primary" onClick={this.saveActivity}>Lagre</Button>
         </div>
-      </Container>
+        </React.Fragment>
     ) : ''
 
   }
