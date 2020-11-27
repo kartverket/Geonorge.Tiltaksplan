@@ -1,7 +1,6 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Container } from 'react-bootstrap';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
@@ -9,7 +8,8 @@ import { registerLocale } from "react-datepicker";
 import nb  from 'date-fns/locale/nb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DayJS from 'react-dayjs'; 
-
+import { fetchOrganizations } from 'actions/OrganizationsActions';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 
 // Actions
@@ -28,13 +28,31 @@ class EditActivity extends Component {
     super(props);
     this.state = {
       activity: props.selectedActivity,
-      editable: false
-    };
-    this.saveActivity = this.saveActivity.bind(this);
+      editable: true,
+      dataFetched: false
+    };   
     this.handleChange = this.handleChange.bind(this);
+    this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
+    this.saveActivity = this.saveActivity.bind(this);
   }
+  componentDidMount() {
+    this.props.fetchOrganizations()
+       .then(() => {
+          this.setState({ dataFetched: true });
+       });
+ }
+ 
+ handleOwnerSelect(data) {       
+    this.handleChange({   
+      name: 'participants',
+      value: data      
+   }) 
+ 
+}
+
 
   handleChange(data) {
+    
     const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
     activity[name] = value;
@@ -52,7 +70,8 @@ class EditActivity extends Component {
           participant.name + (participants.length - index > 1 ? ', ' : ' ')
        )
     }) : null;
- }
+ } 
+ 
 
   render() {
     return this.state.activity ? (
@@ -121,16 +140,23 @@ class EditActivity extends Component {
           <Form.Label>Deltakere <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <Form.Control type="text" name="participants" value={this.state.activity.participants} onChange={this.handleChange} />
-                  
-                </div>
+              ? (                
+                     <Typeahead    
+                        allowNew     
+                        multiple                
+                        id="basic-typeahead-multiple"
+                        labelKey="name"                         
+                        onChange={this.handleOwnerSelect}
+                        options={this.props.organizations}
+                        placeholder="Legg til deltakere..."
+                        newSelectionPrefix="Legg til "
+                     />                 
               )
               : (
-                <div>{this.getParticitants(this.state.activity.participants)}</div>
+                <div></div>
               )
           }
+          <div>{this.getParticitants(this.state.activity.participants)}</div>
         </Form.Group>
         <div className={style.btngroup}>
         <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
@@ -143,11 +169,13 @@ class EditActivity extends Component {
 }
 
 const mapStateToProps = state => ({
-  selectedActivity: state.selectedActivity
+  selectedActivity: state.selectedActivity,
+  organizations: state.organizations
 });
 
 const mapDispatchToProps = {
-  updateActivity
+  updateActivity,
+  fetchOrganizations
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(EditActivity);

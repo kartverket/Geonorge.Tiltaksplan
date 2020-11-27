@@ -44,7 +44,7 @@ class AddMeasure extends Component {
       this.setState({ modalOpen: false });
    }
 
-   handleOwnerSelect(data) {
+   handleOwnerSelect(data) {   
       this.handleChange({
          name: 'owner',
          value: {
@@ -80,7 +80,6 @@ class AddMeasure extends Component {
       return (
          <React.Fragment>
             <Button variant="primary" onClick={this.openModal}>Legg til tiltak</Button>
-
             <Modal
                show={this.state.modalOpen}
                onHide={this.closeModal}
