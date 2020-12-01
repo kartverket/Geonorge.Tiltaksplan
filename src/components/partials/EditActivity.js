@@ -32,7 +32,7 @@ class EditActivity extends Component {
       dataFetched: false
     };   
     this.handleChange = this.handleChange.bind(this);
-    this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
+    this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
     this.saveActivity = this.saveActivity.bind(this);
   }
   componentDidMount() {
@@ -42,17 +42,30 @@ class EditActivity extends Component {
        });
  }
  
- handleOwnerSelect(data) {       
+ handleParticipantsChange(participants) {
+   participants = participants && participants.length 
+    ? participants.map(participant => {
+      return participant.customOption 
+        ? {
+          name: participant.name,
+          activityId: this.state.activityId
+        }
+        : {
+        organizationId: participant.id,
+        activityId: this.state.activity.id
+      }
+    })
+    : [];
+
     this.handleChange({   
       name: 'participants',
-      value: data      
+      value: participants
    }) 
  
 }
 
 
   handleChange(data) {
-    
     const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
     activity[name] = value;
@@ -146,17 +159,17 @@ class EditActivity extends Component {
                         multiple                
                         id="basic-typeahead-multiple"
                         labelKey="name"                         
-                        onChange={this.handleOwnerSelect}
+                        onChange={this.handleParticipantsChange}
                         options={this.props.organizations}
+                        selected={this.state.activity.participants}
                         placeholder="Legg til deltakere..."
                         newSelectionPrefix="Legg til "
                      />                 
               )
               : (
-                <div></div>
+                ''
               )
           }
-          <div>{this.getParticitants(this.state.activity.participants)}</div>
         </Form.Group>
         <div className={style.btngroup}>
         <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>

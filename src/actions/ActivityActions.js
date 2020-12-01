@@ -18,7 +18,7 @@ export const fetchActivity = activityId => async (dispatch) => {
 
 export const updateActivity = (activity, ) => async (dispatch) => {
   const apiUrl = apiUrls.activity.update.format({ id: activity.id })
-  const response = await axios.post(apiUrl, activity);
+  const response = await axios.put(apiUrl, activity);
 
   dispatch({ type: UPDATE_ACTIVITY, payload: response.data });
 }
