@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import Container from 'components/template/Container';
-import EditActivity from 'components/partials/EditActivity';
+import ActivityDetails from 'components/partials/ActivityDetails';
 
 // Actions
 import { fetchActivity } from 'actions/ActivityActions';
@@ -37,7 +37,7 @@ class Activity extends Component {
         return (
             <Container>
                 <h1>{this.props.activity.name}</h1>
-                <EditActivity />
+                <ActivityDetails newActivity={!this.getActivityId()}/>
             </Container>
         );
     }
