@@ -16,7 +16,7 @@ export const fetchActivity = activityId => async (dispatch) => {
   dispatch({ type: FETCH_SELECTED_ACTIVITY, payload: response.data })
 }
 
-export const updateActivity = (activity, ) => async (dispatch) => {
+export const updateActivity = (activity) => async (dispatch) => {
   const apiUrl = apiUrls.activity.update.format({ id: activity.id })
   const response = await axios.put(apiUrl, activity);
 

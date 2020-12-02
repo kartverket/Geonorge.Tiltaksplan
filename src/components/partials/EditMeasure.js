@@ -71,7 +71,6 @@ class EditMeasure extends Component {
    getMdeInstance(instance) {
       const container = instance.element.nextSibling;
       container.setAttribute('tabIndex', '0');
-      console.log(instance);
       if (!this.state.editable) {
          instance.togglePreview()
          container.classList.add(formsStyle.mdePreview);
