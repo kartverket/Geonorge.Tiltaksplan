@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
+import SimpleMDE from "react-simplemde-editor";
 import { registerLocale } from "react-datepicker";
 import nb from 'date-fns/locale/nb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -41,6 +42,7 @@ class ActivityDetails extends Component {
       optionsFetched: false,
       organizationsFetched: false
     };
+    this.getMdeInstance = this.getMdeInstance.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
     this.saveActivity = this.saveActivity.bind(this);
@@ -98,6 +100,23 @@ class ActivityDetails extends Component {
     return planStatuses && activity.status && planStatuses[activity.status] && planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
   }
 
+  getMdeInstance(instance) {
+    const container = instance.element.nextSibling;
+    container.setAttribute('tabIndex', '0');
+    if (!this.state.editable) {
+      instance.togglePreview()
+      container.classList.add(formsStyle.mdePreview);
+    }
+  }
+
+  handleMdeBlur(instance, event) {
+    console.log("blur");
+  }
+
+  handleMdeFocus(isntance, event) {
+    console.log("focus");
+  }
+
   render() {
     return this.state.activity ? (
       <React.Fragment>
@@ -122,7 +141,33 @@ class ActivityDetails extends Component {
               )
           }
 
-         
+          <Form.Label>Beskrivelse <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          {
+            this.state.editable
+              ? (
+                <div className={formsStyle.comboInput}>
+                  <SimpleMDE
+                    value={this.state.activity.description || ''}
+                    onChange={value => this.handleChange({ name: 'description', value })}
+                    options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
+                    getMdeInstance={this.getMdeInstance}
+                    events={{
+                      'blur': this.handleMdeBlur,
+                      'focus': (event) => this.handleMdeFocus(event)
+                    }}
+                  />
+
+                </div>
+              )
+              : (
+                <SimpleMDE
+                  value={this.state.activity.description || ''}
+                  options={{ toolbar: false, status: false }}
+                  getMdeInstance={this.getMdeInstance} />
+              )
+          }
+
+
 
           <Form.Label>Start <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
