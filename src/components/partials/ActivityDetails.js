@@ -122,19 +122,7 @@ class ActivityDetails extends Component {
               )
           }
 
-          <Form.Label>Tittel <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <Form.Control type="text" name="title" value={this.state.activity.title} onChange={this.handleChange} />
-
-                </div>
-              )
-              : (
-                <div>{this.state.activity.title}</div>
-              )
-          }
+         
 
           <Form.Label>Start <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
