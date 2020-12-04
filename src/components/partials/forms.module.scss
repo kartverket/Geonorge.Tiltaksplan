@@ -1,13 +1,8 @@
 @import "../../style/abstracts/_all.scss";
 
 :local(.form) {
-  input {
-    height: 10px;
-    font-size: 14px;
-  }
   label {
     font-weight: 600;
-    
   }
 
   :local(.star) {
@@ -42,9 +37,8 @@
   :local(.comboInput) {
     display: inline-block;
     position: relative;
-    border: 1px solid transparent;
-    
     border-radius: 0.25rem;
+    margin-bottom: 15px;
     &.full-width {
       display: block;
     }
@@ -60,23 +54,21 @@
     }
 
     &:hover {
-      border: 1px solid #ddd;
       :local(svg.editIcon) {
         display: inline-block;
       }
     }
     &:focus-within {
-      border: 1px solid #ddd;
       box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-        :local(svg.editIcon) {
-          display: inline-block;
-        }
-        button {
-          box-shadow: none;
-        }
-        .EasyMDEContainer {
-          box-shadow: none;
-        }
+      :local(svg.editIcon) {
+        display: inline-block;
+      }
+      button {
+        box-shadow: none;
+      }
+      .EasyMDEContainer {
+        box-shadow: none;
+      }
     }
 
     > input,
@@ -84,9 +76,6 @@
       font-family: $default-font;
       font-weight: normal;
       display: block;
-      border: 1px solid transparent;
-      padding: 5px;
-      font-size: 14px;
       width: 480px;
       &:focus + svg {
         display: inline-block;
@@ -95,7 +84,6 @@
 
     textarea {
       padding-right: 38px;
-      border: none;
       &:focus {
         box-shadow: none;
       }
@@ -103,7 +91,6 @@
 
     :local(.defaultSelect) {
       > button {
-        border: none;
         min-width: 100px !important;
         &::after {
           display: none;
@@ -117,7 +104,6 @@
 
     :local(.statusSelect) {
       > button {
-        border: none;
         min-width: 200px !important;
         &::after {
           display: none;
@@ -131,7 +117,6 @@
 
     :local(.trafficLightSelect) {
       > button {
-        border: none;
         min-width: 150px !important;
 
         &::before {
@@ -202,8 +187,14 @@
   }
   .editor-preview-full {
     position: relative;
-  } 
+  }
 }
+:local(.buttonGroup) {
+  button {
+    margin-right: 10px;
+  }
+}
+
 :local(.visibl) {
   visibility: visible;
 }
