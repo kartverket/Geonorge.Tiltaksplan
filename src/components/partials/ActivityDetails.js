@@ -24,9 +24,9 @@ import { fetchOptions } from 'actions/OptionsActions';
 
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss';
-import style from 'components/partials/ActivityDetails.module.scss';
 import 'easymde/dist/easymde.min.css';
 import "react-datepicker/dist/react-datepicker.css";
+import "style/react-datepicker-override.scss";
 
 registerLocale('nb', nb)
 
@@ -107,7 +107,7 @@ class ActivityDetails extends Component {
                 Aktiver redigering for debugging
             </label>
         </div>
-        <Form.Group controlId="formName" className={style.form}>
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Aktivitet <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
           {
             this.state.editable
@@ -206,7 +206,7 @@ class ActivityDetails extends Component {
               )
           }
         </Form.Group>
-        <div className={style.btngroup}>
+        <div className={formsStyle.buttonGroup}>
           <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
           <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
         </div>
