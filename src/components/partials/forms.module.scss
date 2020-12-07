@@ -30,6 +30,16 @@
       background-color: #009900;
     }
   }
+:local(.flex) {
+  display: flex;
+  justify-content: space-between;
+}
+
+:local(.btnHorizontal) {
+  button {
+    margin-right: 10px;
+  }
+}
 
   label {
     display: block;

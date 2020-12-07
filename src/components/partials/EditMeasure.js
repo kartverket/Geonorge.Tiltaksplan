@@ -63,6 +63,7 @@ class EditMeasure extends Component {
             toastr.error('Kunne ikke oppdatere tiltak');
          });
    }
+  
 
    getMeasureStatusLabel(planStatuses, measure) {
       return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
@@ -102,10 +103,7 @@ class EditMeasure extends Component {
       return (
          <React.Fragment>
             <div>
-               <label>
-                  <input type="checkbox" checked={this.state.editable} onChange={(event) => { this.setState({ editable: event.target.checked }) }} />
-                Aktiver redigering for debugging
-            </label>
+               
             </div>
             <div className={`${formsStyle.form} form-container`}>
 
@@ -137,7 +135,7 @@ class EditMeasure extends Component {
                   }
 
                </Form.Group>
-
+                  <div className={`${this.state.editable ? '' : `${formsStyle.flex}`}`}>
                <Form.Group controlId="formVolume">
                   <Form.Label>Volum <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
@@ -227,7 +225,7 @@ class EditMeasure extends Component {
                         )
                   }
                </Form.Group>
-
+               </div>
                <Form.Group controlId="formComments">
                   <Form.Label>Kommentar <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
                   {
@@ -243,8 +241,15 @@ class EditMeasure extends Component {
                   }
                </Form.Group>
             </div>
-
-            <Button variant="primary" onClick={this.saveMeasure}>Lagre tiltak</Button>
+                  {this.state.editable ? (
+                     <div>
+                        <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                        <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
+                     </div>
+                  ) : (
+                     <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                  )}
+            
             
 
           
