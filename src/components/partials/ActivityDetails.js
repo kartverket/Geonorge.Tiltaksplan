@@ -46,6 +46,7 @@ class ActivityDetails extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
     this.saveActivity = this.saveActivity.bind(this);
+    this.exitActivity = this.exitActivity.bind(this);
   }
 
   componentDidMount() {
@@ -88,6 +89,10 @@ class ActivityDetails extends Component {
       name: 'participants',
       value: participants
     })
+  }
+
+  exitActivity() {
+    return '';
   }
 
   saveActivity() {
@@ -239,8 +244,8 @@ class ActivityDetails extends Component {
               )
           }
         </Form.Group>
-        <div className={formsStyle.buttonGroup}>
-          <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
+        <div className={style.btngroup}>
+          <Button variant="secondary" onClick={this.exitActivity}>Avbryt</Button>
           <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
         </div>
       </React.Fragment>

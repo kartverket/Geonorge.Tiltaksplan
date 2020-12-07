@@ -3,7 +3,6 @@ export class Activity {
        this.id = id || 0;
        this.measureId = measureId || 0;
        this.name = name || '';
-       this.title = title || '';
        this.description = description || '';
        this.implementationStart = implementationStart || null;
        this.implementationEnd = implementationEnd || null;
