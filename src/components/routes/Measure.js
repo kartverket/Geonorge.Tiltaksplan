@@ -5,6 +5,7 @@ import Container from 'components/template/Container';
 import EditMeasure from 'components/partials/EditMeasure';
 import ActivityTable from 'components/partials/ActivityTable';
 import { Link } from 'react-router-dom';
+import formsStyle from 'components/partials/forms.module.scss'
 
 class Measure extends Component {
    constructor(props) {
@@ -36,12 +37,9 @@ class Measure extends Component {
       return (
          <Container>
             <h1>{this.props.measure.name}</h1>
-
-            <EditMeasure />
-            
+            <Link to={`${this.getMeasureId()}/ny-aktivitet`}><button className="btn btn-primary">Opprett aktivitet</button></Link>
             <ActivityTable activities={this.props.measure.activities}/>
-
-            <Link to={`${this.getMeasureId()}/ny-aktivitet`}>Opprett aktivitet</Link>
+            <EditMeasure />
          </Container>
       );
    }

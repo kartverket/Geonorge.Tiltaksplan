@@ -9,7 +9,6 @@ class Measures extends Component {
       return (
          <Container>
             <h1>Tiltaksplaner</h1>
-
             <AddMeasure />
             <MeasuresTable />
          </Container>
