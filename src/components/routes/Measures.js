@@ -8,7 +8,7 @@ class Measures extends Component {
    render() {
       return (
          <Container>
-            <h1>Tiltaksplaner</h1>
+            <h1>Tiltaksplan</h1>
 
             <AddMeasure />
             <MeasuresTable />

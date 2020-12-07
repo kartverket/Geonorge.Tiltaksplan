@@ -12,16 +12,28 @@ const SelectedMeasureBreadcrumb = () => {
    ) : '';
 };
 
+const SelectedActivityBreadcrumb = () => {
+  const selectedActivity = useSelector(state => state.selectedActivity);
+
+  return selectedActivity ? (
+     <span>{selectedActivity.name}</span>
+  ) : '';
+};
+
 const routes = [
-   { path: '/', breadcrumb: 'Tiltaksplaner' },
+   { path: '/', breadcrumb: 'Tiltaksplan' },
    { path: '/tiltak/:measureId', breadcrumb: SelectedMeasureBreadcrumb },
+   { path: '/tiltak/:measureId/ny-aktivitet', breadcrumb: 'Ny aktivitet' },
+   { path: '/tiltak/:measureId/aktivitet/:activityId', breadcrumb: SelectedActivityBreadcrumb }
 ];
 
-const ignores = [
-   '/tiltak'
-]
+const options = {
+  excludePaths: [
+    '/tiltak',
+    '/tiltak/:measureId/aktivitet'
+  ]
+};
 
-const shouldIgnore = (match, breadcrumb) => ignores.some(url => url === match.url) || breadcrumb.props.location;
 
 const Breadcrumbs = ({ breadcrumbs }) => {
    return (
@@ -29,14 +41,14 @@ const Breadcrumbs = ({ breadcrumbs }) => {
          <span>Du er her: </span>
 
          <div>
-            {breadcrumbs.map(({ match, breadcrumb }) => {
-               if (shouldIgnore(match, breadcrumb)) {
-                  return <span key={match.url}>{breadcrumb}</span>
-               }
-
+            {breadcrumbs.map(({ match, breadcrumb }, index) => {
                return (
                   <span key={match.url}>
-                     <NavLink to={match.url}>{breadcrumb}</NavLink>
+                    { 
+                      index < breadcrumbs.length - 1 ? 
+                      <NavLink to={match.url}>{breadcrumb}</NavLink> :
+                      <span>{breadcrumb}</span>
+                    }
                   </span>
                );
             })}
@@ -45,4 +57,4 @@ const Breadcrumbs = ({ breadcrumbs }) => {
    );
 };
 
-export default withBreadcrumbs(routes)(Breadcrumbs);
+export default withBreadcrumbs(routes, options)(Breadcrumbs);

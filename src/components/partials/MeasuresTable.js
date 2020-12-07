@@ -7,6 +7,7 @@ import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow
 
 // Actions
 import { fetchMeasures } from 'actions/MeasuresActions';
+import { fetchOptions } from 'actions/OptionsActions';
 
 // Stylesheets
 import style from 'components/partials/MeasuresTable.module.scss'
@@ -23,10 +24,13 @@ class MeasuresTable extends Component {
 
 
    componentDidMount() {
-      this.props.fetchMeasures()
-        .then(() => {
-          this.setState({ dataFetched: true });
-        });
+      Promise.all([
+         this.props.fetchMeasures(),
+         this.props.fetchOptions()
+      ])
+      .then(() => {
+         this.setState({ dataFetched: true });
+      });
    }
 
    
@@ -45,7 +49,7 @@ class MeasuresTable extends Component {
             </tr>
          </thead>
          <tbody>
-            {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} />)}
+            {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses}  />)}
          </tbody>
       </table>
    );
@@ -53,10 +57,14 @@ class MeasuresTable extends Component {
 }
 
 
-const mapStateToProps = state => ({ measures: state.measures });
+const mapStateToProps = state => ({ 
+   measures: state.measures,
+   planStatuses: state.options.planStatuses
+});
 
 const mapDispatchToProps = {
-   fetchMeasures
+   fetchMeasures,
+   fetchOptions
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasuresTable);

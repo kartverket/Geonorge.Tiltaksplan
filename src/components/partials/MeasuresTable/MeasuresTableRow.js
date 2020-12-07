@@ -3,7 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom'
-
 import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scss';
 import StarIcon from 'gfx/icon-star.svg'
 
@@ -45,7 +44,5 @@ class MeasuresTableRow extends Component {
 MeasuresTableRow.propTypes = {
    measure: PropTypes.object.isRequired
 };
-const mapStateToProps = state => ({
-   planStatuses: state.options.planStatuses
-});
-export default connect(mapStateToProps, null)(withRouter(MeasuresTableRow));
+
+export default connect(null, null)(withRouter(MeasuresTableRow));

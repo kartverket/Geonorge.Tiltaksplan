@@ -53,7 +53,7 @@ class EditMeasure extends Component {
    }
 
    saveMeasure() {
-      const measure = { ...this.props.initialMeasure, ...this.state.measure };
+      const measure = this.state.measure;
 
       this.props.updateMeasure(measure)
          .then(() => {
@@ -114,7 +114,7 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={formsStyle.comboInput}>
+                           <div className={formsStyle.comboInput + "full-width"}>
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
                                  onChange={value => this.handleChange({ name: 'progress', value })}
