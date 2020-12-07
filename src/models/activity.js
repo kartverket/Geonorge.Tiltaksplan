@@ -1,5 +1,5 @@
 export class Activity {
-    constructor({ id, measureId, name, title, description, implementationStart, implementationEnd, participants } = {}) {
+    constructor({ id, measureId, name, description, implementationStart, implementationEnd, participants } = {}) {
        this.id = id || 0;
        this.measureId = measureId || 0;
        this.name = name || '';
