@@ -47,7 +47,7 @@ class ActivityDetails extends Component {
     this.handleChange = this.handleChange.bind(this);
     this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
     this.saveActivity = this.saveActivity.bind(this);
-    this.exitActivity = this.exitActivity.bind(this);
+    this.handleCancelClick = this.handleCancelClick.bind(this);
   }
 
   componentDidMount() {
@@ -98,7 +98,7 @@ class ActivityDetails extends Component {
        : null;
  }
 
-  exitActivity() {
+ handleCancelClick() {
     return '';
   }
 
@@ -252,7 +252,7 @@ class ActivityDetails extends Component {
           }
         </Form.Group>
         <div className={formsStyle.btngroup}>
-          <Button variant="secondary" onClick={this.exitActivity}>Avbryt</Button>
+          <Button variant="secondary" onClick={this.handleCancelClick}>Avbryt</Button>
           <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
         </div>
       </React.Fragment>

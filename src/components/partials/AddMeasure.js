@@ -79,7 +79,7 @@ class AddMeasure extends Component {
 
       return (
          <React.Fragment>
-            <Button variant="primary" onClick={this.openModal}>Legg til tiltak</Button>
+            <Button variant="primary" onClick={this.openModal}>Opprett tiltak</Button>
             <Modal
                show={this.state.modalOpen}
                onHide={this.closeModal}
