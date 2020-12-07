@@ -41,7 +41,7 @@ class Measure extends Component {
             
             <ActivityTable activities={this.props.measure.activities}/>
 
-            <Link to="tiltak/ny-aktivitet">Opprett aktivitet</Link>
+            <Link to={`${this.getMeasureId()}/ny-aktivitet`}>Opprett aktivitet</Link>
          </Container>
       );
    }

@@ -10,6 +10,7 @@ import nb from 'date-fns/locale/nb';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DayJS from 'react-dayjs';
 import { Typeahead } from 'react-bootstrap-typeahead';
+import {withRouter} from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -36,7 +37,7 @@ class ActivityDetails extends Component {
     super(props);
     this.state = {
       activity: this.props.newActivity
-        ? new Activity()
+        ? new Activity({measureId: this.getMeasureId()})
         : props.selectedActivity,
       editable: true,
       optionsFetched: false,
@@ -91,6 +92,12 @@ class ActivityDetails extends Component {
     })
   }
 
+  getMeasureId() {
+    return this.props.match && this.props.match.params && this.props.match.params.measureId
+       ? parseInt(this.props.match.params.measureId)
+       : null;
+ }
+
   exitActivity() {
     return '';
   }
@@ -142,7 +149,7 @@ class ActivityDetails extends Component {
                 </div>
               )
               : (
-                <div>{this.state.activity.name}</div>
+              <div>{this.state.activity.name}</div>
               )
           }
 
@@ -244,7 +251,7 @@ class ActivityDetails extends Component {
               )
           }
         </Form.Group>
-        <div className={style.btngroup}>
+        <div className={formsStyle.btngroup}>
           <Button variant="secondary" onClick={this.exitActivity}>Avbryt</Button>
           <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
         </div>
@@ -267,4 +274,4 @@ const mapDispatchToProps = {
   fetchOptions
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(ActivityDetails);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ActivityDetails));
