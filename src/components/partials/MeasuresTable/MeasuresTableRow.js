@@ -3,6 +3,7 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import { withRouter } from 'react-router-dom'
+
 import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scss';
 import StarIcon from 'gfx/icon-star.svg'
 
