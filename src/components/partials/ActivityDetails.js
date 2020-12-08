@@ -160,7 +160,6 @@ class ActivityDetails extends Component {
               ? (
                 <div className={formsStyle.comboInput}>
                   <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
-
                 </div>
               )
               : (
@@ -180,7 +179,6 @@ class ActivityDetails extends Component {
                     getMdeInstance={this.getMdeInstance}
 
                   />
-
                 </div>
               )
               : (
@@ -190,9 +188,6 @@ class ActivityDetails extends Component {
                   getMdeInstance={this.getMdeInstance} />
               )
           }
-
-
-
           <Form.Label>Start </Form.Label>
           {
             this.state.editable
@@ -241,7 +236,6 @@ class ActivityDetails extends Component {
             }
 
           </Form.Group>
-
           <Form.Label>Deltakere </Form.Label>
           {
             this.state.editable

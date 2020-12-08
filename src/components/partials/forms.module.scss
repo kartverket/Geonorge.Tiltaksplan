@@ -204,3 +204,7 @@
 :local(.hiddn) {
    visibility: hidden;
 }
+:local(.flex) {
+  display: flex;
+  justify-content: space-between;
+}
