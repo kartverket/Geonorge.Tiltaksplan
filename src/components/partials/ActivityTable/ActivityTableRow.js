@@ -6,6 +6,8 @@ import DayJS from 'react-dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter } from 'react-router-dom'
 import showdown from 'showdown';
+import { Link } from 'react-router-dom';
+
 
 // Stylesheets
 import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
@@ -20,7 +22,6 @@ class ActivityTableRow extends Component {
 
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
-      this.saveModal = this.saveModal.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.converter = new showdown.Converter();
    }
@@ -49,17 +50,14 @@ class ActivityTableRow extends Component {
    handleChange(event) {
       this.setState();
    }
-
+   
    openModal() {
-      this.setState({
-         modalOpen: true
-      });
+      this.setState({ modalOpen: true });
    }
 
    closeModal() {
       this.setState({ modalOpen: false });
    }
-
    saveModal() {
       this.closeModal();
    }
@@ -76,49 +74,25 @@ class ActivityTableRow extends Component {
 
    renderActivity() {
       const activity = this.props.activity;
-      const statusStyle = { width: `${activity.status * 20}%` };
-
-      return (
-         <React.Fragment>
-            <td>{activity.name}</td>
-            <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
-            <td>{this.getParticitants(activity.participants)}</td>
-            <td>
-               <div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
-            <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-            <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-            <td><div className={style.svgblock}>
-               <FontAwesomeIcon onClick={this.openModal} icon="edit" />
-               <FontAwesomeIcon onClick={this.openModal} icon="trash-alt" /></div></td>
-         </React.Fragment>
-      );
+      const statusStyle = { width: `${activity.status * 20}%` }
+      return (<React.Fragment>
+         <td onClick={() => this.goToActivity()}>{activity.name}</td>
+         <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
+         <td>{this.getParticitants(activity.participants)}</td>
+         <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
+         <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
+         <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
+         <td><div className={style.svgblock}>
+            <Link to={{pathname: `/tiltak/${this.getMeasureId()}/aktivitet/${this.props.activity.id}`, state: {editable: true}}}><FontAwesomeIcon onClick={() => this.goToActivity()} icon="edit" /></Link>
+            </div></td>
+      </React.Fragment>)
+            
    }
 
    render() {
       return (
          <React.Fragment>
-            <tr onClick={() => this.goToActivity()}>{this.renderActivity()}</tr>
-            { /*<Modal
-            show={this.state.modalOpen}
-            onHide={this.closeModal}
-            keyboard={false}
-            animation={false}
-            centered
-            backdrop="static"
-            aria-labelledby="form-dialog-title">
-            <Modal.Header closeButton>
-               <Modal.Title>Slett aktivitet</Modal.Title>
-            </Modal.Header>
-
-            <Modal.Body>
-               <p>Er du sikker på at du vil slette {this.props.activity.name}?</p>
-            </Modal.Body>
-
-            <Modal.Footer>
-               <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-               <Button variant="danger" onClick={this.delete}>Slett</Button>
-            </Modal.Footer>
-         </Modal> */}
+            <tr>{this.renderActivity()}</tr>            
          </React.Fragment>
       );
    }

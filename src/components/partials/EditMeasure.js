@@ -5,6 +5,7 @@ import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import Modal from 'react-bootstrap/Modal';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -28,6 +29,9 @@ class EditMeasure extends Component {
       this.getMdeInstance = this.getMdeInstance.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
+      this.handleDelete = this.handleDelete.bind(this);
+      this.openModal = this.openModal.bind(this);
+      this.closeModal = this.closeModal.bind(this);
 
       this.state = {
          dataFetched: false,
@@ -50,7 +54,19 @@ class EditMeasure extends Component {
 
       this.setState({ measure });
    }
-
+   openModal() {
+      this.setState({ modalOpen: true });
+   }
+   closeModal() {
+      this.setState({ modalOpen: false });
+   }
+   handleDelete() {            
+      this.props.deleteActivity(this.state.measure)
+        .then(() => {
+          this.props.history.push(`/tiltak/`);
+        });    
+   }
+  
    saveMeasure() {
       const measure = this.state.measure;
 
@@ -223,7 +239,7 @@ class EditMeasure extends Component {
                   </Form.Group>
                </div>
                <Form.Group controlId="formComments">
-                  <Form.Label>Kommentar </Form.Label>
+                  <Form.Label>Kommentar  </Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -236,20 +252,43 @@ class EditMeasure extends Component {
                         )
                   }
                </Form.Group>
-
-               <div className={formsStyle.btngroup}>
-                  {
-                     this.state.editable ? (
-                        <div>
-                           <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-                           <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
-                        </div>
-                     ) : (
-                        <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
-                     )
-                  }
-               </div>
             </div>
+                  {this.state.editable ? (
+                     <div>
+                        <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                        <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
+                     </div>
+                  ) : (
+                     <div>
+                    <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett tiltaket</Button>
+                        <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                     </div>
+                  )}
+            
+            {<Modal
+            show={this.state.modalOpen}
+            onHide={this.closeModal}
+            keyboard={false}
+            animation={false}
+            centered
+            backdrop="static"
+            aria-labelledby="form-dialog-title">
+            <Modal.Header closeButton>
+               <Modal.Title>Slett aktivitet</Modal.Title>
+            </Modal.Header>
+
+            <Modal.Body>
+               <p>Er du sikker på at du vil slette {this.state.measure.name}?</p>
+                {this.state.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.state.measure.name : ''}
+            </Modal.Body>
+
+            <Modal.Footer>
+               <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
+               <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
+            </Modal.Footer>
+         </Modal>}
+
+          
          </React.Fragment>
       );
    }

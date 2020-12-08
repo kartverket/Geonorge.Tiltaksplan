@@ -5,7 +5,7 @@ import Container from 'components/template/Container';
 import EditMeasure from 'components/partials/EditMeasure';
 import ActivityTable from 'components/partials/ActivityTable';
 import { Link } from 'react-router-dom';
-import formsStyle from 'components/partials/forms.module.scss'
+
 
 class Measure extends Component {
    constructor(props) {

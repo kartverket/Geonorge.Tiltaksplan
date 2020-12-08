@@ -33,3 +33,6 @@ td+td {
 :local(.block) {
   margin: 10px 0;
 }
+table td, table td * {
+  vertical-align: top;
+}

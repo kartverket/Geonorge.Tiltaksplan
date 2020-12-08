@@ -26,7 +26,7 @@ export const updateActivity = (activity) => async (dispatch) => {
 }
 
 export const deleteActivity = (activity) => async (dispatch) => {
-  const apiUrl = apiUrls.activity.delete.format(activity.id);
+  const apiUrl = apiUrls.activity.delete.format({ id: activity.id });  
   const response = await axios.delete(apiUrl, activity);
 
   dispatch({ type: DELETE_ACTIVITY, payload: response.data });
