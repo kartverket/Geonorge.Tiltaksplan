@@ -7,7 +7,6 @@ import DatePicker from "react-datepicker";
 import SimpleMDE from "react-simplemde-editor";
 import { registerLocale } from "react-datepicker";
 import nb from 'date-fns/locale/nb';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import DayJS from 'react-dayjs';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import {withRouter} from 'react-router-dom';
@@ -121,25 +120,12 @@ class ActivityDetails extends Component {
     }
   }
 
-  handleMdeBlur(instance, event) {
-    console.log("blur");
-  }
-
-  handleMdeFocus(isntance, event) {
-    console.log("focus");
-  }
 
   render() {
     return this.state.activity ? (
-      <React.Fragment>
-        <div>
-          <label>
-            <input type="checkbox" checked={this.state.editable} onChange={(event) => { this.setState({ editable: event.target.checked }) }} />
-                Aktiver redigering for debugging
-            </label>
-        </div>
+      <React.Fragment>       
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Aktivitet <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          <Form.Label>Aktivitet </Form.Label>
           {
             this.state.editable
               ? (
@@ -153,7 +139,7 @@ class ActivityDetails extends Component {
               )
           }
 
-          <Form.Label>Beskrivelse <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          <Form.Label>Beskrivelse </Form.Label>
           {
             this.state.editable
               ? (
@@ -181,7 +167,7 @@ class ActivityDetails extends Component {
 
 
 
-          <Form.Label>Start <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          <Form.Label>Start </Form.Label>
           {
             this.state.editable
               ? (
@@ -194,7 +180,7 @@ class ActivityDetails extends Component {
               )
           }
 
-          <Form.Label>Slutt <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          <Form.Label>Slutt </Form.Label>
           {
             this.state.editable
               ? (
@@ -208,7 +194,7 @@ class ActivityDetails extends Component {
           }
 
           <Form.Group controlId="formStatus">
-            <Form.Label>Status <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+            <Form.Label>Status </Form.Label>
             {
               this.state.editable && this.state.optionsFetched
                 ? (
@@ -230,7 +216,7 @@ class ActivityDetails extends Component {
 
           </Form.Group>
 
-          <Form.Label>Deltakere <span className={`${this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+          <Form.Label>Deltakere </Form.Label>
           {
             this.state.editable && this.state.organizationsFetched
               ? (
@@ -252,8 +238,15 @@ class ActivityDetails extends Component {
           }
         </Form.Group>
         <div className={formsStyle.btngroup}>
-          <Button variant="secondary" onClick={this.handleCancelClick}>Avbryt</Button>
-          <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
+
+            {this.state.editable ? (
+              <div>
+                <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
+              </div>
+            ) : (
+              <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+            )}          
         </div>
       </React.Fragment>
     ) : ''

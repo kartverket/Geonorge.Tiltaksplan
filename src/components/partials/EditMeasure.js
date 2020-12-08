@@ -5,7 +5,6 @@ import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -108,7 +107,7 @@ class EditMeasure extends Component {
             <div className={`${formsStyle.form} form-container`}>
 
                <Form.Group controlId="formProgress">
-                  <Form.Label>Fremdrift <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Fremdrift </Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -137,7 +136,7 @@ class EditMeasure extends Component {
                </Form.Group>
                   <div className={`${this.state.editable ? '' : `${formsStyle.flex}`}`}>
                <Form.Group controlId="formVolume">
-                  <Form.Label>Volum <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Volum </Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -160,7 +159,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formStatus">
-                  <Form.Label>Status <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Status </Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -183,7 +182,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formTrafficLight">
-                  <Form.Label>Trafikklys <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Trafikklys </Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -205,7 +204,7 @@ class EditMeasure extends Component {
                </Form.Group>
 
                <Form.Group controlId="formResults">
-                  <Form.Label>Konkrete resultater<span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Konkrete resultater</Form.Label>
                   {
                      this.state.editable
                         ? (
@@ -227,7 +226,7 @@ class EditMeasure extends Component {
                </Form.Group>
                </div>
                <Form.Group controlId="formComments">
-                  <Form.Label>Kommentar <span className={`${ this.state.editable ? formsStyle.visibl : formsStyle.hiddn}`}> <FontAwesomeIcon icon="edit" className={formsStyle.editIcon} /></span></Form.Label>
+                  <Form.Label>Kommentar </Form.Label>
                   {
                      this.state.editable
                         ? (
