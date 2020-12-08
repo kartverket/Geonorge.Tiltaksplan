@@ -6,6 +6,7 @@ import { reducer as oidcReducer } from 'redux-oidc';
 // Reducers
 import SelectedActivityReducer from 'reducers/SelectedActivityReducer';
 import MeasuresReducer from 'reducers/MeasuresReducer';
+import ActivitiesReducer from 'reducers/ActivitiesReducer';
 import SelectedMeasureReducer from 'reducers/SelectedMeasureReducer';
 import OptionsReducer from 'reducers/OptionsReducer';
 import OrganizationsReducer from 'reducers/OrganizationsReducer';
@@ -16,6 +17,7 @@ const reducers = history => combineReducers({
   oidc: oidcReducer,
   selectedActivity: SelectedActivityReducer,
   measures: MeasuresReducer,
+  activities: ActivitiesReducer,
   selectedMeasure: SelectedMeasureReducer,
   organizations: OrganizationsReducer,
   options: OptionsReducer,

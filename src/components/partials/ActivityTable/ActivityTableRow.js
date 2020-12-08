@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import DayJS from 'react-dayjs';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter } from 'react-router-dom'
+import showdown from 'showdown';
 
 // Stylesheets
 import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
@@ -14,42 +15,38 @@ class ActivityTableRow extends Component {
       super(props);
 
       this.state = {
-         modalOpen: false,
+         modalOpen: false
       };
 
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.saveModal = this.saveModal.bind(this);
       this.handleChange = this.handleChange.bind(this);
+      this.converter = new showdown.Converter();
+   }
+
+   markdownToHtml(value) {
+      return {
+         __html: this.converter.makeHtml(value)
+      };
    }
 
    getStatustext(status) {
-      switch (status) {
-         case 1:
-            return 'Oppstart';
-         case 2:
-            return 'Utredning';
-         case 3:
-            return 'Utarbeidende';
-         case 4:
-            return 'Avsluttende fase';
-         case 5:
-            return 'Gjennomført';
-         default:
-            return '';
-      };
+      const foundStatus = this.props.planStatuses
+         .find(planStatus => planStatus.value === status);
+
+      return foundStatus ? foundStatus.label : '';
    }
+
    getParticitants(participants) {
-
       return participants && participants.length ? participants.map((participant, index) => {
-
          return (
             participant.name + (participants.length - index > 1 ? ', ' : ' ')
          )
       }) : null;
    }
-   handleChange(event) {
 
+   handleChange(event) {
       this.setState();
    }
 
@@ -58,9 +55,11 @@ class ActivityTableRow extends Component {
          modalOpen: true
       });
    }
+
    closeModal() {
       this.setState({ modalOpen: false });
    }
+
    saveModal() {
       this.closeModal();
    }
@@ -77,18 +76,22 @@ class ActivityTableRow extends Component {
 
    renderActivity() {
       const activity = this.props.activity;
-      const statusStyle = { width: `${activity.status * 20}%` }
-      return (<React.Fragment>
-         <td>{activity.name}</td>
-         <td>{activity.description}</td>
-         <td>{this.getParticitants(activity.participants)}</td>
-         <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
-         <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-         <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-         <td><div className={style.svgblock}>
-            <FontAwesomeIcon onClick={this.openModal} icon="edit" />
-            <FontAwesomeIcon onClick={this.openModal} icon="trash-alt" /></div></td>
-      </React.Fragment>)
+      const statusStyle = { width: `${activity.status * 20}%` };
+
+      return (
+         <React.Fragment>
+            <td>{activity.name}</td>
+            <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
+            <td>{this.getParticitants(activity.participants)}</td>
+            <td>
+               <div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
+            <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
+            <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
+            <td><div className={style.svgblock}>
+               <FontAwesomeIcon onClick={this.openModal} icon="edit" />
+               <FontAwesomeIcon onClick={this.openModal} icon="trash-alt" /></div></td>
+         </React.Fragment>
+      );
    }
 
    render() {

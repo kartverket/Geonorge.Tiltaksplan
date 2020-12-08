@@ -1,12 +1,13 @@
 export class Activity {
-    constructor({ id, measureId, name, description, implementationStart, implementationEnd, participants } = {}) {
+    constructor({ id, measureId, name, description, implementationStart, implementationEnd, status, participants } = {}) {
        this.id = id || 0;
        this.measureId = measureId || 0;
        this.name = name || '';
        this.description = description || '';
-       this.implementationStart = implementationStart || null;
-       this.implementationEnd = implementationEnd || null;
-       this.participants = participants || [];       
+       this.implementationStart = implementationStart;
+       this.implementationEnd = implementationEnd;
+       this.participants = participants || [];
+       this.status = status || 1;
        this.culture = 'nb-NO';
     }
  }

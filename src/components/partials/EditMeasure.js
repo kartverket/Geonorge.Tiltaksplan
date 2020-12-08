@@ -114,7 +114,7 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={formsStyle.comboInput + "full-width"}>
+                           <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
                                  onChange={value => this.handleChange({ name: 'progress', value })}
@@ -233,7 +233,7 @@ class EditMeasure extends Component {
                   {
                      this.state.editable
                         ? (
-                           <div className={formsStyle.comboInput + "full-width"}>
+                           <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                               <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />                              
                            </div>
                         )
@@ -245,9 +245,7 @@ class EditMeasure extends Component {
             </div>
 
             <Button variant="primary" onClick={this.saveMeasure}>Lagre tiltak</Button>
-            
 
-          
          </React.Fragment>
       );
    }

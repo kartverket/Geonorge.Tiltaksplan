@@ -49,7 +49,7 @@ class MeasuresTable extends Component {
             </tr>
          </thead>
          <tbody>
-            {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses}  />)}
+            {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
          </tbody>
       </table>
    );

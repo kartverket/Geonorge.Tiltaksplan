@@ -7,6 +7,8 @@ export const createActivity = (activity) => async (dispatch) => {
   const response = await axios.post(apiUrl, activity);
 
   dispatch({ type: CREATE_ACTIVITY, payload: response.data });
+
+  return response.data;
 }
 
 export const fetchActivity = activityId => async (dispatch) => {
