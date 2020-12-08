@@ -118,6 +118,19 @@ class EditMeasure extends Component {
       return (
          <React.Fragment>
             <div className={`${formsStyle.form} form-container`}>
+            
+                  {
+                     this.state.editable
+                        ? (<Form.Group controlId="formName">
+                              <Form.Label>Navn  </Form.Label>
+                                 <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                                    <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
+                                 </div>
+                              </Form.Group> 
+                           )
+                        : ''
+                  }
+              
 
                <Form.Group controlId="formProgress">
                   <Form.Label>Fremdrift </Form.Label>
