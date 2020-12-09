@@ -35,11 +35,12 @@ registerLocale('nb', nb)
 class ActivityDetails extends Component {
   constructor(props) {
     super(props);
+    debugger;
     this.state = {
       activity: this.props.newActivity
         ? new Activity({ measureId: this.getMeasureId() })
         : props.selectedActivity,
-      editable: this.props.location.state && this.props.location.state.editable || this.props.newActivity ? true : false,
+      editable: (this.props.location.state && this.props.location.state.editable) || this.props.newActivity ? true : false,
       dataFetched: false,
       modalOpen: false
     };
@@ -319,7 +320,7 @@ class ActivityDetails extends Component {
 }
 
 const mapStateToProps = state => ({
-  selectedActivity: state.selectedActivity,
+  selectedActivity: state.activities.selectedActivity,
   organizations: state.organizations.map(organization => {
     return {
       organizationId: organization.id,

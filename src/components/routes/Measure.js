@@ -6,7 +6,6 @@ import EditMeasure from 'components/partials/EditMeasure';
 import ActivityTable from 'components/partials/ActivityTable';
 import { Link } from 'react-router-dom';
 
-
 class Measure extends Component {
    constructor(props) {
       super(props);
@@ -46,11 +45,11 @@ class Measure extends Component {
 }
 
 const mapStateToProps = (state) => ({
-   measure: state.selectedMeasure
+   measure: state.measures.selectedMeasure
 });
 
 const mapDispatchToProps = {
-   fetchMeasure,
+   fetchMeasure
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Measure);

@@ -2,20 +2,18 @@ import { CREATE_ACTIVITY, FETCH_SELECTED_ACTIVITY, UPDATE_ACTIVITY, DELETE_ACTIV
 import { apiUrls } from 'components/config';
 import axios from 'axios';
 
+export const fetchActivity = activityId => async (dispatch) => {
+   const apiUrl = apiUrls.activity.get.format({ id: activityId })
+   const response = await axios.get(apiUrl);
+ 
+   dispatch({ type: FETCH_SELECTED_ACTIVITY, payload: response.data })
+}
+
 export const createActivity = (activity) => async (dispatch) => {
   const apiUrl = apiUrls.activity.create;
   const response = await axios.post(apiUrl, activity);
 
   dispatch({ type: CREATE_ACTIVITY, payload: response.data });
-
-  return response.data;
-}
-
-export const fetchActivity = activityId => async (dispatch) => {
-  const apiUrl = apiUrls.activity.get.format({ id: activityId })
-  const response = await axios.get(apiUrl);
-
-  dispatch({ type: FETCH_SELECTED_ACTIVITY, payload: response.data })
 }
 
 export const updateActivity = (activity) => async (dispatch) => {

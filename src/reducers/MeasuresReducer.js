@@ -1,27 +1,59 @@
-import { FETCH_MEASURES, CREATE_MEASURE, UPDATE_MEASURE, DELETE_MEASURE } from 'constants/types';
+import { FETCH_MEASURES, FETCH_SELECTED_MEASURE, CREATE_MEASURE, UPDATE_MEASURE, DELETE_MEASURE } from 'constants/types';
 
-const reducer = (state = [], action) => {
+const initialState = {
+   selectedMeasure: {},
+   measures: []
+};
+
+const reducer = (state = initialState, action) => {
    switch (action.type) {
       case FETCH_MEASURES:
-         return action.payload;
-      case CREATE_MEASURE:
-         return [
-            ...state,
-            action.payload
-         ];
-      case UPDATE_MEASURE:
-         return state.map(measure => {
-            if (measure.id !== action.payload.id) {
-               return measure;
+         return {
+            ...initialState,
+            ...{ 
+               measures: action.payload
             }
-
-            return {
-               ...measure,
-               ...action.payload
-            };
-         });
+         };
+      case FETCH_SELECTED_MEASURE:
+         return {
+            ...initialState,
+            ...{
+               selectedMeasure: action.payload
+            }
+         };
+      case CREATE_MEASURE:
+         return {
+            ...initialState,
+            ...{
+               measures: [
+                  ...state.measures,
+                  action.payload
+               ]
+            }
+         };
+      case UPDATE_MEASURE:
+         return {
+            selectedMeasure: action.payload,
+            ...{
+               measures: state.measures.map(measure => {
+                  if (measure.id !== action.payload.id) {
+                     return measure;
+                  }
+      
+                  return {
+                     ...measure,
+                     ...action.payload
+                  };
+               })
+            }
+         };
       case DELETE_MEASURE:
-         return state.filter(measure => measure.id !== action.payload);
+         return {
+            selectedMeasure: {},
+            ...{
+               measures: state.measures.filter(measure => measure.id !== action.payload)
+            }
+         };
       default:
          return state;
    }

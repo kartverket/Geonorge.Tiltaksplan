@@ -5,7 +5,7 @@ import { useSelector } from "react-redux";
 import style from 'components/partials/Breadcrumbs.module.scss'
 
 const SelectedMeasureBreadcrumb = () => {
-   const selectedMeasure = useSelector(state => state.selectedMeasure);
+   const selectedMeasure = useSelector(state => state.measures.selectedMeasure);
 
    return selectedMeasure ? (
       <span>{selectedMeasure.name}</span>
@@ -13,7 +13,7 @@ const SelectedMeasureBreadcrumb = () => {
 };
 
 const SelectedActivityBreadcrumb = () => {
-  const selectedActivity = useSelector(state => state.selectedActivity);
+  const selectedActivity = useSelector(state => state.activities.selectedActivity);
 
   return selectedActivity ? (
      <span>{selectedActivity.name}</span>

@@ -77,7 +77,7 @@ class ActivityTableRow extends Component {
       const statusStyle = { width: `${activity.status * 20}%` }
       return (<React.Fragment>
          <td>{activity.no}</td>
-         <td onClick={() => this.goToActivity()}>{activity.name}</td>
+         <td>{activity.name}</td>
          <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
          <td>{this.getParticitants(activity.participants)}</td>
          <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
@@ -93,7 +93,7 @@ class ActivityTableRow extends Component {
    render() {
       return (
          <React.Fragment>
-            <tr>{this.renderActivity()}</tr>            
+            <tr onClick={() => this.goToActivity()}>{this.renderActivity()}</tr>            
          </React.Fragment>
       );
    }

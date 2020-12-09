@@ -56,8 +56,6 @@ class EditMeasure extends Component {
          this.setState({ dataFetched: true });
       });
    }
-      
-   
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
@@ -67,12 +65,15 @@ class EditMeasure extends Component {
 
       this.setState({ measure });
    }
+
    openModal() {
       this.setState({ modalOpen: true });
    }
+   
    closeModal() {
       this.setState({ modalOpen: false });
    }
+   
    handleDelete() {            
       this.props.deleteMeasure(this.state.measure)
         .then(() => {
@@ -82,9 +83,11 @@ class EditMeasure extends Component {
   
    saveMeasure() {
       const measure = this.state.measure;
-      if(this.state.selectedOwner.length) {
+      
+      if (this.state.selectedOwner.length) {
          measure.owner.id = this.state.selectedOwner[0].id
-      }      
+      }
+
       this.props.updateMeasure(measure)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
@@ -93,7 +96,6 @@ class EditMeasure extends Component {
             toastr.error('Kunne ikke oppdatere tiltak');
          });
    }
-
 
    getMeasureStatusLabel(planStatuses, measure) {
       return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
@@ -124,9 +126,10 @@ class EditMeasure extends Component {
    renderStars(amount) {
       return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
    }
+
    handleOwnerSelect(data) { 
       this.setState({
-         selectedOwner : data
+         selectedOwner: data
       })           
    }
 
@@ -360,7 +363,7 @@ class EditMeasure extends Component {
 }
 
 const mapStateToProps = state => ({
-   selectedMeasure: state.selectedMeasure,
+   selectedMeasure: state.measures.selectedMeasure,
    measureVolume: state.options.measureVolume,
    measureResults: state.options.measureResults,
    trafficLights: state.options.trafficLights,

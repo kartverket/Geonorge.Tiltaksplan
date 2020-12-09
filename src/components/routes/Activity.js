@@ -19,12 +19,7 @@ class Activity extends Component {
       };
    }
 
-   componentDidUpdate() {
-      console.log('update')
-   }
-
    componentDidMount() {
-      console.log('mount')
       Promise.all([
          this.props.fetchMeasure(this.getMeasureId()),
          this.props.fetchActivity(this.getActivityId())
@@ -62,7 +57,7 @@ class Activity extends Component {
 
 
 const mapStateToProps = (state) => ({
-   activity: state.selectedActivity
+   activity: state.activities.selectedActivity
 });
 
 const mapDispatchToProps = {

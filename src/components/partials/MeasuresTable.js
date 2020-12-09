@@ -22,7 +22,6 @@ class MeasuresTable extends Component {
       }
    }
 
-
    componentDidMount() {
       Promise.all([
          this.props.fetchMeasures(),
@@ -32,7 +31,6 @@ class MeasuresTable extends Component {
          this.setState({ dataFetched: true });
       });
    }
-
    
    render() {
     if (!this.state.dataFetched) {
@@ -59,7 +57,7 @@ class MeasuresTable extends Component {
 
 
 const mapStateToProps = state => ({ 
-   measures: state.measures,
+   measures: state.measures.measures,
    planStatuses: state.options.planStatuses
 });
 
