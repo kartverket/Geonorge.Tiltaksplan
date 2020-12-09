@@ -41,6 +41,7 @@ class ActivityTable extends Component {
             <table className={style.activitiesTable}>
                <thead>
                   <tr>
+                     <th>Nr</th>
                      <th>Navn</th>
                      <th>Beskrivelse</th>
                      <th>Deltakere</th>

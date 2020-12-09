@@ -43,6 +43,7 @@ class MeasuresTable extends Component {
       <table className={style.measuresTable}>
          <thead>
             <tr>
+               <th>Nr</th>
                <th>Tiltak</th>
                <th>Status</th>
                <th>Eier</th>

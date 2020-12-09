@@ -76,6 +76,7 @@ class ActivityTableRow extends Component {
       const activity = this.props.activity;
       const statusStyle = { width: `${activity.status * 20}%` }
       return (<React.Fragment>
+         <td>{activity.no}</td>
          <td onClick={() => this.goToActivity()}>{activity.name}</td>
          <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
          <td>{this.getParticitants(activity.participants)}</td>

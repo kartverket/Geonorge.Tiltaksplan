@@ -24,6 +24,7 @@ class AddMeasure extends Component {
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
+      
    }
 
    componentDidMount() {
@@ -36,7 +37,7 @@ class AddMeasure extends Component {
    openModal() {
       this.setState({
          modalOpen: true,
-         measure: { name: '', owner: { id: 0 } }
+         measure: { name: '', owner: { id: 0 }, no: 0 }
       });
    }
 
@@ -52,12 +53,12 @@ class AddMeasure extends Component {
          }
       });
    }
+   
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
-      measure[name] = value;
-
+      measure[name] = isNaN(value) ? value : parseInt(value);
       this.setState({ measure });
    }
 
@@ -93,6 +94,11 @@ class AddMeasure extends Component {
                </Modal.Header>
 
                <Modal.Body>
+               <Form.Group controlId="formNo">
+                     <Form.Label>Nummer</Form.Label>
+                     <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} />
+                  </Form.Group>
+
                   <Form.Group controlId="formName">
                      <Form.Label>Navn</Form.Label>
                      <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
@@ -105,7 +111,7 @@ class AddMeasure extends Component {
                         labelKey="name"
                         onChange={this.handleOwnerSelect}
                         options={this.props.organizations}
-                        placeholder="Legg til eier..."
+                        placeholder="Legg til eier..."                        
                      />
                   </Form.Group>
                </Modal.Body>

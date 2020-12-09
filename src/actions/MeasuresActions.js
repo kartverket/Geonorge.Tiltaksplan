@@ -30,8 +30,8 @@ export const updateMeasure = (measure) => async (dispatch) => {
    dispatch({ type: UPDATE_MEASURE, payload: response.data });
 }
 
-export const deleteMeasure = (measureId) => async (dispatch) => {
-   const apiUrl = apiUrls.measure.delete.format({ id: measureId });
+export const deleteMeasure = (measure) => async (dispatch) => {
+   const apiUrl = apiUrls.measure.delete.format({ id: measure.id });
    const response = await axios.delete(apiUrl);
 
    dispatch({ type: DELETE_MEASURE, payload: response.data });

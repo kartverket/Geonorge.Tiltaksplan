@@ -65,7 +65,7 @@ class ActivityDetails extends Component {
   handleChange(data) {
     const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
-    activity[name] = value;
+    activity[name] = isNaN(value) ? value : parseInt(value);
     this.setState({ activity });
   }
   openModal() {
@@ -154,11 +154,23 @@ class ActivityDetails extends Component {
     return this.state.activity ? (
       <React.Fragment>
         <Form.Group controlId="formName" className={formsStyle.form}>
+          <Form.Label>Nummer</Form.Label>
+          { this.state.editable
+              ? (
+                <div className={formsStyle.comboInput}>                  
+                  <Form.Control type="number" min="0" name="no" value={this.state.activity.no} onChange={this.handleChange} />
+                </div>
+              )
+              : (
+                <div>{this.state.activity.no}</div>
+              ) }
+        </Form.Group>
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Aktivitet </Form.Label>
           {
             this.state.editable
               ? (
-                <div className={formsStyle.comboInput}>
+                <div className={formsStyle.comboInput}>                  
                   <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
                 </div>
               )
@@ -166,7 +178,9 @@ class ActivityDetails extends Component {
                 <div>{this.state.activity.name}</div>
               )
           }
+        </Form.Group>
 
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Beskrivelse </Form.Label>
           {
             this.state.editable
@@ -188,6 +202,9 @@ class ActivityDetails extends Component {
                   getMdeInstance={this.getMdeInstance} />
               )
           }
+           </Form.Group>
+
+          <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Start </Form.Label>
           {
             this.state.editable
@@ -200,7 +217,9 @@ class ActivityDetails extends Component {
                 <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
               )
           }
+        </Form.Group>
 
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Slutt </Form.Label>
           {
             this.state.editable
@@ -213,8 +232,8 @@ class ActivityDetails extends Component {
                 <div><DayJS format="MMMM YYYY" locale="nb">{this.state.activity.implementationEnd}</DayJS></div>
               )
           }
-
-          <Form.Group controlId="formStatus">
+          </Form.Group>
+          <Form.Group controlId="formName" className={formsStyle.form}>
             <Form.Label>Status </Form.Label>
             {
               this.state.editable
@@ -236,6 +255,7 @@ class ActivityDetails extends Component {
             }
 
           </Form.Group>
+          <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Deltakere </Form.Label>
           {
             this.state.editable

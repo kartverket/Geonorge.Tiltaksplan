@@ -6,13 +6,15 @@ import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-
+import { fetchOrganizations } from 'actions/OrganizationsActions';
+import { withRouter } from 'react-router-dom';
 // Components
 import { SelectDropdown } from 'components/custom-elements';
+import { Typeahead } from 'react-bootstrap-typeahead';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
-import { updateMeasure } from 'actions/MeasuresActions';
+import { updateMeasure, deleteMeasure } from 'actions/MeasuresActions';
 
 // Assets
 import StarIcon from 'gfx/icon-star.svg'
@@ -28,6 +30,7 @@ class EditMeasure extends Component {
       this.handleEditableChange = this.handleEditableChange.bind(this);
       this.getMdeInstance = this.getMdeInstance.bind(this);
       this.handleChange = this.handleChange.bind(this);
+      this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
       this.handleDelete = this.handleDelete.bind(this);
       this.openModal = this.openModal.bind(this);
@@ -36,21 +39,31 @@ class EditMeasure extends Component {
       this.state = {
          dataFetched: false,
          measure: props.selectedMeasure,
-         editable: false
+         editable: false,
+         selectedOwner: [
+            props.selectedMeasure.owner
+         ]
       };
    }
 
+   
    componentDidMount() {
-      this.props.fetchOptions()
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
+      Promise.all([
+         this.props.fetchOrganizations(),
+         this.props.fetchOptions()
+      ])
+      .then(() => {
+         this.setState({ dataFetched: true });
+      });
    }
+      
+   
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
-      measure[name] = value;
+      console.log(value);
+      measure[name] = isNaN(value) ? value : parseInt(value);
 
       this.setState({ measure });
    }
@@ -61,15 +74,17 @@ class EditMeasure extends Component {
       this.setState({ modalOpen: false });
    }
    handleDelete() {            
-      this.props.deleteActivity(this.state.measure)
+      this.props.deleteMeasure(this.state.measure)
         .then(() => {
-          this.props.history.push(`/tiltak/`);
+          this.props.history.push(`/`);
         });    
    }
   
    saveMeasure() {
       const measure = this.state.measure;
-
+      if(this.state.selectedOwner.length) {
+         measure.owner.id = this.state.selectedOwner[0].id
+      }      
       this.props.updateMeasure(measure)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
@@ -109,6 +124,11 @@ class EditMeasure extends Component {
    renderStars(amount) {
       return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
    }
+   handleOwnerSelect(data) { 
+      this.setState({
+         selectedOwner : data
+      })           
+   }
 
    render() {
       if (!this.state.dataFetched) {
@@ -118,6 +138,17 @@ class EditMeasure extends Component {
       return (
          <React.Fragment>
             <div className={`${formsStyle.form} form-container`}>
+            {
+                     this.state.editable
+                        ? (<Form.Group controlId="formNo">
+                              <Form.Label>Nummer  </Form.Label>
+                                 <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                                    <Form.Control type="number" min="0" name="no" value={this.state.measure.no} onChange={this.handleChange} />
+                                 </div>
+                              </Form.Group> 
+                           )
+                        : ''
+                  }
             
                   {
                      this.state.editable
@@ -130,7 +161,28 @@ class EditMeasure extends Component {
                            )
                         : ''
                   }
+                  <Form.Group controlId="formOwner">
+                        <Form.Label>Eier</Form.Label>
+                  {
+
+                        this.state.editable
+                        ? ( 
+                        <Typeahead
+                           id="basic-typeahead-single"
+                           labelKey="name"
+                           onChange={this.handleOwnerSelect}
+                           options={this.props.organizations}
+                           placeholder="Legg til eier..."
+                           selected={this.state.selectedOwner}
+                        />
+                    
+                      ) : (
+                         <div>
+                            {this.state.measure.owner.name}
+                         </div>
+                      )
               
+                      } </Form.Group>
 
                <Form.Group controlId="formProgress">
                   <Form.Label>Fremdrift </Form.Label>
@@ -312,12 +364,15 @@ const mapStateToProps = state => ({
    measureVolume: state.options.measureVolume,
    measureResults: state.options.measureResults,
    trafficLights: state.options.trafficLights,
-   planStatuses: state.options.planStatuses
+   planStatuses: state.options.planStatuses,
+   organizations: state.organizations
 });
 
 const mapDispatchToProps = {
    fetchOptions,
-   updateMeasure
+   updateMeasure,
+   fetchOrganizations,
+   deleteMeasure
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(EditMeasure);
+export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditMeasure));
