@@ -3,11 +3,12 @@ import {createBrowserHistory} from 'history';
 import {routerMiddleware} from 'connected-react-router';
 import {createStore, applyMiddleware} from 'redux';
 import {composeWithDevTools} from 'redux-devtools-extension/developmentOnly';
+import {loadUser} from 'redux-oidc';
+import userManager from 'utils/userManager';
 import thunk from 'redux-thunk';
 
 // Reducers
 import createRootReducer from 'reducers';
-
 
 export const history = createBrowserHistory()
 
@@ -28,5 +29,6 @@ export default function configureStore(preloadedState) {
 			)
 		)
 	);
+	loadUser(store, userManager);
   return store;
 }

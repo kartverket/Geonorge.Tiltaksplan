@@ -1,18 +1,113 @@
 @import "./style/abstracts/_all.scss";
+@import "./style/_font-faces.scss";
+@import "./style/_select-dropdown.scss";
+@import "./style/overrides.scss";
+@import "~bootstrap/scss/bootstrap";
+@import "react-redux-toastr/src/styles/index";
 
-*, *::before, *::after{
-  box-sizing: border-box;
+*,
+*::before,
+*::after {
+   box-sizing: border-box;
 }
 
+
 body {
-  margin: 0;
-  font-family: $default-font;
-  background-color: $body-background;
-  color: $color-default-text;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+   margin: 0;
+   font-family: $default-font;
+   background-color: $body-background;
+   color: $color-default-text;
+   -webkit-font-smoothing: antialiased;
+   -moz-osx-font-smoothing: grayscale;
+   font-size: 14px;
+   line-height: 20px;
+   overflow-y: scroll;
+}
+
+h1 {
+   font-family: "Raleway", sans-serif;
+   font-size: 48pt;
+   font-weight: 100;
+   margin: 0;
+
+   &::after {
+      content: "";
+      display: block;
+      width: 100px;
+      border-bottom: 5px solid #fe5000;
+      margin: 25px 0 30px 0;
+   }
+}
+
+/*.btn, a.btn, button.btn, input[type=button].btn, input[type=submit].btn {
+   background-color: #7da1c4;
+   background-position: 50%;
+   border-radius: 0;
+   border: 1px solid transparent;
+   color: #ffffff;
+   cursor: pointer;
+   font-family: Open Sans,sans-serif;
+   font-size: 12pt;
+   font-style: normal;
+   font-weight: 400;
+   height: 34px;
+   line-height: 16pt;
+   margin-bottom: 7px;
+   text-decoration: none;
+   transition: all .35s linear 0s;
+
+   &.primary {
+      background-color: #fe5000;
+   }
+
+   &:hover,
+   &:focus {
+      background-color: #fe5000;
+      border: 1px solid transparent;
+      color: #ffffff !important;
+      font-size: 12pt;
+      font-style: normal;
+      line-height: 16pt;
+   }
+}*/
+
+input[type="radio"] {
+   visibility: hidden;
+}
+
+input[type="radio"]:after {
+   width: 20px;
+   height: 20px;
+   border-radius: 15px;
+   top: -2px;
+   left: 2px;
+   position: relative;
+   border-color: #fe5000;
+   background-image: url("../src/gfx/radio-unchecked.svg");
+   content: "";
+   display: inline-block;
+   visibility: visible;
+}
+
+input[type="radio"]:checked:after {
+   width: 20px;
+   height: 20px;
+   border-radius: 15px;
+   top: -2px;
+   left: 2px;
+   position: relative;
+   background-image: url("../src/gfx/radio-checked.svg");
+   content: "";
+   display: inline-block;
+   visibility: visible;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New", monospace;
 }
+
+.form-container {
+   margin: 30px 0;
+}
+
+

@@ -1,10 +1,12 @@
 @import "../../style/abstracts/_all.scss";
 
 :local(.container) {
-  margin: auto;
-  padding: 16px;
-  @media (min-width: $screen-sm) {
-    padding: 24px;
-    max-width: 1200px;
-  }
+   padding: 16px;
+   margin: 100px auto 40px auto;
+
+   @media (min-width: $screen-sm) {
+      padding: 24px;
+      max-width: 1200px;
+   }
 }
+

@@ -1,17 +1,17 @@
-// Dependencies
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
-
-// Stylesheets
+import React, { Component } from 'react';
+import { connect } from 'react-redux';
 import style from 'components/template/Container.module.scss';
+import Breadcrumbs from 'components/partials/Breadcrumbs';
 
 class ContentContainer extends Component {
-
-  render() {
-    return (<div className={style.container}>
-      {this.props.children}
-    </div>)
-  }
+   render() {
+      return (
+         <div className={style.container}>
+            <Breadcrumbs />
+            {this.props.children}
+         </div>
+      );
+   }
 }
 
 export default connect(null, null)(ContentContainer);

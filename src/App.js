@@ -1,47 +1,65 @@
 // Dependecies
 import React, { Component } from 'react';
-import {Provider} from 'react-redux';
-import {Route, Switch} from 'react-router';
-import {ConnectedRouter} from 'connected-react-router';
-import WebFont from 'webfontloader';
+import { Provider } from 'react-redux';
+import { Route, Switch } from 'react-router';
+import { ConnectedRouter } from 'connected-react-router';
+import ReduxToastr from 'react-redux-toastr';
 
 // Utils
-import configureStore, {history} from 'utils/configureStore';
+import configureStore, { history } from 'utils/configureStore';
 
 // Routes
-import Home from 'components/routes/Home';
-import Commits from 'components/routes/Commits';
-import Actions from 'components/routes/Actions';
+import OidcCallback from 'components/routes/OidcCallback';
+import OidcSignoutCallback from 'components/routes/OidcSignoutCallback';
+import Measures from 'components/routes/Measures';
+import Measure from 'components/routes/Measure';
+import Activity from 'components/routes/Activity';
 import NotFound from 'components/routes/NotFound';
-
 
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
 
-WebFont.load({
-  google: {
-    families: ['Roboto:400,700&display=swap']
-  }
-});
+// font awesome
+import { library } from '@fortawesome/fontawesome-svg-core'
+import { fab } from '@fortawesome/free-brands-svg-icons'
+import { faCheckSquare, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+
+library.add(fab, faCheckSquare, faTrashAlt, faEdit)
 
 const initialState = {};
 const store = configureStore(initialState);
 
 class App extends Component {
-  render() {
-    return (<Provider store={store}>
-      <ConnectedRouter history={history}>
-        <NavigationBar />
-        <Switch>
-          <Route exact={true} path="/commits/:commitId" render={(props) => (<Commits {...props}/>)}/>
-          <Route exact={true} path="/commits" render={(props) => (<Commits {...props}/>)}/>
-          <Route exact={true} path="/" render={(props) => (<Home {...props}/>)}/>
-          <Route exact={true} path="/actions" render={(props) => (<Actions {...props} />)}/>
-          <Route render={() => (<NotFound/>)}/>
-        </Switch>
-      </ConnectedRouter>
-    </Provider>);
-  }
+   render() {
+      return (
+         <Provider store={store}>
+            <ConnectedRouter history={history}>
+               <NavigationBar />
+               <Switch>
+                  <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
+                  <Route exact path="/signin-oidc" render={() => (<OidcCallback/>)}/>
+                  <Route exact path="/signout-callback-oidc" render={() => (<OidcSignoutCallback/>)}/>
+                  <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
+                  <Route exact={true} path="/tiltak/:measureId/ny-aktivitet" render={(props) => (<Activity {...props} />)} />
+                  <Route exact={true} path="/tiltak/:measureId/aktivitet" render={(props) => (<Activity {...props} />)} />
+                  <Route exact={true} path="/tiltak/:measureId/aktivitet/:activityId" render={(props) => (<Activity {...props} />)} />
+                  <Route render={() => (<NotFound />)} />
+               </Switch>
+            </ConnectedRouter>
+            <ReduxToastr
+               timeOut={2000}
+               newestOnTop={false}
+               preventDuplicates
+               position="top-right"
+               getState={(state) => state.toastr}
+               transitionIn="fadeIn"
+               transitionOut="fadeOut"
+               progressBar
+               closeOnToastrClick 
+            />
+         </Provider>
+      );
+   }
 }
 
 export default App;

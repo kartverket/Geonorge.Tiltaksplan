@@ -1,0 +1,38 @@
+@import "../../style/abstracts/_all.scss";
+
+:local(.activitiesTable) {
+    border-collapse: collapse;
+    width: 100%;
+ 
+    thead th {
+       border-bottom: 2px solid #fe0400;
+       color: $primary-color;
+        font-weight: 600; 
+       height: 27px;
+       line-height: 18.6667px;
+       padding: 20px 15px 5px 0;
+       text-align: left;
+       text-transform: uppercase;
+    }
+    tbody td {
+        padding: 10px 10px 10px 0;
+        td {            
+            width: 15px;
+          }
+          td+td {
+            width: auto;
+          }
+    }
+    td {
+  width: 5%;
+}
+td+td {
+  width: auto;
+}
+ }
+:local(.block) {
+  margin: 10px 0;
+}
+table td, table td * {
+  vertical-align: top;
+}

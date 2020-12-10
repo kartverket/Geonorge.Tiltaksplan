@@ -1,0 +1,47 @@
+@import "../../style/abstracts/_all.scss";
+
+:local(.block) {
+  margin: 20px 0;
+  font-weight: 600;
+  input[type="text"],
+  input[type="number"] {
+    display: block;
+    padding: 5px;
+    font-size: 1.5em;
+    width: 480px;
+    margin-top: 5px;
+  }
+  input[type="radio"] {
+    border: 0px;
+    width: 20px;
+    display: inline;
+    height: 1.5em;
+    margin-right: 5px;
+  }
+  label + label,
+  label > label {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    margin-top: 10px;
+    input[type="radio"] {
+      display: inline;
+    }
+  }
+  label {
+    display: flex;
+    flex-direction: column;
+    padding-bottom: 5px;
+  }
+}
+
+:local(.flexblock) {
+  display: flex;
+  justify-content: flex-start;
+  div {
+    margin-right: 10px;
+  }
+}
+:local(.block) {
+  margin: 20px 0;
+}
