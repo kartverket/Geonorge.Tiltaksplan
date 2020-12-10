@@ -220,11 +220,11 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
+                  <DatePicker locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
                 </div>
               )
               : (
-                <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
+                <div><DayJS locale="nb" format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
               )
           }
         </Form.Group>
