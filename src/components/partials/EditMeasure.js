@@ -22,6 +22,7 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
+import DayJS from 'react-dayjs';
 
 class EditMeasure extends Component {
    constructor(props) {
@@ -60,8 +61,15 @@ class EditMeasure extends Component {
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
-      console.log(value);
-      measure[name] = isNaN(value) ? value : parseInt(value);
+      let newValue;
+      if (value instanceof Date){
+        newValue = value.toISOString();
+     } else if (!isNaN(value)) {
+        newValue = parseInt(value);
+     } else {
+        newValue = value;
+     }
+      measure[name] = newValue;      
 
       this.setState({ measure });
    }
@@ -98,7 +106,8 @@ class EditMeasure extends Component {
    }
 
    getMeasureStatusLabel(planStatuses, measure) {
-      return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
+      
+      return planStatuses.find(status => measure.status === status.value).label;
    }
 
    getMdeInstance(instance) {
@@ -164,12 +173,13 @@ class EditMeasure extends Component {
                            )
                         : ''
                   }
-                  <Form.Group controlId="formOwner">
-                        <Form.Label>Eier</Form.Label>
+                  
                   {
 
                         this.state.editable
                         ? ( 
+                        <Form.Group controlId="formOwner">
+                        <Form.Label>Eier</Form.Label>
                         <Typeahead
                            id="basic-typeahead-single"
                            labelKey="name"
@@ -178,15 +188,17 @@ class EditMeasure extends Component {
                            placeholder="Legg til eier..."
                            selected={this.state.selectedOwner}
                         />
-                    
+                     </Form.Group>
                       ) : (
-                         <div>
-                            {this.state.measure.owner.name}
-                         </div>
+                         ''
                       )
               
-                      } </Form.Group>
+                      } 
+                    
+                     <h2>Rapportering</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
+               <div className={formsStyle.block}>
 
+               
                <Form.Group controlId="formProgress">
                   <Form.Label>Fremdrift </Form.Label>
                   {
@@ -320,6 +332,7 @@ class EditMeasure extends Component {
                         )
                   }
                </Form.Group>
+               </div>
             </div>
                   {this.state.editable ? (
                      <div>

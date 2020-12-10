@@ -10,7 +10,7 @@ import StarIcon from 'gfx/icon-star.svg'
 class MeasuresTableRow extends Component {
 
    getMeasureStatusLabel(planStatuses, measure) {
-      return planStatuses && measure.status && planStatuses[measure.status] && planStatuses[measure.status].label ? planStatuses[measure.status].label : '';
+      return planStatuses.find(status => measure.status === status.value).label;
    }
 
    renderStars(amount) {
