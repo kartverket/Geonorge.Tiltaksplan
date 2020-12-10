@@ -224,7 +224,7 @@ class ActivityDetails extends Component {
                 </div>
               )
               : (
-                <div><DayJS locale="nb" format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
+                <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
               )
           }
         </Form.Group>
@@ -235,7 +235,7 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
+                  <DatePicker locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
                 </div>
               )
               : (
