@@ -31,8 +31,12 @@ class NavigationBar extends Component {
 
   render() {
     const environment = getEnvironmentVariable('environment');
-    return (<main-navigation environment={environment}></main-navigation>)
+    return (<main-navigation isLoggedIn={this.props.user ? true : false} environment={environment}></main-navigation>)
   }
 }
 
-export default connect(null, null)(NavigationBar);
+const mapStateToProps = state => ({
+  user: state.oidc.user
+});
+
+export default connect(mapStateToProps, null)(NavigationBar);
