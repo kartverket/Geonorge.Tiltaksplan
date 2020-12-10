@@ -9,6 +9,8 @@ import ReduxToastr from 'react-redux-toastr';
 import configureStore, { history } from 'utils/configureStore';
 
 // Routes
+import OidcCallback from 'components/routes/OidcCallback';
+import OidcSignoutCallback from 'components/routes/OidcSignoutCallback';
 import Measures from 'components/routes/Measures';
 import Measure from 'components/routes/Measure';
 import Activity from 'components/routes/Activity';
@@ -35,6 +37,8 @@ class App extends Component {
                <NavigationBar />
                <Switch>
                   <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
+                  <Route exact path="/signin-oidc" render={() => (<OidcCallback/>)}/>
+                  <Route exact path="/signout-callback-oidc" render={() => (<OidcSignoutCallback/>)}/>
                   <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
                   <Route exact={true} path="/tiltak/:measureId/ny-aktivitet" render={(props) => (<Activity {...props} />)} />
                   <Route exact={true} path="/tiltak/:measureId/aktivitet" render={(props) => (<Activity {...props} />)} />

@@ -2,6 +2,7 @@ export const config = {};
 export const apiUrls = {};
 
 async function load() {
+
     const result = await fetch('/config.json');
     const newconfig = await result.json();
 
@@ -18,6 +19,7 @@ async function load() {
     return config;
 }
 
+
 async function loadConfigFromApi(url) {
     const response = await fetch(url);
     const apiConfig = await response.json();
@@ -31,4 +33,6 @@ async function loadConfigFromApi(url) {
     }
 }
 
-export { load }
+export { load };
+
+export const oidcConfig = process.env.NODE_ENV === "development" ? require('../config/config.local.json') : require('../config/config.json');
