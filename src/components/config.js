@@ -35,4 +35,13 @@ async function loadConfigFromApi(url) {
 
 export { load };
 
-export const oidcConfig = process.env.NODE_ENV === "development" ? require('../config/config.local.json') : require('../config/config.json');
+const getLocalConfigIfExists = () => {
+    try {
+        return require('../config/config.local.json');
+    } catch (ex) {
+        console.warn("No local config file found");
+        return require('../config/config.json');
+    }
+}
+
+export const oidcConfig = process.env.NODE_ENV === "development" ? getLocalConfigIfExists() : require('../config/config.json');
