@@ -35,7 +35,7 @@ registerLocale('nb', nb)
 class ActivityDetails extends Component {
   constructor(props) {
     super(props);
-    debugger;
+   
     this.state = {
       activity: this.props.newActivity
         ? new Activity({ measureId: this.getMeasureId() })
@@ -66,7 +66,15 @@ class ActivityDetails extends Component {
   handleChange(data) {
     const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
-    activity[name] = isNaN(value) ? value : parseInt(value);
+    let newValue;
+    if (value instanceof Date){
+      newValue = value.toISOString();
+   } else if (!isNaN(value)) {
+      newValue = parseInt(value);
+   } else {
+      newValue = value;
+   }
+    activity[name] = newValue;
     this.setState({ activity });
   }
   openModal() {
@@ -207,6 +215,7 @@ class ActivityDetails extends Component {
 
           <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Start </Form.Label>
+        
           {
             this.state.editable
               ? (
@@ -288,7 +297,7 @@ class ActivityDetails extends Component {
           ) : (
               <div>
                 <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
-                <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
               </div>
             )}
         </div>
