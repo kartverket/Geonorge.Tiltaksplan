@@ -5,6 +5,10 @@ import ConfigLoader from 'components/ConfigLoader';
 import * as serviceWorker from './serviceWorker';
 import 'extensions';
 import 'index.scss';
+import 'dayjs/locale/nb';
+import dayjs from 'dayjs';
+
+dayjs.locale('nb');
 
 class Main extends Component {
     render() {
