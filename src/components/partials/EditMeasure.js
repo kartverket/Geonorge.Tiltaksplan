@@ -195,15 +195,16 @@ class EditMeasure extends Component {
               
                       } 
                     
-                     <h2>Rapportering</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
+                     <h2>Rapportering av fremdrift</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
                <div className={formsStyle.block}>
 
                
                <Form.Group controlId="formProgress">
-                  <Form.Label>Fremdrift </Form.Label>
+                  
                   {
                      this.state.editable
-                        ? (
+                        ? (<React.Fragment>
+                           <Form.Label>Fremdrift </Form.Label>
                            <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
@@ -217,6 +218,7 @@ class EditMeasure extends Component {
                               />
 
                            </div>
+                           </React.Fragment>
                         )
                         : (
                            <SimpleMDE
