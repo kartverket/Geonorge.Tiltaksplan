@@ -3,10 +3,6 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigation';
 
-
-// Utils
-import userManager from 'utils/userManager';
-
 // Helpers
 import { getEnvironmentVariable } from 'helpers/environmentVariableHelpers.js';
 
