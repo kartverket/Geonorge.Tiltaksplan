@@ -4,6 +4,7 @@ import {connectRouter} from 'connected-react-router';
 import { reducer as oidcReducer } from 'redux-oidc';
 
 // Reducers
+import ConfigReducer from 'reducers/ConfigReducer';
 import MeasuresReducer from 'reducers/MeasuresReducer';
 import ActivitiesReducer from 'reducers/ActivitiesReducer';
 import OptionsReducer from 'reducers/OptionsReducer';
@@ -13,6 +14,7 @@ import { reducer as toastrReducer } from 'react-redux-toastr'
 const reducers = history => combineReducers({
   router: connectRouter(history),
   oidc: oidcReducer,
+  config: ConfigReducer,
   measures: MeasuresReducer,
   activities: ActivitiesReducer,
   organizations: OrganizationsReducer,
