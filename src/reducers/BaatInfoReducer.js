@@ -1,6 +1,6 @@
 import { UPDATE_BAAT_INFO } from 'constants/types';
 
-const initialState = {};
+const initialState = null;
 
 const reducer = (state = initialState, action) => {
   switch (action.type) {
