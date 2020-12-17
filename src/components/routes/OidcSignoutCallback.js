@@ -3,9 +3,8 @@ import React from "react";
 import { connect } from "react-redux";
 import { SignoutCallbackComponent } from "redux-oidc";
 import { withRouter } from 'react-router-dom';
+import PropTypes from 'prop-types';
 
-// Utils
-import userManager from "../../utils/userManager";
 
 class SignoutCallbackPage extends React.Component {
     successCallback = () => {
@@ -15,7 +14,7 @@ class SignoutCallbackPage extends React.Component {
     render() {
         return (
             <SignoutCallbackComponent
-                userManager={userManager}
+                userManager={this.props.userManager}
                 successCallback={this.successCallback}
                 errorCallback={error => {
                     if (this.props && this.props.history){
@@ -29,5 +28,9 @@ class SignoutCallbackPage extends React.Component {
         );
     }
 }
+
+SignoutCallbackPage.propTypes = {
+  userManager: PropTypes.object.isRequired
+};
 
 export default withRouter(connect(null)(SignoutCallbackPage));

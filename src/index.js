@@ -12,8 +12,8 @@ dayjs.locale('nb');
 
 class Main extends Component {
     render() {
-        return <ConfigLoader ready={() =>
-            <App />
+        return <ConfigLoader ready={(config) =>
+            <App config={config} />
         } />;
     }
 }

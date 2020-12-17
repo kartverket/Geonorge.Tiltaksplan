@@ -2,9 +2,23 @@
 import { createUserManager } from 'redux-oidc';
 
 // Config
-import { oidcConfig } from 'components/config';
+import { config } from 'components/config';
 
-const userManagerConfig = oidcConfig.oidc;
-const userManager = createUserManager(userManagerConfig);
+const configIsLoaded = () => {
+  return new Promise((resolve, reject) => {
+    if (config && config.oidc) {
+      resolve(config);
+    } else {
+      window.setTimeout(() => {
+        resolve(configIsLoaded());
+      }, 100)
+    }
+  });
+}
 
-export default userManager;
+const getUserManagerConfigWhenReady = configIsLoaded().then((config) => {
+  const userManagerConfig = config.oidc;
+  return createUserManager(userManagerConfig);
+})
+
+export default getUserManagerConfigWhenReady;
