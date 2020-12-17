@@ -1,14 +1,23 @@
 // Types
 import { UPDATE_BAAT_INFO } from 'constants/types';
+import * as Cookies from 'js-cookie';
 
 
-export const updateBaatInfo = () => (dispatch, getState) => {
-  const user = getState() && getState().oidc && getState().oidc.user
-    ? getState().oidc.user
-    : null;
-  const savedBaatInfo = getState() && getState().baatInfo && Object.keys(getState().baatInfo).length
-    ? getState().baatInfo
-    : null;
+export const updateOidcCookie = (user) => dispatch => {
+  if (user) {
+    const accessToken = user.access_token
+      ? user.access_token
+      : null;
+    const expiresAt = user.expires_at
+      ? user.expires_at * 1000
+      : null;
+    if (accessToken && expiresAt) {
+      Cookies.set('oidcAccessToken', accessToken, {expires: new Date(expiresAt)});
+    }
+  }
+};
+
+export const updateBaatInfo = (user, savedBaatInfo) => dispatch => {
   if (user && user.profile && user.profile.sub && !savedBaatInfo) {
     const accessToken = user.access_token
       ? user.access_token
