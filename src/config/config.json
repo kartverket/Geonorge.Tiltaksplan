@@ -1,6 +1,7 @@
 {
     "environment": "dev",
     "configApiUrl": "https://tiltaksplan.dev.geonorge.no/api/config",
+    "authInfoApiUrl": "https://tiltaksplan.dev.geonorge.no/api/authzinfo",
     "oidc": {
         "client_id": "wX8HQI0Myk5OpKN_cqepHbyRUjYa",
         "authority": "https://test.geoid.no/oauth2/authorize",
