@@ -24,6 +24,9 @@ import { createActivity, updateActivity, deleteActivity } from 'actions/Activity
 import { fetchOrganizations } from 'actions/OrganizationsActions';
 import { fetchOptions } from 'actions/OptionsActions';
 
+// Helpers
+import { canDeleteActivity, canEditActivity } from 'helpers/authorizationHelpers';
+
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss';
 import 'easymde/dist/easymde.min.css';
@@ -35,7 +38,7 @@ registerLocale('nb', nb)
 class ActivityDetails extends Component {
   constructor(props) {
     super(props);
-   
+
     this.state = {
       activity: this.props.newActivity
         ? new Activity({ measureId: this.getMeasureId() })
@@ -67,13 +70,13 @@ class ActivityDetails extends Component {
     const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
     let newValue;
-    if (value instanceof Date){
+    if (value instanceof Date) {
       newValue = value.toISOString();
-   } else if (!isNaN(value)) {
+    } else if (!isNaN(value)) {
       newValue = parseInt(value);
-   } else {
+    } else {
       newValue = value;
-   }
+    }
     activity[name] = newValue;
     this.setState({ activity });
   }
@@ -87,7 +90,7 @@ class ActivityDetails extends Component {
   handleParticipantsChange(participants) {
     if (!participants.length) {
       return;
-    }   
+    }
     participants.forEach(participant => {
       if (participant.customOption) {
         delete participant.id;
@@ -103,9 +106,9 @@ class ActivityDetails extends Component {
     });
   }
   getActivityStatusLabel(planStatuses, activity) {
-    return planStatuses && activity.status && planStatuses[activity.status] && 
-       planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
- }
+    return planStatuses && activity.status && planStatuses[activity.status] &&
+      planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
+  }
 
   handleDelete() {
     this.props.deleteActivity(this.state.activity)
@@ -164,22 +167,22 @@ class ActivityDetails extends Component {
       <React.Fragment>
         <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Nummer</Form.Label>
-          { this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>                  
-                  <Form.Control type="number" min="0" name="no" value={this.state.activity.no} onChange={this.handleChange} />
-                </div>
-              )
-              : (
-                <div>{this.state.activity.no}</div>
-              ) }
+          {this.state.editable
+            ? (
+              <div className={formsStyle.comboInput}>
+                <Form.Control type="number" min="0" name="no" value={this.state.activity.no} onChange={this.handleChange} />
+              </div>
+            )
+            : (
+              <div>{this.state.activity.no}</div>
+            )}
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Aktivitet </Form.Label>
           {
             this.state.editable
               ? (
-                <div className={formsStyle.comboInput}>                  
+                <div className={formsStyle.comboInput}>
                   <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
                 </div>
               )
@@ -211,11 +214,11 @@ class ActivityDetails extends Component {
                   getMdeInstance={this.getMdeInstance} />
               )
           }
-           </Form.Group>
+        </Form.Group>
 
-          <Form.Group controlId="formName" className={formsStyle.form}>
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Start </Form.Label>
-        
+
           {
             this.state.editable
               ? (
@@ -242,30 +245,30 @@ class ActivityDetails extends Component {
                 <div><DayJS format="MMMM YYYY" locale="nb">{this.state.activity.implementationEnd}</DayJS></div>
               )
           }
-          </Form.Group>
-          <Form.Group controlId="formName" className={formsStyle.form}>
-            <Form.Label>Status </Form.Label>
-            {
-              this.state.editable
-                ? (
-                  <div className={formsStyle.comboInput}>
-                    <SelectDropdown
-                      name="status"
-                      value={this.state.activity.status || 1}
-                      options={this.props.planStatuses}
-                      onSelect={this.handleChange}
-                      className={formsStyle.statusSelect}
-                    />
+        </Form.Group>
+        <Form.Group controlId="formName" className={formsStyle.form}>
+          <Form.Label>Status </Form.Label>
+          {
+            this.state.editable
+              ? (
+                <div className={formsStyle.comboInput}>
+                  <SelectDropdown
+                    name="status"
+                    value={this.state.activity.status || 1}
+                    options={this.props.planStatuses}
+                    onSelect={this.handleChange}
+                    className={formsStyle.statusSelect}
+                  />
 
-                  </div>
-                )
-                : (
-                  <span>{this.getActivityStatusLabel(this.props.planStatuses, this.state.activity)}</span>
-                )
-            }
+                </div>
+              )
+              : (
+                <span>{this.getActivityStatusLabel(this.props.planStatuses, this.state.activity)}</span>
+              )
+          }
 
-          </Form.Group>
-          <Form.Group controlId="formName" className={formsStyle.form}>
+        </Form.Group>
+        <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Deltakere </Form.Label>
           {
             this.state.editable

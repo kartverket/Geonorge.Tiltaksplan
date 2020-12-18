@@ -1,13 +1,19 @@
+// Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { createMeasure } from 'actions/MeasuresActions';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toastr } from 'react-redux-toastr'
+
+// Actions
+import { fetchOrganizations } from 'actions/OrganizationsActions';
+import { createMeasure } from 'actions/MeasuresActions';
+
+// Stylesheets
 import 'react-bootstrap-typeahead/css/Typeahead.css';
+
 
 class AddMeasure extends Component {
    constructor(props) {
@@ -24,7 +30,7 @@ class AddMeasure extends Component {
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
-      
+
    }
 
    componentDidMount() {
@@ -45,7 +51,7 @@ class AddMeasure extends Component {
       this.setState({ modalOpen: false });
    }
 
-   handleOwnerSelect(data) {   
+   handleOwnerSelect(data) {
       this.handleChange({
          name: 'owner',
          value: {
@@ -53,7 +59,7 @@ class AddMeasure extends Component {
          }
       });
    }
-   
+
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
@@ -94,7 +100,7 @@ class AddMeasure extends Component {
                </Modal.Header>
 
                <Modal.Body>
-               <Form.Group controlId="formNo">
+                  <Form.Group controlId="formNo">
                      <Form.Label>Nummer</Form.Label>
                      <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} />
                   </Form.Group>
@@ -111,7 +117,7 @@ class AddMeasure extends Component {
                         labelKey="name"
                         onChange={this.handleOwnerSelect}
                         options={this.props.organizations}
-                        placeholder="Legg til eier..."                        
+                        placeholder="Legg til eier..."
                      />
                   </Form.Group>
                </Modal.Body>

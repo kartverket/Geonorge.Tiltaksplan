@@ -1,10 +1,20 @@
+// Dependecies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { fetchMeasure } from 'actions/MeasuresActions';
+import { Link } from 'react-router-dom';
+
+// Components
 import Container from 'components/template/Container';
 import EditMeasure from 'components/partials/EditMeasure';
 import ActivityTable from 'components/partials/ActivityTable';
-import { Link } from 'react-router-dom';
+
+// Actions
+import { fetchMeasure } from 'actions/MeasuresActions';
+
+// Helpers
+import { canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+
+// Stylesheets
 import style from 'components/routes/Measure.module.scss';
 
 class Measure extends Component {
@@ -38,11 +48,21 @@ class Measure extends Component {
          <Container>
             <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
             <h5>Eies av {this.props.measure.owner.name}</h5>
-            <div className={style.block}>
-               <Link to={`${this.getMeasureId()}/ny-aktivitet`}><button className="btn btn-primary">Opprett aktivitet</button></Link>
-            </div>
-            <ActivityTable activities={this.props.measure.activities}/>
-            <EditMeasure />
+            {
+               canAddActivity()
+                  ? (<div className={style.block}>
+                     <Link to={`${this.getMeasureId()}/ny-aktivitet`}>
+                        <button className="btn btn-primary">Opprett aktivitet</button>
+                     </Link>
+                  </div>)
+                  : ''
+            }
+            <ActivityTable activities={this.props.measure.activities} />
+            {
+               canEditMeasure()
+                  ? <EditMeasure />
+                  : ''
+            }
          </Container>
       );
    }
