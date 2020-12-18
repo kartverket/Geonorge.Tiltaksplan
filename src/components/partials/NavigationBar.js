@@ -4,7 +4,8 @@ import { connect } from 'react-redux';
 import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigation';
 
 // Actions
-import { updateOidcCookie, updateBaatInfo } from 'actions/AuthenticationActions';
+import { updateOidcCookie } from 'actions/AuthenticationActions';
+import { updateAuthInfo } from 'actions/AuthorizationActions';
 
 // Helpers
 import { getEnvironmentVariable } from 'helpers/environmentVariableHelpers.js';
@@ -25,11 +26,11 @@ class NavigationBar extends Component {
   componentDidUpdate(prevProps) {
     const wasLoggedIn = prevProps.user;
     const isLoggedIn = this.props.user;
-    const hadBaatInfo = prevProps.baatInfo && prevProps.baatInfo.user;
-    const hasBaatInfo = this.props.baatInfo && this.props.baatInfo.user;
-    if ((isLoggedIn !== wasLoggedIn) || (hasBaatInfo !== hadBaatInfo)) {
+    const hadAuthInfo = prevProps.authInfo && prevProps.authInfo.user;
+    const hasAuthInfo = this.props.authInfo && this.props.authInfo.user;
+    if ((isLoggedIn !== wasLoggedIn) || (hasAuthInfo !== hadAuthInfo)) {
       this.props.updateOidcCookie(this.props.user);
-      this.props.updateBaatInfo(this.props.user, this.props.baatInfo);
+      this.props.updateAuthInfo();
     }
   }
 
@@ -57,12 +58,12 @@ class NavigationBar extends Component {
 const mapStateToProps = state => ({
   user: state.oidc.user,
   config: state.config,
-  baatInfo: state.baatInfo
+  authInfo: state.authInfo
 });
 
 const mapDispatchToProps = {
   updateOidcCookie,
-  updateBaatInfo
+  updateAuthInfo
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);
