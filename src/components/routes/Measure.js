@@ -49,7 +49,7 @@ class Measure extends Component {
             <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
             <h5>Eies av {this.props.measure.owner.name}</h5>
             {
-               canAddActivity()
+               canAddActivity(this.props.authInfo)
                   ? (<div className={style.block}>
                      <Link to={`${this.getMeasureId()}/ny-aktivitet`}>
                         <button className="btn btn-primary">Opprett aktivitet</button>
@@ -59,7 +59,7 @@ class Measure extends Component {
             }
             <ActivityTable activities={this.props.measure.activities} />
             {
-               canEditMeasure()
+               canEditMeasure(this.props.authInfo)
                   ? <EditMeasure />
                   : ''
             }
@@ -69,7 +69,8 @@ class Measure extends Component {
 }
 
 const mapStateToProps = (state) => ({
-   measure: state.measures.selectedMeasure
+   measure: state.measures.selectedMeasure,
+   authInfo: state.authInfo
 });
 
 const mapDispatchToProps = {

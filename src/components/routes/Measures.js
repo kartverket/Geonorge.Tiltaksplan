@@ -17,7 +17,7 @@ class Measures extends Component {
          <Container>
             <h1>Tiltaksplan</h1>
             {
-               canAddMeasure()
+               canAddMeasure(this.props.authInfo)
                   ? <AddMeasure />
                   : ''
             }
@@ -27,4 +27,8 @@ class Measures extends Component {
    }
 }
 
-export default connect(null, null)(Measures);
+const mapStateToProps = state => ({
+   authInfo: state.authInfo
+ });
+
+export default connect(mapStateToProps, null)(Measures);

@@ -8,6 +8,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { fetchOrganizations } from 'actions/OrganizationsActions';
 import { withRouter } from 'react-router-dom';
+
 // Components
 import { SelectDropdown } from 'components/custom-elements';
 import { Typeahead } from 'react-bootstrap-typeahead';
@@ -15,6 +16,9 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
 import { updateMeasure, deleteMeasure } from 'actions/MeasuresActions';
+
+// Helpers
+import { canEditMeasure, canDeleteMeasure } from 'helpers/authorizationHelpers';
 
 // Assets
 import StarIcon from 'gfx/icon-star.svg'
@@ -47,29 +51,29 @@ class EditMeasure extends Component {
       };
    }
 
-   
+
    componentDidMount() {
       Promise.all([
          this.props.fetchOrganizations(),
          this.props.fetchOptions()
       ])
-      .then(() => {
-         this.setState({ dataFetched: true });
-      });
+         .then(() => {
+            this.setState({ dataFetched: true });
+         });
    }
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
       let newValue;
-      if (value instanceof Date){
-        newValue = value.toISOString();
-     } else if (!isNaN(value)) {
-        newValue = parseInt(value);
-     } else {
-        newValue = value;
-     }
-      measure[name] = newValue;      
+      if (value instanceof Date) {
+         newValue = value.toISOString();
+      } else if (!isNaN(value)) {
+         newValue = parseInt(value);
+      } else {
+         newValue = value;
+      }
+      measure[name] = newValue;
 
       this.setState({ measure });
    }
@@ -77,21 +81,21 @@ class EditMeasure extends Component {
    openModal() {
       this.setState({ modalOpen: true });
    }
-   
+
    closeModal() {
       this.setState({ modalOpen: false });
    }
-   
-   handleDelete() {            
+
+   handleDelete() {
       this.props.deleteMeasure(this.state.measure)
-        .then(() => {
-          this.props.history.push(`/`);
-        });    
+         .then(() => {
+            this.props.history.push(`/`);
+         });
    }
-  
+
    saveMeasure() {
       const measure = this.state.measure;
-      
+
       if (this.state.selectedOwner.length) {
          measure.owner.id = this.state.selectedOwner[0].id
       }
@@ -106,7 +110,7 @@ class EditMeasure extends Component {
    }
 
    getMeasureStatusLabel(planStatuses, measure) {
-      
+
       return planStatuses.find(status => measure.status === status.value).label;
    }
 
@@ -136,10 +140,10 @@ class EditMeasure extends Component {
       return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
    }
 
-   handleOwnerSelect(data) { 
+   handleOwnerSelect(data) {
       this.setState({
          selectedOwner: data
-      })           
+      })
    }
 
    render() {
@@ -150,228 +154,246 @@ class EditMeasure extends Component {
       return (
          <React.Fragment>
             <div className={`${formsStyle.form} form-container`}>
-            {
-                     this.state.editable
-                        ? (<Form.Group controlId="formNo">
-                              <Form.Label>Nummer  </Form.Label>
-                                 <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                    <Form.Control type="number" min="0" name="no" value={this.state.measure.no} onChange={this.handleChange} />
-                                 </div>
-                              </Form.Group> 
-                           )
-                        : ''
-                  }
-            
-                  {
-                     this.state.editable
-                        ? (<Form.Group controlId="formName">
-                              <Form.Label>Navn  </Form.Label>
-                                 <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                    <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
-                                 </div>
-                              </Form.Group> 
-                           )
-                        : ''
-                  }
-                  
-                  {
-
-                        this.state.editable
-                        ? ( 
-                        <Form.Group controlId="formOwner">
-                        <Form.Label>Eier</Form.Label>
-                        <Typeahead
-                           id="basic-typeahead-single"
-                           labelKey="name"
-                           onChange={this.handleOwnerSelect}
-                           options={this.props.organizations}
-                           placeholder="Legg til eier..."
-                           selected={this.state.selectedOwner}
-                        />
+               {
+                  this.state.editable
+                     ? (<Form.Group controlId="formNo">
+                        <Form.Label>Nummer  </Form.Label>
+                        <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                           <Form.Control type="number" min="0" name="no" value={this.state.measure.no} onChange={this.handleChange} />
+                        </div>
                      </Form.Group>
-                      ) : (
-                         ''
-                      )
-              
-                      } 
-                    
-                     <h2>Rapportering av fremdrift</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
+                     )
+                     : ''
+               }
+
+               {
+                  this.state.editable
+                     ? (<Form.Group controlId="formName">
+                        <Form.Label>Navn  </Form.Label>
+                        <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                           <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
+                        </div>
+                     </Form.Group>
+                     )
+                     : ''
+               }
+
+               {
+
+                  this.state.editable
+                     ? (
+                        <Form.Group controlId="formOwner">
+                           <Form.Label>Eier</Form.Label>
+                           <Typeahead
+                              id="basic-typeahead-single"
+                              labelKey="name"
+                              onChange={this.handleOwnerSelect}
+                              options={this.props.organizations}
+                              placeholder="Legg til eier..."
+                              selected={this.state.selectedOwner}
+                           />
+                        </Form.Group>
+                     ) : (
+                        ''
+                     )
+
+               }
+
+               <h2>Rapportering av fremdrift</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
                <div className={formsStyle.block}>
 
-               
-               <Form.Group controlId="formProgress">
-                  
-                  {
-                     this.state.editable
-                        ? (<React.Fragment>
-                           <Form.Label>Fremdrift </Form.Label>
-                           <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+
+                  <Form.Group controlId="formProgress">
+                     {
+                        this.state.editable
+                           ? (<React.Fragment>
+                              <Form.Label>Fremdrift </Form.Label>
+                              <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                                 <SimpleMDE
+                                    value={this.state.measure.progress || ''}
+                                    onChange={value => this.handleChange({ name: 'progress', value })}
+                                    options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
+                                    getMdeInstance={this.getMdeInstance}
+                                    events={{
+                                       'blur': this.handleMdeBlur,
+                                       'focus': (event) => this.handleMdeFocus(event)
+                                    }}
+                                 />
+
+                              </div>
+                           </React.Fragment>
+                           )
+                           : (
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
-                                 onChange={value => this.handleChange({ name: 'progress', value })}
-                                 options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
-                                 getMdeInstance={this.getMdeInstance}
-                                 events={{
-                                    'blur': this.handleMdeBlur,
-                                    'focus': (event) => this.handleMdeFocus(event)
-                                 }}
-                              />
-
-                           </div>
-                           </React.Fragment>
-                        )
-                        : (
-                           <SimpleMDE
-                              value={this.state.measure.progress || ''}
-                              options={{ toolbar: false, status: false }}
-                              getMdeInstance={this.getMdeInstance} />
-                        )
-                  }
-
-               </Form.Group>
-               <div className={`${this.state.editable ? '' : `${formsStyle.flex}`}`}>
-                  <Form.Group controlId="formVolume">
-                     <Form.Label>Volum </Form.Label>
-                     {
-                        this.state.editable
-                           ? (
-                              <div className={formsStyle.comboInput}>
-                                 <SelectDropdown
-                                    name="volume"
-                                    value={this.state.measure.volume || 0}
-                                    options={this.props.measureVolume}
-                                    onSelect={this.handleChange}
-                                    className={formsStyle.defaultSelect}
-                                 />
-
-                              </div>
-                           )
-                           : (
-                              <span>{this.renderStars(this.state.measure.volume || 0)}</span>
+                                 options={{ toolbar: false, status: false }}
+                                 getMdeInstance={this.getMdeInstance} />
                            )
                      }
 
                   </Form.Group>
+                  <div className={`${this.state.editable ? '' : `${formsStyle.flex}`}`}>
+                     <Form.Group controlId="formVolume">
+                        <Form.Label>Volum </Form.Label>
+                        {
+                           this.state.editable
+                              ? (
+                                 <div className={formsStyle.comboInput}>
+                                    <SelectDropdown
+                                       name="volume"
+                                       value={this.state.measure.volume || 0}
+                                       options={this.props.measureVolume}
+                                       onSelect={this.handleChange}
+                                       className={formsStyle.defaultSelect}
+                                    />
 
-                  <Form.Group controlId="formStatus">
-                     <Form.Label>Status </Form.Label>
+                                 </div>
+                              )
+                              : (
+                                 <span>{this.renderStars(this.state.measure.volume || 0)}</span>
+                              )
+                        }
+
+                     </Form.Group>
+
+                     <Form.Group controlId="formStatus">
+                        <Form.Label>Status </Form.Label>
+                        {
+                           this.state.editable
+                              ? (
+                                 <div className={formsStyle.comboInput}>
+                                    <SelectDropdown
+                                       name="status"
+                                       value={this.state.measure.status || 1}
+                                       options={this.props.planStatuses}
+                                       onSelect={this.handleChange}
+                                       className={formsStyle.statusSelect}
+                                    />
+
+                                 </div>
+                              )
+                              : (
+                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
+                              )
+                        }
+
+                     </Form.Group>
+
+                     <Form.Group controlId="formTrafficLight">
+                        <Form.Label>Trafikklys </Form.Label>
+                        {
+                           this.state.editable
+                              ? (
+                                 <div className={formsStyle.comboInput}>
+                                    <SelectDropdown
+                                       name="trafficLight"
+                                       value={this.state.measure.trafficLight || 1}
+                                       options={this.props.trafficLights}
+                                       onSelect={this.handleChange}
+                                       className={formsStyle.trafficLightSelect}
+                                    />
+
+                                 </div>
+                              )
+                              : (
+                                 <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + this.state.measure.trafficLight]}`}></span>
+                              )
+                        }
+                     </Form.Group>
+
+                     <Form.Group controlId="formResults">
+                        <Form.Label>Konkrete resultater</Form.Label>
+                        {
+                           this.state.editable
+                              ? (
+                                 <div className={formsStyle.comboInput}>
+                                    <SelectDropdown
+                                       name="results"
+                                       value={this.state.measure.results || 1}
+                                       options={this.props.measureResults}
+                                       onSelect={this.handleChange}
+                                       className={formsStyle.defaultSelect}
+                                    />
+
+                                 </div>
+                              )
+                              : (
+                                 <span>{this.renderStars(this.state.measure.results || 0)}</span>
+                              )
+                        }
+                     </Form.Group>
+                  </div>
+                  <Form.Group controlId="formComments">
+                     <Form.Label>Kommentar  </Form.Label>
                      {
                         this.state.editable
                            ? (
-                              <div className={formsStyle.comboInput}>
-                                 <SelectDropdown
-                                    name="status"
-                                    value={this.state.measure.status || 1}
-                                    options={this.props.planStatuses}
-                                    onSelect={this.handleChange}
-                                    className={formsStyle.statusSelect}
-                                 />
-
+                              <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                                 <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
                               </div>
                            )
                            : (
-                              <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
-                           )
-                     }
-
-                  </Form.Group>
-
-                  <Form.Group controlId="formTrafficLight">
-                     <Form.Label>Trafikklys </Form.Label>
-                     {
-                        this.state.editable
-                           ? (
-                              <div className={formsStyle.comboInput}>
-                                 <SelectDropdown
-                                    name="trafficLight"
-                                    value={this.state.measure.trafficLight || 1}
-                                    options={this.props.trafficLights}
-                                    onSelect={this.handleChange}
-                                    className={formsStyle.trafficLightSelect}
-                                 />
-
-                              </div>
-                           )
-                           : (
-                              <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + this.state.measure.trafficLight]}`}></span>
+                              <span>{this.state.measure.comment}</span>
                            )
                      }
                   </Form.Group>
-
-                  <Form.Group controlId="formResults">
-                     <Form.Label>Konkrete resultater</Form.Label>
-                     {
-                        this.state.editable
-                           ? (
-                              <div className={formsStyle.comboInput}>
-                                 <SelectDropdown
-                                    name="results"
-                                    value={this.state.measure.results || 1}
-                                    options={this.props.measureResults}
-                                    onSelect={this.handleChange}
-                                    className={formsStyle.defaultSelect}
-                                 />
-
-                              </div>
-                           )
-                           : (
-                              <span>{this.renderStars(this.state.measure.results || 0)}</span>
-                           )
-                     }
-                  </Form.Group>
-               </div>
-               <Form.Group controlId="formComments">
-                  <Form.Label>Kommentar  </Form.Label>
-                  {
-                     this.state.editable
-                        ? (
-                           <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                              <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
-                           </div>
-                        )
-                        : (
-                           <span>{this.state.measure.comment}</span>
-                        )
-                  }
-               </Form.Group>
                </div>
             </div>
-                  {this.state.editable ? (
+            {
+               this.state.editable
+                  ? (
                      <div>
-                        <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-                        <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
+                        {
+                           canEditMeasure(this.props.authInfo)
+                              ? (
+                                 <React.Fragment>
+                                    <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                                    <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
+                                 </React.Fragment>
+                              )
+                              : ''
+                        }
                      </div>
                   ) : (
                      <div>
-                    <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett tiltaket</Button>
-                        <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                        {
+                           canDeleteMeasure(this.props.authInfo)
+                              ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett tiltaket</Button>
+                              : ''
+                        }
+                        {
+                           canEditMeasure(this.props.authInfo)
+                              ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                              : ''
+                        }
                      </div>
-                  )}
-            
+                  )
+
+            }
             {<Modal
-            show={this.state.modalOpen}
-            onHide={this.closeModal}
-            keyboard={false}
-            animation={false}
-            centered
-            backdrop="static"
-            aria-labelledby="form-dialog-title">
-            <Modal.Header closeButton>
-               <Modal.Title>Slett aktivitet</Modal.Title>
-            </Modal.Header>
+               show={this.state.modalOpen}
+               onHide={this.closeModal}
+               keyboard={false}
+               animation={false}
+               centered
+               backdrop="static"
+               aria-labelledby="form-dialog-title">
+               <Modal.Header closeButton>
+                  <Modal.Title>Slett aktivitet</Modal.Title>
+               </Modal.Header>
 
-            <Modal.Body>
-               <p>Er du sikker på at du vil slette {this.state.measure.name}?</p>
-                {this.state.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.state.measure.name : ''}
-            </Modal.Body>
+               <Modal.Body>
+                  <p>Er du sikker på at du vil slette {this.state.measure.name}?</p>
+                  {this.state.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.state.measure.name : ''}
+               </Modal.Body>
 
-            <Modal.Footer>
-               <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-               <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
-            </Modal.Footer>
-         </Modal>}
+               <Modal.Footer>
+                  <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
+                  <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
+               </Modal.Footer>
+            </Modal>}
 
-          
+
          </React.Fragment>
       );
    }
@@ -383,7 +405,8 @@ const mapStateToProps = state => ({
    measureResults: state.options.measureResults,
    trafficLights: state.options.trafficLights,
    planStatuses: state.options.planStatuses,
-   organizations: state.organizations
+   organizations: state.organizations,
+   authInfo: state.authInfo
 });
 
 const mapDispatchToProps = {
