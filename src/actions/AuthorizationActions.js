@@ -8,7 +8,7 @@ export const updateAuthInfo = () => (dispatch, getState) => {
     ? store.oidc.user
     : null;
   const savedAuthInfo = store && store.authInfo && Object.keys(store.authInfo).length
-    ? store.baatInfo
+    ? store.authInfo
     : null;
   if (user && user.profile && user.profile.sub && !savedAuthInfo) {
     const accessToken = user.access_token
