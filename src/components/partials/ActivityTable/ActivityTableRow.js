@@ -3,14 +3,12 @@ import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
 import DayJS from 'react-dayjs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { withRouter } from 'react-router-dom'
 import showdown from 'showdown';
-import { Link } from 'react-router-dom';
-
 
 // Stylesheets
 import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
+
 
 class ActivityTableRow extends Component {
    constructor(props) {
