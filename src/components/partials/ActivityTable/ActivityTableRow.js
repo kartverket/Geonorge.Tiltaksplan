@@ -83,9 +83,6 @@ class ActivityTableRow extends Component {
          <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
          <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
          <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-         <td><div className={style.svgblock}>
-            <Link to={{pathname: `/tiltak/${this.getMeasureId()}/aktivitet/${this.props.activity.id}`, state: {editable: true}}}><FontAwesomeIcon onClick={() => this.goToActivity()} icon="edit" /></Link>
-            </div></td>
       </React.Fragment>)
             
    }

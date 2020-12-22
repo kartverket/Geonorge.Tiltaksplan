@@ -48,7 +48,6 @@ class ActivityTable extends Component {
                      <th>Status</th>
                      <th>Start</th>
                      <th>Slutt</th>
-                     <th></th>
                   </tr>
                </thead>
                <tbody>
