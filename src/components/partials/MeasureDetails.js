@@ -7,9 +7,12 @@ import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toastr } from 'react-redux-toastr'
 
+// Models
+import { Measure } from 'models/measure';
+
 // Actions
 import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { createMeasure } from 'actions/MeasuresActions';
+import { createMeasure, updateMeasure } from 'actions/MeasuresActions';
 
 // Stylesheets
 import 'react-bootstrap-typeahead/css/Typeahead.css';
@@ -22,7 +25,9 @@ class AddMeasure extends Component {
       this.state = {
          dataFetched: false,
          modalOpen: false,
-         measure: {}
+         measure: props.newMeasure
+            ? new Measure()
+            : props.selectedMeasure,
       };
 
       this.handleChange = this.handleChange.bind(this);
@@ -42,8 +47,7 @@ class AddMeasure extends Component {
 
    openModal() {
       this.setState({
-         modalOpen: true,
-         measure: { name: '', owner: { id: 0 }, no: 0 }
+         modalOpen: true
       });
    }
 
@@ -69,14 +73,25 @@ class AddMeasure extends Component {
    }
 
    saveMeasure() {
-      this.props.createMeasure(this.state.measure)
-         .then(() => {
-            this.closeModal();
-            toastr.success('Et nytt tiltak ble lagt til');
-         })
-         .catch(_ => {
-            toastr.error('Kunne ikke opprette tiltak');
-         });
+      const measure = this.state.measure;
+
+      this.props.newMeasure
+         ? this.props.createMeasure(this.state.measure)
+            .then(() => {
+               this.closeModal();
+               toastr.success('Et nytt tiltak ble lagt til');
+            })
+            .catch(_ => {
+               toastr.error('Kunne ikke opprette tiltak');
+            })
+         : this.props.updateMeasure(measure)
+            .then(() => {
+               this.closeModal();
+               toastr.success('Tiltaket ble oppdatert');
+            })
+            .catch(_ => {
+               toastr.error('Kunne ikke oppdatere tiltak');
+            });
    }
 
    render() {
@@ -84,9 +99,9 @@ class AddMeasure extends Component {
          return '';
       }
 
-      return (
+      return this.state.measure ? (
          <React.Fragment>
-            <Button variant="primary" onClick={this.openModal}>Opprett tiltak</Button>
+            <Button variant="primary" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
             <Modal
                show={this.state.modalOpen}
                onHide={this.closeModal}
@@ -96,7 +111,7 @@ class AddMeasure extends Component {
                animation={false}
             >
                <Modal.Header closeButton>
-                  <Modal.Title>Nytt tiltak</Modal.Title>
+                  <Modal.Title>{this.props.newMeasure ? 'Nytt tiltak' : `${this.state.measure.no} - ${this.state.measure.name}`}</Modal.Title>
                </Modal.Header>
 
                <Modal.Body>
@@ -128,7 +143,7 @@ class AddMeasure extends Component {
                </Modal.Footer>
             </Modal>
          </React.Fragment>
-      );
+      ) : '';
    }
 }
 
@@ -140,7 +155,8 @@ const mapStateToProps = state => {
 
 const mapDispatchToProps = {
    fetchOrganizations,
-   createMeasure
+   createMeasure,
+   updateMeasure
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddMeasure);

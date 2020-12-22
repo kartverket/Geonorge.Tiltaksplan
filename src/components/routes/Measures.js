@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 
 // Components
 import Container from 'components/template/Container';
-import AddMeasure from 'components/partials/AddMeasure';
+import MeasureDetails from 'components/partials/MeasureDetails';
 import MeasuresTable from 'components/partials/MeasuresTable';
 
 // Helpers
@@ -18,7 +18,7 @@ class Measures extends Component {
             <h1>Tiltaksplan</h1>
             {
                canAddMeasure(this.props.authInfo)
-                  ? <AddMeasure />
+                  ? <MeasureDetails newMeasure />
                   : ''
             }
             <MeasuresTable />

@@ -49,9 +49,9 @@ class NavigationBar extends Component {
 
   render() {
     const environment = getEnvironmentVariable('environment');
-    return true
-      ? (<main-navigation isLoggedIn={this.props.user ? true : false} environment={environment}></main-navigation>)
-      : '';
+    return this.props.user
+      ? <main-navigation isLoggedIn environment={environment}></main-navigation>
+      : <main-navigation environment={environment}></main-navigation>;
   }
 }
 

@@ -15,10 +15,10 @@ import { Typeahead } from 'react-bootstrap-typeahead';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
-import { updateMeasure, deleteMeasure } from 'actions/MeasuresActions';
+import { updateMeasure } from 'actions/MeasuresActions';
 
 // Helpers
-import { canEditMeasure, canDeleteMeasure } from 'helpers/authorizationHelpers';
+import { canEditMeasure, canEditReport } from 'helpers/authorizationHelpers';
 
 // Assets
 import StarIcon from 'gfx/icon-star.svg'
@@ -32,19 +32,16 @@ class EditMeasure extends Component {
    constructor(props) {
       super(props);
 
-      this.handleEditableChange = this.handleEditableChange.bind(this);
+      this.handleEditableReportChange = this.handleEditableReportChange.bind(this);
       this.getMdeInstance = this.getMdeInstance.bind(this);
       this.handleChange = this.handleChange.bind(this);
       this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
-      this.handleDelete = this.handleDelete.bind(this);
-      this.openModal = this.openModal.bind(this);
-      this.closeModal = this.closeModal.bind(this);
 
       this.state = {
          dataFetched: false,
          measure: props.selectedMeasure,
-         editable: false,
+         editableReport: false,
          selectedOwner: [
             props.selectedMeasure.owner
          ]
@@ -78,20 +75,8 @@ class EditMeasure extends Component {
       this.setState({ measure });
    }
 
-   openModal() {
-      this.setState({ modalOpen: true });
-   }
 
-   closeModal() {
-      this.setState({ modalOpen: false });
-   }
-
-   handleDelete() {
-      this.props.deleteMeasure(this.state.measure)
-         .then(() => {
-            this.props.history.push(`/`);
-         });
-   }
+   
 
    saveMeasure() {
       const measure = this.state.measure;
@@ -117,7 +102,7 @@ class EditMeasure extends Component {
    getMdeInstance(instance) {
       const container = instance.element.nextSibling;
       container.setAttribute('tabIndex', '0');
-      if (!this.state.editable) {
+      if (!this.state.editableReport) {
          instance.togglePreview()
          container.classList.add(formsStyle.mdePreview);
       }
@@ -131,9 +116,9 @@ class EditMeasure extends Component {
       console.log("focus");
    }
 
-   handleEditableChange(event) {
-      const editable = event.target.checked;
-      this.setState({ editable });
+   handleEditableReportChange(event) {
+      const editableReport = event.target.checked;
+      this.setState({ editableReport });
    }
 
    renderStars(amount) {
@@ -153,6 +138,7 @@ class EditMeasure extends Component {
 
       return (
          <React.Fragment>
+            
             <div className={`${formsStyle.form} form-container`}>
                {
                   this.state.editable
@@ -179,7 +165,6 @@ class EditMeasure extends Component {
                }
 
                {
-
                   this.state.editable
                      ? (
                         <Form.Group controlId="formOwner">
@@ -196,16 +181,13 @@ class EditMeasure extends Component {
                      ) : (
                         ''
                      )
-
                }
 
                <h2>Rapportering av fremdrift</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
                <div className={formsStyle.block}>
-
-
                   <Form.Group controlId="formProgress">
                      {
-                        this.state.editable
+                        this.state.editableReport
                            ? (<React.Fragment>
                               <Form.Label>Fremdrift </Form.Label>
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
@@ -232,11 +214,11 @@ class EditMeasure extends Component {
                      }
 
                   </Form.Group>
-                  <div className={`${this.state.editable ? '' : `${formsStyle.flex}`}`}>
+                  <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
                      <Form.Group controlId="formVolume">
                         <Form.Label>Volum </Form.Label>
                         {
-                           this.state.editable
+                           this.state.editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
@@ -259,7 +241,7 @@ class EditMeasure extends Component {
                      <Form.Group controlId="formStatus">
                         <Form.Label>Status </Form.Label>
                         {
-                           this.state.editable
+                           this.state.editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
@@ -282,7 +264,7 @@ class EditMeasure extends Component {
                      <Form.Group controlId="formTrafficLight">
                         <Form.Label>Trafikklys </Form.Label>
                         {
-                           this.state.editable
+                           this.state.editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
@@ -304,7 +286,7 @@ class EditMeasure extends Component {
                      <Form.Group controlId="formResults">
                         <Form.Label>Konkrete resultater</Form.Label>
                         {
-                           this.state.editable
+                           this.state.editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
@@ -326,7 +308,7 @@ class EditMeasure extends Component {
                   <Form.Group controlId="formComments">
                      <Form.Label>Kommentar  </Form.Label>
                      {
-                        this.state.editable
+                        this.state.editableReport
                            ? (
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                                  <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
@@ -340,14 +322,14 @@ class EditMeasure extends Component {
                </div>
             </div>
             {
-               this.state.editable
+               this.state.editableReport
                   ? (
                      <div>
                         {
-                           canEditMeasure(this.props.authInfo)
+                           canEditReport(this.props.authInfo)
                               ? (
                                  <React.Fragment>
-                                    <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                                    <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
                                     <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
                                  </React.Fragment>
                               )
@@ -356,14 +338,10 @@ class EditMeasure extends Component {
                      </div>
                   ) : (
                      <div>
-                        {
-                           canDeleteMeasure(this.props.authInfo)
-                              ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett tiltaket</Button>
-                              : ''
-                        }
+                        
                         {
                            canEditMeasure(this.props.authInfo)
-                              ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger tiltak</Button>
+                              ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>Rediger raport</Button>
                               : ''
                         }
                      </div>
@@ -371,8 +349,8 @@ class EditMeasure extends Component {
 
             }
             {<Modal
-               show={this.state.modalOpen}
-               onHide={this.closeModal}
+               show={this.state.deleteMeasureModalOpen}
+               onHide={this.closeDeleteMeasureModal}
                keyboard={false}
                animation={false}
                centered
@@ -388,7 +366,7 @@ class EditMeasure extends Component {
                </Modal.Body>
 
                <Modal.Footer>
-                  <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
+                  <Button variant="secondary" onClick={this.closeDeleteMeasureModal}>Avbryt</Button>
                   <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
                </Modal.Footer>
             </Modal>}
@@ -413,7 +391,6 @@ const mapDispatchToProps = {
    fetchOptions,
    updateMeasure,
    fetchOrganizations,
-   deleteMeasure
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditMeasure));

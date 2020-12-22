@@ -2,17 +2,20 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
+import Button from 'react-bootstrap/Button';
+import Modal from 'react-bootstrap/Modal';
 
 // Components
 import Container from 'components/template/Container';
-import EditMeasure from 'components/partials/EditMeasure';
+import MeasureDetails from 'components/partials/MeasureDetails';
+import ReportDetails from 'components/partials/ReportDetails';
 import ActivityTable from 'components/partials/ActivityTable';
 
 // Actions
-import { fetchMeasure } from 'actions/MeasuresActions';
+import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
 
 // Helpers
-import { canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+import { canDeleteMeasure, canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
 
 // Stylesheets
 import style from 'components/routes/Measure.module.scss';
@@ -20,16 +23,34 @@ import style from 'components/routes/Measure.module.scss';
 class Measure extends Component {
    constructor(props) {
       super(props);
-
       this.state = {
-         dataFetched: false
+         dataFetched: false,
+         deleteMeasureModalOpen: false
       };
+      this.openDeleteMeasureModal = this.openDeleteMeasureModal.bind(this);
+      this.closeDeleteMeasureModal = this.closeDeleteMeasureModal.bind(this);
+      this.handleDeleteMeasure = this.handleDeleteMeasure.bind(this);
    }
 
    componentDidMount() {
       this.props.fetchMeasure(this.getMeasureId())
          .then(() => {
             this.setState({ dataFetched: true });
+         });
+   }
+
+   openDeleteMeasureModal() {
+      this.setState({ deleteMeasureModalOpen: true });
+   }
+
+   closeDeleteMeasureModal() {
+      this.setState({ deleteMeasureModalOpen: false });
+   }
+
+   handleDeleteMeasure() {
+      this.props.deleteMeasure(this.state.measure)
+         .then(() => {
+            this.props.history.push(`/`);
          });
    }
 
@@ -49,6 +70,20 @@ class Measure extends Component {
             <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
             <h5>Eies av {this.props.measure.owner.name}</h5>
             {
+               canDeleteMeasure(this.props.authInfo)
+                  ? <Button className="mr-2" variant="secondary" onClick={this.openDeleteMeasureModal}>Slett tiltaket</Button>
+                  : ''
+            }
+            {
+               canEditMeasure(this.props.authInfo)
+                  ? <MeasureDetails selectedMeasure={this.props.measure} />
+                  : ''
+            }
+
+           
+
+            <ActivityTable activities={this.props.measure.activities} />
+            {
                canAddActivity(this.props.authInfo)
                   ? (<div className={style.block}>
                      <Link to={`${this.getMeasureId()}/ny-aktivitet`}>
@@ -57,12 +92,32 @@ class Measure extends Component {
                   </div>)
                   : ''
             }
-            <ActivityTable activities={this.props.measure.activities} />
-            {
-               canEditMeasure(this.props.authInfo)
-                  ? <EditMeasure />
-                  : ''
-            }
+
+            
+            <ReportDetails />
+
+            <Modal
+               show={this.state.deleteMeasureModalOpen}
+               onHide={this.closeDeleteMeasureModal}
+               keyboard={false}
+               animation={false}
+               centered
+               backdrop="static"
+               aria-labelledby="form-dialog-title">
+               <Modal.Header closeButton>
+                  <Modal.Title>Slett tiltak</Modal.Title>
+               </Modal.Header>
+
+               <Modal.Body>
+                  <p>Er du sikker på at du vil slette {this.props.measure.name}?</p>
+                  {this.props.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.props.measure.name : ''}
+               </Modal.Body>
+
+               <Modal.Footer>
+                  <Button variant="secondary" onClick={this.closeDeleteMeasureModal}>Avbryt</Button>
+                  <Button disabled={this.props.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
+               </Modal.Footer>
+            </Modal>
          </Container>
       );
    }
@@ -74,7 +129,8 @@ const mapStateToProps = (state) => ({
 });
 
 const mapDispatchToProps = {
-   fetchMeasure
+   fetchMeasure,
+   deleteMeasure
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Measure);
