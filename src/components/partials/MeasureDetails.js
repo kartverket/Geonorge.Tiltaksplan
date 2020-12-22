@@ -28,6 +28,11 @@ class AddMeasure extends Component {
          measure: props.newMeasure
             ? new Measure()
             : props.selectedMeasure,
+         selectedOwner: props.newMeasure
+            ? []
+            : [
+               props.selectedMeasure.owner
+            ]
       };
 
       this.handleChange = this.handleChange.bind(this);
@@ -56,14 +61,10 @@ class AddMeasure extends Component {
    }
 
    handleOwnerSelect(data) {
-      this.handleChange({
-         name: 'owner',
-         value: {
-            id: data[0].id
-         }
-      });
+      this.setState({
+         selectedOwner: data
+      })
    }
-
 
    handleChange(data) {
       const { name, value } = data.target ? data.target : data;
@@ -75,8 +76,12 @@ class AddMeasure extends Component {
    saveMeasure() {
       const measure = this.state.measure;
 
+      if (this.state.selectedOwner.length) {
+         measure.owner.id = this.state.selectedOwner[0].id
+      }
+
       this.props.newMeasure
-         ? this.props.createMeasure(this.state.measure)
+         ? this.props.createMeasure(measure)
             .then(() => {
                this.closeModal();
                toastr.success('Et nytt tiltak ble lagt til');
@@ -132,6 +137,7 @@ class AddMeasure extends Component {
                         labelKey="name"
                         onChange={this.handleOwnerSelect}
                         options={this.props.organizations}
+                        selected={this.state.selectedOwner}
                         placeholder="Legg til eier..."
                      />
                   </Form.Group>
