@@ -294,13 +294,29 @@ class ActivityDetails extends Component {
 
           {this.state.editable ? (
             <div>
-              <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-              <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
+              {
+                canEditActivity(this.props.authInfo)
+                  ? (
+                    <React.Fragment>
+                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                      <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
+                    </React.Fragment>
+                  )
+                  : ''
+              }
             </div>
           ) : (
               <div>
-                <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
-                <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
+                {
+                  canDeleteActivity(this.props.authInfo)
+                    ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
+                    : ''
+                }
+                {
+                  canEditActivity(this.props.authInfo)
+                    ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
+                    : ''
+                }
               </div>
             )}
         </div>
@@ -339,7 +355,8 @@ const mapStateToProps = state => ({
       name: organization.name
     };
   }),
-  planStatuses: state.options.planStatuses
+  planStatuses: state.options.planStatuses,
+  authInfo: state.authInfo
 });
 
 const mapDispatchToProps = {
