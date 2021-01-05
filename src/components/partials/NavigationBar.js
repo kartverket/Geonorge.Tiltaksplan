@@ -20,16 +20,21 @@ class NavigationBar extends Component {
   }
 
   componentDidMount() {
-    this.initMainNavigation();
+    if (!this.props.oidc.isLoadingUser) {
+      this.initMainNavigation();
+    }
   }
 
   componentDidUpdate(prevProps) {
-    const wasLoggedIn = prevProps.user;
-    const isLoggedIn = this.props.user;
+    if (!this.state.mainNavigationIsInitialized) {
+      this.initMainNavigation();
+    }
+    const wasLoggedIn = prevProps.oidc.user;
+    const isLoggedIn = this.props.oidc.user;
     const hadAuthInfo = prevProps.authInfo && prevProps.authInfo.user;
     const hasAuthInfo = this.props.authInfo && this.props.authInfo.user;
     if ((isLoggedIn !== wasLoggedIn) || (hasAuthInfo !== hadAuthInfo)) {
-      this.props.updateOidcCookie(this.props.user);
+      this.props.updateOidcCookie(this.props.oidc.user);
       this.props.updateAuthInfo();
     }
   }
@@ -41,22 +46,23 @@ class NavigationBar extends Component {
         userManager.signinRedirect();
       },
       onSignOutClick: () => {
-        userManager.signoutRedirect({ 'id_token_hint': this.props.user.id_token });
+        userManager.signoutRedirect({ 'id_token_hint': this.props.oidc.user.id_token });
         userManager.removeUser();
       }
+    });
+    this.setState({
+      mainNavigationIsInitialized: true
     });
   }
 
   render() {
     const environment = getEnvironmentVariable('environment');
-    return this.props.user
-      ? <main-navigation isLoggedIn environment={environment}></main-navigation>
-      : <main-navigation environment={environment}></main-navigation>;
+    return <main-navigation isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>
   }
 }
 
 const mapStateToProps = state => ({
-  user: state.oidc.user,
+  oidc: state.oidc,
   config: state.config,
   authInfo: state.authInfo
 });
