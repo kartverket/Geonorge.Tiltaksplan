@@ -8,6 +8,7 @@ import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow
 // Actions
 import { fetchMeasures } from 'actions/MeasuresActions';
 import { fetchOptions } from 'actions/OptionsActions';
+import { translate } from 'actions/ConfigActions';
 
 // Stylesheets
 import style from 'components/partials/MeasuresTable.module.scss'
@@ -42,7 +43,7 @@ class MeasuresTable extends Component {
          <thead>
             <tr>
                <th>Nr</th>
-               <th>Tiltak</th>
+               <th>{this.props.translate('Measure')}</th>
                <th>Status</th>
                <th>Eier</th>
             </tr>
@@ -63,7 +64,8 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = {
    fetchMeasures,
-   fetchOptions
+   fetchOptions,
+   translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(MeasuresTable);
