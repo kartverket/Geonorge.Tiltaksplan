@@ -10,6 +10,7 @@ import MeasuresReducer from 'reducers/MeasuresReducer';
 import ActivitiesReducer from 'reducers/ActivitiesReducer';
 import OptionsReducer from 'reducers/OptionsReducer';
 import OrganizationsReducer from 'reducers/OrganizationsReducer';
+import SelectedLanguageReducer from 'reducers/SelectedLanguageReducer';
 import { reducer as toastrReducer } from 'react-redux-toastr'
 
 const reducers = history => combineReducers({
@@ -21,6 +22,7 @@ const reducers = history => combineReducers({
   activities: ActivitiesReducer,
   organizations: OrganizationsReducer,
   options: OptionsReducer,
+  selectedLanguage: SelectedLanguageReducer,
   toastr: toastrReducer
 });
 
