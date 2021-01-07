@@ -3,7 +3,7 @@ export const hasAdminRole = authInfo => {
 }
 
 export const hasEditorRole = authInfo => {
-  return authInfo && authInfo.roles && authInfo.roles.includes('nd.metadata_editor');
+  return authInfo && authInfo.roles && authInfo.roles.includes('nd.tiltaksplan');
 }
 
 export const isResponsibleAgency = (authInfo, responsibleAgency) => {
