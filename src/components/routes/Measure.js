@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
+import DayJS from 'react-dayjs';
+
 
 // Components
 import Container from 'components/template/Container';
@@ -13,6 +15,7 @@ import ActivityTable from 'components/partials/ActivityTable';
 
 // Actions
 import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
+import { translate } from 'actions/ConfigActions';
 
 // Helpers
 import { canDeleteMeasure, canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
@@ -80,8 +83,10 @@ class Measure extends Component {
                   : ''
             }
 
-           
 
+
+            <h2>{this.props.translate('MeasureActivitiesTitle')}</h2>
+            <p>{this.props.translate('MeasureActivitiesDescription')}</p>
             <ActivityTable activities={this.props.measure.activities} />
             {
                canAddActivity(this.props.authInfo)
@@ -93,7 +98,10 @@ class Measure extends Component {
                   : ''
             }
 
-            
+
+            <h2>Rapportering av fremdrift</h2>
+            <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
+
             <ReportDetails />
 
             <Modal
@@ -130,7 +138,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = {
    fetchMeasure,
-   deleteMeasure
+   deleteMeasure,
+   translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Measure);
