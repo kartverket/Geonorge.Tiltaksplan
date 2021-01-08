@@ -17,7 +17,6 @@ import style from 'components/partials/MeasuresTable.module.scss'
 class MeasuresTable extends Component {
    constructor(props) {
       super(props);
-
       this.state = {
          dataFetched: false
       }
@@ -59,7 +58,8 @@ class MeasuresTable extends Component {
 
 const mapStateToProps = state => ({ 
    measures: state.measures.measures,
-   planStatuses: state.options.planStatuses
+   planStatuses: state.options.planStatuses,
+   selectedLanguage: state.selectedLanguage
 });
 
 const mapDispatchToProps = {
