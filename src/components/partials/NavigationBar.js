@@ -6,6 +6,7 @@ import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigati
 // Actions
 import { updateOidcCookie } from 'actions/AuthenticationActions';
 import { updateAuthInfo } from 'actions/AuthorizationActions';
+import { updateSelectedLanguage } from 'actions/SelectedLanguageActions';
 
 // Helpers
 import { getEnvironmentVariable } from 'helpers/environmentVariableHelpers.js';
@@ -48,6 +49,12 @@ class NavigationBar extends Component {
       onSignOutClick: () => {
         userManager.signoutRedirect({ 'id_token_hint': this.props.oidc.user.id_token });
         userManager.removeUser();
+      },
+      onNorwegianLanguageSelect: () => {
+        this.props.updateSelectedLanguage('nb-NO');
+      },
+      onEnglishLanguageSelect: () => {
+        this.props.updateSelectedLanguage('en-US');
       }
     });
     this.setState({
@@ -57,19 +64,22 @@ class NavigationBar extends Component {
 
   render() {
     const environment = getEnvironmentVariable('environment');
-    return <main-navigation isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>
+    const language = this.props.selectedLanguage === 'en-US' ? 'en' : 'no';
+    return <main-navigation language={language} isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>;
   }
 }
 
 const mapStateToProps = state => ({
   oidc: state.oidc,
   config: state.config,
-  authInfo: state.authInfo
+  authInfo: state.authInfo,
+  selectedLanguage: state.selectedLanguage
 });
 
 const mapDispatchToProps = {
   updateOidcCookie,
-  updateAuthInfo
+  updateAuthInfo,
+  updateSelectedLanguage
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);
