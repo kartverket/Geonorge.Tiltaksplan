@@ -26,7 +26,6 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
-import DayJS from 'react-dayjs';
 
 class EditMeasure extends Component {
    constructor(props) {
@@ -140,50 +139,6 @@ class EditMeasure extends Component {
          <React.Fragment>
             
             <div className={`${formsStyle.form} form-container`}>
-               {
-                  this.state.editable
-                     ? (<Form.Group controlId="formNo">
-                        <Form.Label>Nummer  </Form.Label>
-                        <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                           <Form.Control type="number" min="0" name="no" value={this.state.measure.no} onChange={this.handleChange} />
-                        </div>
-                     </Form.Group>
-                     )
-                     : ''
-               }
-
-               {
-                  this.state.editable
-                     ? (<Form.Group controlId="formName">
-                        <Form.Label>Navn  </Form.Label>
-                        <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                           <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
-                        </div>
-                     </Form.Group>
-                     )
-                     : ''
-               }
-
-               {
-                  this.state.editable
-                     ? (
-                        <Form.Group controlId="formOwner">
-                           <Form.Label>Eier</Form.Label>
-                           <Typeahead
-                              id="basic-typeahead-single"
-                              labelKey="name"
-                              onChange={this.handleOwnerSelect}
-                              options={this.props.organizations}
-                              placeholder="Legg til eier..."
-                              selected={this.state.selectedOwner}
-                           />
-                        </Form.Group>
-                     ) : (
-                        ''
-                     )
-               }
-
-               <h2>Rapportering av fremdrift</h2> <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.state.measure.lastUpdated}</DayJS></p>
                <div className={formsStyle.block}>
                   <Form.Group controlId="formProgress">
                      {
