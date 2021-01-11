@@ -133,7 +133,8 @@ class Measure extends Component {
 
 const mapStateToProps = (state) => ({
    measure: state.measures.selectedMeasure,
-   authInfo: state.authInfo
+   authInfo: state.authInfo,
+   selectedLanguage: state.selectedLanguage
 });
 
 const mapDispatchToProps = {
