@@ -19,7 +19,7 @@ export const updateAuthInfo = () => (dispatch, getState) => {
       : null;
 
     if (accessToken && expiresAt) {
-      const authInfoApiUrl = store && store.config && store.config.authInfoApiUrl;
+      const authInfoApiUrl = store && store.config && store.config.apiBaseURL ? `${store.config.apiBaseURL}/authzinfo` : null;
       fetch(authInfoApiUrl, {
         method: 'GET',
         headers: {

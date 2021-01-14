@@ -81,7 +81,7 @@ class AddMeasure extends Component {
       }
 
       this.props.newMeasure
-         ? this.props.createMeasure(measure)
+         ? this.props.createMeasure(measure, this.props.user)
             .then(() => {
                this.closeModal();
                toastr.success('Et nytt tiltak ble lagt til');
@@ -89,7 +89,7 @@ class AddMeasure extends Component {
             .catch(_ => {
                toastr.error('Kunne ikke opprette tiltak');
             })
-         : this.props.updateMeasure(measure)
+         : this.props.updateMeasure(measure, this.props.user)
             .then(() => {
                this.closeModal();
                toastr.success('Tiltaket ble oppdatert');
@@ -156,6 +156,7 @@ class AddMeasure extends Component {
 const mapStateToProps = state => {
    return ({
       organizations: state.organizations,
+      user: state.oidc.user
    });
 };
 
