@@ -11,7 +11,6 @@ import { withRouter } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
-import { Typeahead } from 'react-bootstrap-typeahead';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
