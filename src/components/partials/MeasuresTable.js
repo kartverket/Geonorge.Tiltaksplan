@@ -57,7 +57,6 @@ class MeasuresTable extends Component {
 
 
 const mapStateToProps = state => ({ 
-   measures: state.measures.measures,
    planStatuses: state.options.planStatuses,
    selectedLanguage: state.selectedLanguage
 });
