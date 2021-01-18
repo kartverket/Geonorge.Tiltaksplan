@@ -21,9 +21,10 @@ class Measures extends Component {
 
 
    saveCSVFileForMeasureReports() {
-      var filename = 'reports.csv';
-      const contentString = convertMeasureReportsToCSV(this.props.measures)
-      var blob = new Blob([contentString], {
+      const filename = "reports.csv";
+      const BOM = "\uFEFF";
+      const csvData = `${BOM} ${convertMeasureReportsToCSV(this.props.measures)}`;
+      const blob = new Blob([csvData], {
          type: "text/csv;charset=utf-8"
       });
       saveAs(blob, filename);
