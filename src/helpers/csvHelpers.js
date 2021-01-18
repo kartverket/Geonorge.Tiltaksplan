@@ -3,11 +3,11 @@ const convertSelectedPropertiesToCSV = (properties, dataObject) => {
     return properties.map(property => {
         const propertyValue = dataObject[property];
         return typeof propertyValue === 'string' ? `\"${propertyValue}\"` : propertyValue;
-    }).join(',');
+    }).join(';');
 }
 
 const convertObjectArrayToCSV = (properties, objectArray) => {
-    const headers = properties.join(',');
+    const headers = properties.join(';');
     const values = objectArray.map(dataObject => {
         const csvLine = convertSelectedPropertiesToCSV(properties, dataObject);
         return csvLine;
