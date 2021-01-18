@@ -33,11 +33,7 @@ class Measures extends Component {
       return (
          <Container>
             <h1>Tiltaksplan</h1>
-            {
-               canAddMeasure(this.props.authInfo)
-                  ? <MeasureDetails newMeasure />
-                  : ''
-            }
+            <MeasureDetails newMeasure />
             <MeasuresTable measures={this.props.measures} />
             <Button variant="primary" onClick={() => this.saveCSVFileForMeasureReports()}>Lagre som CSV</Button>
          </Container>

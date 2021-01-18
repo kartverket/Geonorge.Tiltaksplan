@@ -14,11 +14,14 @@ import { Measure } from 'models/measure';
 import { fetchOrganizations } from 'actions/OrganizationsActions';
 import { createMeasure, updateMeasure } from 'actions/MeasuresActions';
 
+// Helpers
+import { canAddMeasure, canEditMeasure } from 'helpers/authorizationHelpers';
+
 // Stylesheets
 import 'react-bootstrap-typeahead/css/Typeahead.css';
 
 
-class AddMeasure extends Component {
+class MeasureDetails extends Component {
    constructor(props) {
       super(props);
 
@@ -99,12 +102,20 @@ class AddMeasure extends Component {
             });
    }
 
+   showAddMeasureContent(){
+      return this.state.measure && this.props.newMeasure && canAddMeasure(this.props.authInfo);
+   }
+
+   showEditMeasureContent(){
+      return this.state.measure && !this.props.newMeasure && canEditMeasure(this.props.authInfo);
+   }
+
    render() {
       if (!this.state.dataFetched) {
          return '';
       }
 
-      return this.state.measure ? (
+      return this.showAddMeasureContent() || this.showEditMeasureContent() ? (
          <React.Fragment>
             <Button variant="primary" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
             <Modal
@@ -156,7 +167,8 @@ class AddMeasure extends Component {
 const mapStateToProps = state => {
    return ({
       organizations: state.organizations,
-      user: state.oidc.user
+      user: state.oidc.user,
+      authInfo: state.authInfo,
    });
 };
 
@@ -166,4 +178,4 @@ const mapDispatchToProps = {
    updateMeasure
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(AddMeasure);
+export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetails);

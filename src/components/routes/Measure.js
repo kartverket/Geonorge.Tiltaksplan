@@ -77,11 +77,7 @@ class Measure extends Component {
                   ? <Button className="mr-2" variant="secondary" onClick={this.openDeleteMeasureModal}>Slett tiltaket</Button>
                   : ''
             }
-            {
-               canEditMeasure(this.props.authInfo)
-                  ? <MeasureDetails selectedMeasure={this.props.measure} />
-                  : ''
-            }
+            <MeasureDetails selectedMeasure={this.props.measure} />
 
 
 
