@@ -338,8 +338,8 @@ class ActivityDetails extends Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.closeModal}>{this.props.translate('Cancel')} </Button>
-            <Button variant="danger" onClick={this.handleDelete}>{this.props.translate('Delete')} </Button>
+            <Button variant="secondary" onClick={this.closeModal}>{this.props.translate('btnCancel')} </Button>
+            <Button variant="danger" onClick={this.handleDelete}>{this.props.translate('btnDelete')} </Button>
           </Modal.Footer>
         </Modal>}
       </React.Fragment>
