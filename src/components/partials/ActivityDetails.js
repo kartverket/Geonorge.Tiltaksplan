@@ -112,7 +112,7 @@ class ActivityDetails extends Component {
   }
 
   handleDelete() {
-    this.props.deleteActivity(this.state.activity)
+    this.props.deleteActivity(this.state.activity, this.props.user)
       .then(() => {
         this.props.history.push(`/tiltak/${this.getMeasureId()}`);
       });
