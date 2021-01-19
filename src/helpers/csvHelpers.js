@@ -2,7 +2,7 @@
 const convertSelectedPropertiesToCSV = (properties, dataObject) => {
     return properties.map(property => {
         const propertyValue = dataObject[property];
-        return typeof propertyValue === 'string' ? `\"${propertyValue}\"` : propertyValue;
+        return typeof propertyValue === 'string' ? `"${propertyValue}"` : propertyValue;
     }).join(';');
 }
 

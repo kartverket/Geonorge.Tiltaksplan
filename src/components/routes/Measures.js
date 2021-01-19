@@ -10,7 +10,6 @@ import MeasureDetails from 'components/partials/MeasureDetails';
 import MeasuresTable from 'components/partials/MeasuresTable';
 
 // Helpers
-import { canAddMeasure } from 'helpers/authorizationHelpers';
 import { convertMeasureReportsToCSV } from 'helpers/csvHelpers';
 
 // Actions

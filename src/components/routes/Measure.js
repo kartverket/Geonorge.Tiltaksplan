@@ -18,7 +18,7 @@ import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
 import { translate } from 'actions/ConfigActions';
 
 // Helpers
-import { canDeleteMeasure, canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+import { canDeleteMeasure, canAddActivity } from 'helpers/authorizationHelpers';
 
 // Stylesheets
 import style from 'components/routes/Measure.module.scss';
