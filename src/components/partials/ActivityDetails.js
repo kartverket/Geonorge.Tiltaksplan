@@ -129,7 +129,7 @@ class ActivityDetails extends Component {
   }
 
   createActivity() {
-    this.props.createActivity(this.state.activity)
+    this.props.createActivity(this.state.activity, this.props.user)
       .then(() => {
         this.props.history.push(`/tiltak/${this.getMeasureId()}`);
       })
@@ -139,7 +139,7 @@ class ActivityDetails extends Component {
   }
 
   updateActivity() {
-    this.props.updateActivity(this.state.activity)
+    this.props.updateActivity(this.state.activity, this.props.user)
       .then(_ => {
         toastr.success('Aktiviteten ble oppdatert');
       })
@@ -357,6 +357,7 @@ const mapStateToProps = state => ({
     };
   }),
   planStatuses: state.options.planStatuses,
+  user: state.oidc.user,
   authInfo: state.authInfo
 });
 
