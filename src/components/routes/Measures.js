@@ -22,7 +22,7 @@ class Measures extends Component {
    saveCSVFileForMeasureReports() {
       const filename = "reports.csv";
       const BOM = "\uFEFF";
-      const csvData = `${BOM} ${convertMeasureReportsToCSV(this.props.measures)}`;
+      const csvData = `${BOM} ${convertMeasureReportsToCSV(this.props.measures, this.props.options)}`;
       const blob = new Blob([csvData], {
          type: "text/csv;charset=utf-8"
       });
@@ -42,11 +42,10 @@ class Measures extends Component {
 }
 
 const mapStateToProps = state => ({
+   authInfo: state.authInfo,
    measures: state.measures.measures,
-   authInfo: state.authInfo
-   
- });
-   
+   options: state.options
+});
 
 const mapDispatchToProps = {
    fetchMeasures,
