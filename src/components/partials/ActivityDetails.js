@@ -15,6 +15,7 @@ import { withRouter } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
+import { translate } from 'actions/ConfigActions';
 
 // Models
 import { Activity } from 'models/activity';
@@ -364,7 +365,8 @@ const mapDispatchToProps = {
   updateActivity,
   fetchOrganizations,
   fetchOptions,
-  deleteActivity
+  deleteActivity,
+  translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ActivityDetails));
