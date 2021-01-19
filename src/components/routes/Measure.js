@@ -19,7 +19,7 @@ import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
 import { translate } from 'actions/ConfigActions';
 
 // Helpers
-import { canDeleteMeasure, canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+import { canDeleteMeasure, canAddActivity } from 'helpers/authorizationHelpers';
 
 // Stylesheets
 import style from 'components/routes/Measure.module.scss';
@@ -73,35 +73,31 @@ class Measure extends Component {
       return (
          <Container>
             <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
-            {this.props.measure.infoUrl ? 
-            <a href={`${this.props.measure.infoUrl}`}>{this.props.translate('infoLinkMeasure')}</a> :''
-         }
+            {this.props.measure.infoUrl ?
+               <a href={`${this.props.measure.infoUrl}`}>{this.props.translate('infoLinkMeasure')}</a> : ''
+            }
             <h5>{this.props.translate('OwnsBy')} {this.props.measure.owner.name}</h5>
             {
                canDeleteMeasure(this.props.authInfo)
                   ? <Button className="mr-2" variant="secondary" onClick={this.openDeleteMeasureModal}>Slett tiltaket</Button>
                   : ''
             }
-            {
-               canEditMeasure(this.props.authInfo)
-                  ? <MeasureDetails selectedMeasure={this.props.measure} />
-                  : ''
-            }
-   <div className={style.btn} onClick={() => { this.setState({ open: !this.state.open }) }}>
-    {this.state.open ? `${this.props.translate('ReportLinkClose')}` : `${this.props.translate('ReportLink')}`} {<FontAwesomeIcon icon={this.state.open ? 'minus-circle' : 'plus-circle'} />}
+            <MeasureDetails selectedMeasure={this.props.measure} />
+            <div className={style.btn} onClick={() => { this.setState({ open: !this.state.open }) }}>
+               {this.state.open ? `${this.props.translate('ReportLinkClose')}` : `${this.props.translate('ReportLink')}`} {<FontAwesomeIcon icon={this.state.open ? 'minus-circle' : 'plus-circle'} />}
             </div>
-            
+
 
             <div className={`${style.reporting} ` + `${this.state.open ? `${style.reportOpen}` : `${style.reportClose}`}`}>
-            <h2>{this.props.translate('progressReportTitle')}</h2>
-            <p>{this.props.translate('lastUpdate')} <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
+               <h2>{this.props.translate('progressReportTitle')}</h2>
+               <p>{this.props.translate('lastUpdate')} <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
 
-            <ReportDetails />
+               <ReportDetails />
             </div>
 
             <h2>{this.props.translate('MeasureActivitiesTitle')}</h2>
 
-            
+
             <ActivityTable activities={this.props.measure.activities} />
             {
                canAddActivity(this.props.authInfo)
@@ -114,8 +110,8 @@ class Measure extends Component {
             }
 
 
-            
-            
+
+
 
             <Modal
                show={this.state.deleteMeasureModalOpen}
