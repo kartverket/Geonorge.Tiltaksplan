@@ -45,3 +45,22 @@
 :local(.block) {
   margin: 20px 0;
 }
+:local(.reporting) {
+  transition: all .3s ease-in-out;
+  overflow: hidden;
+  
+}
+:local(.reportClose) {
+  max-height: 0;
+}
+:local(.reportOpen) {
+  
+  max-height: 500px;
+}
+:local(.btn) {
+  font-size: 1.4em;
+  margin: 15px 0;
+  &:hover {
+    cursor: pointer;
+  }
+}

@@ -152,6 +152,10 @@ class MeasureDetails extends Component {
                         placeholder="Legg til eier..."
                      />
                   </Form.Group>
+                  <Form.Group controlId="formInfoUrl">
+                     <Form.Label>Url</Form.Label>
+                     <Form.Control type="text" name="infoUrl" value={this.state.measure.infoUrl} onChange={this.handleChange} placeholder="http://www.name.org" />
+                  </Form.Group>
                </Modal.Body>
 
                <Modal.Footer>

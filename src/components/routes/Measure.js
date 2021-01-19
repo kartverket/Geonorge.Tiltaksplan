@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import DayJS from 'react-dayjs';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 
 // Components
@@ -18,7 +19,7 @@ import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
 import { translate } from 'actions/ConfigActions';
 
 // Helpers
-import { canDeleteMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+import { canDeleteMeasure, canEditMeasure, canAddActivity } from 'helpers/authorizationHelpers';
 
 // Stylesheets
 import style from 'components/routes/Measure.module.scss';
@@ -28,7 +29,8 @@ class Measure extends Component {
       super(props);
       this.state = {
          dataFetched: false,
-         deleteMeasureModalOpen: false
+         deleteMeasureModalOpen: false,
+         open: false
       };
       this.openDeleteMeasureModal = this.openDeleteMeasureModal.bind(this);
       this.closeDeleteMeasureModal = this.closeDeleteMeasureModal.bind(this);
@@ -71,34 +73,49 @@ class Measure extends Component {
       return (
          <Container>
             <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
-            <h5>Eies av {this.props.measure.owner.name}</h5>
+            {this.props.measure.infoUrl ? 
+            <a href={`${this.props.measure.infoUrl}`}>{this.props.translate('infoLinkMeasure')}</a> :''
+         }
+            <h5>{this.props.translate('OwnsBy')} {this.props.measure.owner.name}</h5>
             {
                canDeleteMeasure(this.props.authInfo)
                   ? <Button className="mr-2" variant="secondary" onClick={this.openDeleteMeasureModal}>Slett tiltaket</Button>
                   : ''
             }
-            <MeasureDetails selectedMeasure={this.props.measure} />
+            {
+               canEditMeasure(this.props.authInfo)
+                  ? <MeasureDetails selectedMeasure={this.props.measure} />
+                  : ''
+            }
+   <div className={style.btn} onClick={() => { this.setState({ open: !this.state.open }) }}>
+    {this.state.open ? `${this.props.translate('ReportLinkClose')}` : `${this.props.translate('ReportLink')}`} {<FontAwesomeIcon icon={this.state.open ? 'minus-circle' : 'plus-circle'} />}
+            </div>
+            
 
+            <div className={`${style.reporting} ` + `${this.state.open ? `${style.reportOpen}` : `${style.reportClose}`}`}>
+            <h2>{this.props.translate('progressReportTitle')}</h2>
+            <p>{this.props.translate('lastUpdate')} <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
 
+            <ReportDetails />
+            </div>
 
             <h2>{this.props.translate('MeasureActivitiesTitle')}</h2>
-            <p>{this.props.translate('MeasureActivitiesDescription')}</p>
+
+            
             <ActivityTable activities={this.props.measure.activities} />
             {
                canAddActivity(this.props.authInfo)
                   ? (<div className={style.block}>
                      <Link to={`${this.getMeasureId()}/ny-aktivitet`}>
-                        <button className="btn btn-primary">Opprett aktivitet</button>
+                        <button className="btn btn-primary">{this.props.translate('btnCreate')}</button>
                      </Link>
                   </div>)
                   : ''
             }
 
 
-            <h2>Rapportering av fremdrift</h2>
-            <p>Sist oppdatert <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
-
-            <ReportDetails />
+            
+            
 
             <Modal
                show={this.state.deleteMeasureModalOpen}

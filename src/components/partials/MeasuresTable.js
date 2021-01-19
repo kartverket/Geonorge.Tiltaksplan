@@ -38,19 +38,23 @@ class MeasuresTable extends Component {
     }
 
     return (
+       <React.Fragment>
+       
+       <p>{this.props.translate('MeasureActivitiesDescription')}</p>
       <table className={style.measuresTable}>
          <thead>
             <tr>
                <th>Nr</th>
                <th>{this.props.translate('Measure')}</th>
                <th>Status</th>
-               <th>Eier</th>
+               <th>{this.props.translate('Owner')}</th>
             </tr>
          </thead>
          <tbody>
             {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
          </tbody>
       </table>
+      </React.Fragment>
    );
  }
 }

@@ -26,10 +26,10 @@ import NavigationBar from 'components/partials/NavigationBar';
 // font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
 import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faCheckSquare, faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle } from '@fortawesome/free-solid-svg-icons'
 import { OidcProvider } from 'redux-oidc';
 
-library.add(fab, faCheckSquare, faTrashAlt, faEdit)
+library.add(fab, faCheckSquare, faTrashAlt, faEdit,faPlusCircle,faMinusCircle)
 
 const initialState = {};
 const storePromise = configureStore(initialState, userManagerPromise);

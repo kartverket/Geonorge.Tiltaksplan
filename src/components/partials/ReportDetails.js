@@ -11,6 +11,8 @@ import { withRouter } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
+import { translate } from 'actions/ConfigActions';
+
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
@@ -143,7 +145,7 @@ class EditMeasure extends Component {
                      {
                         this.state.editableReport
                            ? (<React.Fragment>
-                              <Form.Label>Fremdrift </Form.Label>
+                              <Form.Label>{this.props.translate('statusProgress')} </Form.Label>
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                                  <SimpleMDE
                                     value={this.state.measure.progress || ''}
@@ -170,7 +172,7 @@ class EditMeasure extends Component {
                   </Form.Group>
                   <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
                      <Form.Group controlId="formVolume">
-                        <Form.Label>Volum </Form.Label>
+                        <Form.Label>{this.props.translate('Volume')} </Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -216,7 +218,7 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formTrafficLight">
-                        <Form.Label>Trafikklys </Form.Label>
+                        <Form.Label>{this.props.translate('TrafficLight')} </Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -238,7 +240,7 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formResults">
-                        <Form.Label>Konkrete resultater</Form.Label>
+                        <Form.Label>{this.props.translate('Results')}</Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -260,7 +262,7 @@ class EditMeasure extends Component {
                      </Form.Group>
                   </div>
                   <Form.Group controlId="formComments">
-                     <Form.Label>Kommentar  </Form.Label>
+                     <Form.Label>{this.props.translate('Commment')}  </Form.Label>
                      {
                         this.state.editableReport
                            ? (
@@ -284,7 +286,7 @@ class EditMeasure extends Component {
                               ? (
                                  <React.Fragment>
                                     <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
-                                    <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
+                                    <Button variant="primary" onClick={this.saveMeasure}>{this.props.translate('btnSave')}</Button>
                                  </React.Fragment>
                               )
                               : ''
@@ -295,7 +297,7 @@ class EditMeasure extends Component {
                         
                         {
                            canEditMeasure(this.props.authInfo)
-                              ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>Rediger raport</Button>
+                              ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
                               : ''
                         }
                      </div>
@@ -311,7 +313,7 @@ class EditMeasure extends Component {
                backdrop="static"
                aria-labelledby="form-dialog-title">
                <Modal.Header closeButton>
-                  <Modal.Title>Slett aktivitet</Modal.Title>
+                  <Modal.Title>{this.props.translate('btnDelete')}</Modal.Title>
                </Modal.Header>
 
                <Modal.Body>
@@ -345,6 +347,7 @@ const mapDispatchToProps = {
    fetchOptions,
    updateMeasure,
    fetchOrganizations,
+   translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditMeasure));

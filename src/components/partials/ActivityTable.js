@@ -5,6 +5,7 @@ import { connect } from 'react-redux';
 // Components
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
 import { fetchOptions } from 'actions/OptionsActions';
+import { translate } from 'actions/ConfigActions';
 
 // Stylesheets
 import style from 'components/partials/ActivityTable.module.scss'
@@ -30,7 +31,7 @@ class ActivityTable extends Component {
          return (
             <React.Fragment>
                <div className={style.block}>
-                  <p>Ingen aktiveterer lagt til dette tiltaket enda.</p>
+                  <p>Tekst mangler</p>
                </div>
             </React.Fragment>
          );
@@ -38,16 +39,17 @@ class ActivityTable extends Component {
 
       return (
          <React.Fragment>
+   
             <table className={style.activitiesTable}>
                <thead>
                   <tr>
-                     <th>Nr</th>
-                     <th>Navn</th>
-                     <th>Beskrivelse</th>
-                     <th>Deltakere</th>
+                     <th>NR</th>
+                     <th>{this.props.translate('Name')}</th>
+                     <th>{this.props.translate('Description')}</th>
+                     <th>{this.props.translate('Participants')}</th>
                      <th>Status</th>
-                     <th>Start</th>
-                     <th>Slutt</th>
+                     <th>{this.props.translate('Start')}</th>
+                     <th>{this.props.translate('End')}</th>
                   </tr>
                </thead>
                <tbody>
@@ -72,7 +74,8 @@ const mapStateToProps = state => ({
 });
 
 const mapDispatchToProps = {
-   fetchOptions
+   fetchOptions,
+   translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(ActivityTable);

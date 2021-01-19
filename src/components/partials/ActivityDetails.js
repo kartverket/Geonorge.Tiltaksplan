@@ -166,7 +166,7 @@ class ActivityDetails extends Component {
     return this.state.activity ? (
       <React.Fragment>
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Nummer</Form.Label>
+          <Form.Label>{this.props.translate('labelNumber')}</Form.Label>
           {this.state.editable
             ? (
               <div className={formsStyle.comboInput}>
@@ -178,7 +178,7 @@ class ActivityDetails extends Component {
             )}
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Aktivitet </Form.Label>
+          <Form.Label>{this.props.translate('Activity')} </Form.Label>
           {
             this.state.editable
               ? (
@@ -193,7 +193,7 @@ class ActivityDetails extends Component {
         </Form.Group>
 
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Beskrivelse </Form.Label>
+          <Form.Label>{this.props.translate('Description')}  </Form.Label>
           {
             this.state.editable
               ? (
@@ -233,7 +233,7 @@ class ActivityDetails extends Component {
         </Form.Group>
 
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Slutt </Form.Label>
+          <Form.Label>{this.props.translate('End')}  </Form.Label>
           {
             this.state.editable
               ? (
@@ -269,7 +269,7 @@ class ActivityDetails extends Component {
 
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Deltakere </Form.Label>
+          <Form.Label>{this.props.translate('Participants')}  </Form.Label>
           {
             this.state.editable
               ? (
@@ -337,8 +337,8 @@ class ActivityDetails extends Component {
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-            <Button variant="danger" onClick={this.handleDelete}>Slett</Button>
+            <Button variant="secondary" onClick={this.closeModal}>{this.props.translate('Cancel')} </Button>
+            <Button variant="danger" onClick={this.handleDelete}>{this.props.translate('Delete')} </Button>
           </Modal.Footer>
         </Modal>}
       </React.Fragment>

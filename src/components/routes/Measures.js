@@ -8,7 +8,7 @@ import Button from 'react-bootstrap/Button';
 import Container from 'components/template/Container';
 import MeasureDetails from 'components/partials/MeasureDetails';
 import MeasuresTable from 'components/partials/MeasuresTable';
-
+import { translate } from 'actions/ConfigActions';
 // Helpers
 import { convertMeasureReportsToCSV } from 'helpers/csvHelpers';
 
@@ -32,7 +32,7 @@ class Measures extends Component {
    render() {
       return (
          <Container>
-            <h1>Tiltaksplan</h1>
+            <h1>{this.props.translate('MeasureActivitiesTitle')}</h1>
             <MeasureDetails newMeasure />
             <MeasuresTable measures={this.props.measures} />
             <Button variant="primary" onClick={() => this.saveCSVFileForMeasureReports()}>Lagre som CSV</Button>
@@ -42,12 +42,15 @@ class Measures extends Component {
 }
 
 const mapStateToProps = state => ({
-   authInfo: state.authInfo,
-   measures: state.measures.measures
-});
+   measures: state.measures.measures,
+   authInfo: state.authInfo
+   
+ });
+   
 
 const mapDispatchToProps = {
-   fetchMeasures
+   fetchMeasures,
+   translate
 };
 
 export default connect(mapStateToProps, mapDispatchToProps)(Measures);
