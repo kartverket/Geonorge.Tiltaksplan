@@ -86,7 +86,7 @@ class Measure extends Component {
                </div>
 
 
-               <div className={`${style.reporting} ` + `${this.state.open ? `${style.reportOpen}` : `${style.reportClose}`}`}>
+               <div className={`${style.reporting} ${this.state.open ? style.reportOpen : style.reportClose}`}>
                   <h2>{this.props.translate('progressReportTitle')}</h2>
                   <p>{this.props.translate('lastUpdate')} <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
 
