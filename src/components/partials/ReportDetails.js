@@ -108,14 +108,6 @@ class EditMeasure extends Component {
       }
    }
 
-   handleMdeBlur(instance, event) {
-      console.log("blur");
-   }
-
-   handleMdeFocus(isntance, event) {
-      console.log("focus");
-   }
-
    handleEditableReportChange(event) {
       const editableReport = event.target.checked;
       this.setState({ editableReport });
@@ -152,10 +144,6 @@ class EditMeasure extends Component {
                                     onChange={value => this.handleChange({ name: 'progress', value })}
                                     options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
                                     getMdeInstance={this.getMdeInstance}
-                                    events={{
-                                       'blur': this.handleMdeBlur,
-                                       'focus': (event) => this.handleMdeFocus(event)
-                                    }}
                                  />
 
                               </div>
