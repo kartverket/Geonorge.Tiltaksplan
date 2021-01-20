@@ -199,7 +199,7 @@ class EditMeasure extends Component {
                                  </div>
                               )
                               : (
-                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
+                                 <span>{this.renderStars(this.state.measure.status)}</span>
                               )
                         }
 
