@@ -159,6 +159,10 @@ class ActivityDetails extends Component {
     }
   }
 
+  getParticipants() {
+    return this.state.activity.participants.map((participant => <div>{participant.name}</div>))
+  }
+
 
   render() {
     if (!this.state.dataFetched) {
@@ -287,7 +291,7 @@ class ActivityDetails extends Component {
                 />
               )
               : (
-                ''
+               <div>{this.getParticipants()}</div>
               )
           }
         </Form.Group>
