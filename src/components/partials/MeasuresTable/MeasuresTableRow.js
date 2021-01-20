@@ -36,7 +36,7 @@ class MeasuresTableRow extends Component {
          <tr onClick={this.goToMeasure.bind(this)}>
             <td>{measure.no}</td>
             <td>{measure.name}</td>
-            <td>{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
+            <td>{this.renderStars(this.props.measure.status)}</td>
             <td>{measure.owner.name}</td>
          </tr>
       )
