@@ -28,7 +28,7 @@ export default class SelectDropdown extends Component {
 
         if (option) {
           value = option.value;
-          label = option.label;
+          label = this.props.optionValueAsLabel ? option.value : option.label;
         } 
       }
 
@@ -63,7 +63,7 @@ export default class SelectDropdown extends Component {
       >
           {
             this.props.options && this.props.options.length ? this.props.options.map(option => {
-              return <Dropdown.Item as="span" key={option.value.toString()} data-value={option.value}>{option.label}</Dropdown.Item>
+              return <Dropdown.Item as="span" key={option.value.toString()} data-value={option.value}>{this.props.optionValueAsLabel ? option.value : option.label}</Dropdown.Item>
             }) : ''
           }
       </DropdownButton>
@@ -76,5 +76,6 @@ SelectDropdown.propTypes = {
   value: PropTypes.any.isRequired,
   options: PropTypes.array.isRequired,
   onSelect: PropTypes.func.isRequired,
-  className: PropTypes.string
+  className: PropTypes.string,
+  optionValueAsLabel: PropTypes.bool
 };
