@@ -76,7 +76,7 @@ class EditMeasure extends Component {
    }
 
 
-   
+
 
    saveMeasure() {
       const measure = this.state.measure;
@@ -85,7 +85,7 @@ class EditMeasure extends Component {
          measure.owner.id = this.state.selectedOwner[0].id
       }
 
-      this.props.updateMeasure(measure)
+      this.props.updateMeasure(measure, this.props.user)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
          })
@@ -130,7 +130,7 @@ class EditMeasure extends Component {
 
       return (
          <React.Fragment>
-            
+
             <div className={`${formsStyle.form} form-container`}>
                <div className={formsStyle.block}>
                   <Form.Group controlId="formProgress">
@@ -282,7 +282,7 @@ class EditMeasure extends Component {
                      </div>
                   ) : (
                      <div>
-                        
+
                         {
                            canEditMeasure(this.props.authInfo)
                               ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
@@ -328,7 +328,8 @@ const mapStateToProps = state => ({
    trafficLights: state.options.trafficLights,
    planStatuses: state.options.planStatuses,
    organizations: state.organizations,
-   authInfo: state.authInfo
+   authInfo: state.authInfo,
+   user: state.oidc.user
 });
 
 const mapDispatchToProps = {
