@@ -192,8 +192,9 @@ class EditMeasure extends Component {
                                        name="status"
                                        value={this.state.measure.status || 1}
                                        options={this.props.planStatuses}
+                                       optionValueAsLabel
                                        onSelect={this.handleChange}
-                                       className={formsStyle.statusSelect}
+                                       className={formsStyle.defaultSelect}
                                     />
 
                                  </div>
