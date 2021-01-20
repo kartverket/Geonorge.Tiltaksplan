@@ -44,7 +44,8 @@ class Measures extends Component {
 const mapStateToProps = state => ({
    authInfo: state.authInfo,
    measures: state.measures.measures,
-   options: state.options
+   options: state.options,
+   selectedLanguage: state.selectedLanguage
 });
 
 const mapDispatchToProps = {
