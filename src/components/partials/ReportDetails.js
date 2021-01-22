@@ -86,6 +86,7 @@ class EditMeasure extends Component {
       this.props.updateMeasure(measure, this.props.user)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
+            this.setState({ validationErrors: [] });
          })
          .catch(({ response }) => {
             toastr.error('Kunne ikke oppdatere tiltak');

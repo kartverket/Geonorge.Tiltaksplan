@@ -174,7 +174,7 @@ class ActivityDetails extends Component {
 
   getParticipants() {
     if (this.state.activity && this.state.activity.participants) {
-      return this.state.activity.participants.map((participant => <div key={`participant-${index}`}>{participant.name}</div>))
+      return this.state.activity.participants.map(((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>))
     }
     return '';    
   }

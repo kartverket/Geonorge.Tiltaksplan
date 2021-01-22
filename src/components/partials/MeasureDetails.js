@@ -91,6 +91,7 @@ class MeasureDetails extends Component {
          ? this.props.createMeasure(measure, this.props.user)
             .then(() => {
                this.closeModal();
+               this.setState({ validationErrors: [] });
                toastr.success('Et nytt tiltak ble lagt til');
             })
             .catch(({ response }) => {   
@@ -100,6 +101,7 @@ class MeasureDetails extends Component {
          : this.props.updateMeasure(measure, this.props.user)
             .then(() => {
                this.closeModal();
+               this.setState({ validationErrors: [] });
                toastr.success('Tiltaket ble oppdatert');
             })
             .catch(({ response }) => {
