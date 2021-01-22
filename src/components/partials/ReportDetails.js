@@ -191,8 +191,7 @@ class EditMeasure extends Component {
                                     <SelectDropdown
                                        name="status"
                                        value={this.state.measure.status || 1}
-                                       options={this.props.planStatuses}
-                                       optionValueAsLabel
+                                       options={this.props.planStatuses}                                       
                                        onSelect={this.handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
@@ -200,7 +199,7 @@ class EditMeasure extends Component {
                                  </div>
                               )
                               : (
-                                 <span>{this.renderStars(this.state.measure.status)}</span>
+                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
                               )
                         }
 
