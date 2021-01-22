@@ -74,10 +74,10 @@ class App extends Component {
                         <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
                         <Route exact path="/signin-oidc" render={() => (<OidcCallback userManager={userManager}/>)} />
                         <Route exact path="/signout-callback-oidc" render={() => (<OidcSignoutCallback userManager={userManager}/>)} />
-                        <Route exact={true} path="/tiltak/:measureId" render={(props) => (<Measure {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureId/ny-aktivitet" render={(props) => (<Activity {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureId/aktivitet" render={(props) => (<Activity {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureId/aktivitet/:activityId" render={(props) => (<Activity {...props} />)} />
+                        <Route exact={true} path="/tiltak/:measureNumber" render={(props) => (<Measure {...props} />)} />
+                        <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" render={(props) => (<Activity {...props} />)} />
+                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet" render={(props) => (<Activity {...props} />)} />
+                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet/:activityNumber" render={(props) => (<Activity {...props} />)} />
                         <Route render={() => (<NotFound />)} />
                      </Switch>
                      <ReduxToastr

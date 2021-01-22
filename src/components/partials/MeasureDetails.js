@@ -5,7 +5,8 @@ import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
 import Form from 'react-bootstrap/Form';
 import { Typeahead } from 'react-bootstrap-typeahead';
-import { toastr } from 'react-redux-toastr'
+import { toastr } from 'react-redux-toastr';
+import ValidationErrors from 'components/partials/ValidationErrors';
 
 // Models
 import { Measure } from 'models/measure';
@@ -35,7 +36,8 @@ class MeasureDetails extends Component {
             ? []
             : [
                props.selectedMeasure.owner
-            ]
+            ],
+         validationErrors: []
       };
 
       this.handleChange = this.handleChange.bind(this);
@@ -43,7 +45,6 @@ class MeasureDetails extends Component {
       this.openModal = this.openModal.bind(this);
       this.closeModal = this.closeModal.bind(this);
       this.saveMeasure = this.saveMeasure.bind(this);
-
    }
 
    componentDidMount() {
@@ -70,9 +71,12 @@ class MeasureDetails extends Component {
    }
 
    handleChange(data) {
-      const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
-      measure[name] = isNaN(value) ? value : parseInt(value);
+      const { name, value } = data.target ? data.target : data;   
+      const parsed = parseInt(value);
+
+      measure[name] = isNaN(parsed) ? value : parsed;
+
       this.setState({ measure });
    }
 
@@ -89,16 +93,18 @@ class MeasureDetails extends Component {
                this.closeModal();
                toastr.success('Et nytt tiltak ble lagt til');
             })
-            .catch(_ => {
-               toastr.error('Kunne ikke opprette tiltak');
-            })
+            .catch(({ response }) => {   
+               toastr.error('Kunne ikke opprette tiltak');            
+               this.setState({ validationErrors: response.data });
+            })            
          : this.props.updateMeasure(measure, this.props.user)
             .then(() => {
                this.closeModal();
                toastr.success('Tiltaket ble oppdatert');
             })
-            .catch(_ => {
+            .catch(({ response }) => {
                toastr.error('Kunne ikke oppdatere tiltak');
+               this.setState({ validationErrors: response.data });
             });
    }
 
@@ -106,7 +112,7 @@ class MeasureDetails extends Component {
       return this.state.measure && this.props.newMeasure && canAddMeasure(this.props.authInfo);
    }
 
-   showEditMeasureContent(){
+   showEditMeasureContent() {
       return this.state.measure && !this.props.newMeasure && canEditMeasure(this.props.authInfo);
    }
 
@@ -117,7 +123,7 @@ class MeasureDetails extends Component {
 
       return this.showAddMeasureContent() || this.showEditMeasureContent() ? (
          <React.Fragment>
-            <Button variant="primary" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
+            <Button variant="primary" className="marginB-20" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
             <Modal
                show={this.state.modalOpen}
                onHide={this.closeModal}
@@ -131,9 +137,11 @@ class MeasureDetails extends Component {
                </Modal.Header>
 
                <Modal.Body>
+                  <ValidationErrors errors={this.state.validationErrors} />
+
                   <Form.Group controlId="formNo">
                      <Form.Label>Nummer</Form.Label>
-                     <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} />
+                     <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} onBlur={this.checkForAvailability} />
                   </Form.Group>
 
                   <Form.Group controlId="formName">

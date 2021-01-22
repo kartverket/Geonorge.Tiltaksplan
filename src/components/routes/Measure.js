@@ -38,7 +38,7 @@ class Measure extends Component {
    }
 
    componentDidMount() {
-      this.props.fetchMeasure(this.getMeasureId())
+      this.props.fetchMeasure(this.getMeasureNumber())
          .then(() => {
             this.setState({ dataFetched: true });
          });
@@ -59,9 +59,9 @@ class Measure extends Component {
          });
    }
 
-   getMeasureId() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureId
-         ? this.props.match.params.measureId
+   getMeasureNumber() {
+      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
+         ? this.props.match.params.measureNumber
          : null;
    }
 
@@ -100,7 +100,7 @@ class Measure extends Component {
                {
                   canAddActivity(this.props.authInfo)
                      ? (<div className={style.block}>
-                        <Link to={`${this.getMeasureId()}/ny-aktivitet`}>
+                        <Link to={`${this.getMeasureNumber()}/ny-aktivitet`}>
                            <button className="btn btn-primary">{this.props.translate('btnCreateActivity')}</button>
                         </Link>
                      </div>)

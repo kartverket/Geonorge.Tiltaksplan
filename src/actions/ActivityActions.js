@@ -2,8 +2,8 @@ import { CREATE_ACTIVITY, FETCH_SELECTED_ACTIVITY, UPDATE_ACTIVITY, DELETE_ACTIV
 import { apiUrls } from 'components/config';
 import appApi from 'config/appApi';
 
-export const fetchActivity = activityId => async (dispatch) => {
-   const apiUrl = apiUrls.activity.get.format({ id: activityId })
+export const fetchActivity = (measureNumber, activityNumber) => async (dispatch) => {
+   const apiUrl = apiUrls.activity.get.format({ measureNumber, number: activityNumber });
    const response = await appApi().get(apiUrl);
  
    dispatch({ type: FETCH_SELECTED_ACTIVITY, payload: response.data })

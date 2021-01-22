@@ -16,6 +16,7 @@ import { withRouter } from 'react-router-dom';
 // Components
 import { SelectDropdown } from 'components/custom-elements';
 import { translate } from 'actions/ConfigActions';
+import ValidationErrors from 'components/partials/ValidationErrors';
 
 // Models
 import { Activity } from 'models/activity';
@@ -42,12 +43,14 @@ class ActivityDetails extends Component {
 
     this.state = {
       activity: this.props.newActivity
-        ? new Activity({ measureId: this.getMeasureId() })
+        ? new Activity({ measureId: this.props.selectedMeasure.id })
         : props.selectedActivity,
       editable: (this.props.location.state && this.props.location.state.editable) || this.props.newActivity ? true : false,
       dataFetched: false,
-      modalOpen: false
+      modalOpen: false,
+      validationErrors: []
     };
+
     this.getMdeInstance = this.getMdeInstance.bind(this);
     this.handleChange = this.handleChange.bind(this);
     this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
@@ -62,28 +65,32 @@ class ActivityDetails extends Component {
       this.props.fetchOrganizations(),
       this.props.fetchOptions()
     ])
-      .then(() => {
-        this.setState({ dataFetched: true });
-      });
+    .then(() => {
+      this.setState({ dataFetched: true });
+    });
   }
 
   handleChange(data) {
-    const { name, value } = data.target ? data.target : data;
     const activity = this.state.activity;
+    const { name, value } = data.target ? data.target : data;
     let newValue;
+
     if (value instanceof Date) {
       newValue = value.toISOString();
-    } else if (!isNaN(value)) {
-      newValue = parseInt(value);
     } else {
-      newValue = value;
+      const parsed = parseInt(value);
+      newValue = isNaN(parsed) ? value : parsed;
     }
+
     activity[name] = newValue;
+
     this.setState({ activity });
   }
+
   openModal() {
     this.setState({ modalOpen: true });
   }
+
   closeModal() {
     this.setState({ modalOpen: false });
   }
@@ -92,6 +99,7 @@ class ActivityDetails extends Component {
     if (!participants.length) {
       return;
     }
+
     participants.forEach(participant => {
       if (participant.customOption) {
         delete participant.id;
@@ -100,12 +108,12 @@ class ActivityDetails extends Component {
       participant.activityId = this.state.activity.id;
     });
 
-
     this.handleChange({
       name: 'participants',
       value: participants
     });
   }
+
   getActivityStatusLabel(planStatuses, activity) {
     return planStatuses && activity.status && planStatuses[activity.status] &&
       planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
@@ -114,15 +122,15 @@ class ActivityDetails extends Component {
   handleDelete() {
     this.props.deleteActivity(this.state.activity, this.props.user)
       .then(() => {
-        this.props.history.push(`/tiltak/${this.getMeasureId()}`);
+        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
       });
   }
-  getMeasureId() {
-    return this.props.match && this.props.match.params && this.props.match.params.measureId
-      ? parseInt(this.props.match.params.measureId)
+
+  getMeasureNumber() {
+    return this.props.match && this.props.match.params && this.props.match.params.measureNumber
+      ? parseInt(this.props.match.params.measureNumber)
       : null;
   }
-
 
   saveActivity() {
     this.props.newActivity ? this.createActivity() : this.updateActivity();
@@ -130,24 +138,29 @@ class ActivityDetails extends Component {
 
   createActivity() {
     this.props.createActivity(this.state.activity, this.props.user)
-      .then(() => {
-        this.props.history.push(`/tiltak/${this.getMeasureId()}`);
+      .then(_ => {
+        this.setState({ validationErrors: [] });
+        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
       })
-      .catch(_ => {
+      .catch(({ response }) => {
         toastr.error('Kunne ikke opprette aktivitet');
+        this.setState({ validationErrors: response.data });
+        window.scroll(0, 0);
       });
   }
 
   updateActivity() {
     this.props.updateActivity(this.state.activity, this.props.user)
       .then(_ => {
+        this.setState({ validationErrors: [] });
         toastr.success('Aktiviteten ble oppdatert');
       })
-      .catch(_ => {
-        toastr.error('Kunne ikke oppdatere aktivitet');
+      .catch(({ response }) => {
+        toastr.error('Kunne ikke oppdatere aktivitet');        
+        this.setState({ validationErrors: response.data });
+        window.scroll(0, 0);
       });
   }
-
 
   getMdeInstance(instance) {
     const container = instance.element.nextSibling;
@@ -160,16 +173,18 @@ class ActivityDetails extends Component {
   }
 
   getParticipants() {
-    return this.state.activity.participants.map((participant => <div>{participant.name}</div>))
+    return this.state.activity.participants.map(((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>))
   }
-
 
   render() {
     if (!this.state.dataFetched) {
       return '';
     }
+
     return this.state.activity ? (
       <React.Fragment>
+        <ValidationErrors errors={this.state.validationErrors} />
+        
         <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>{this.props.translate('labelNumber')}</Form.Label>
           {this.state.editable
@@ -202,13 +217,12 @@ class ActivityDetails extends Component {
           {
             this.state.editable
               ? (
-                <div className={formsStyle.comboInput}>
+                <div className={formsStyle.comboInput} style={{display: 'block'}}>
                   <SimpleMDE
                     value={this.state.activity.description || ''}
                     onChange={value => this.handleChange({ name: 'description', value })}
                     options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
                     getMdeInstance={this.getMdeInstance}
-
                   />
                 </div>
               )
@@ -291,7 +305,7 @@ class ActivityDetails extends Component {
                 />
               )
               : (
-               <div>{this.getParticipants()}</div>
+                <div>{this.getParticipants()}</div>
               )
           }
         </Form.Group>
@@ -348,11 +362,11 @@ class ActivityDetails extends Component {
         </Modal>}
       </React.Fragment>
     ) : ''
-
   }
 }
 
 const mapStateToProps = state => ({
+  selectedMeasure: state.measures.selectedMeasure,
   selectedActivity: state.activities.selectedActivity,
   organizations: state.organizations.map(organization => {
     return {

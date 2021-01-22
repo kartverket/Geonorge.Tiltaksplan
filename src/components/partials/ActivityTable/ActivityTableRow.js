@@ -56,18 +56,19 @@ class ActivityTableRow extends Component {
    closeModal() {
       this.setState({ modalOpen: false });
    }
+
    saveModal() {
       this.closeModal();
    }
 
-   getMeasureId() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureId
-         ? this.props.match.params.measureId
+   getMeasureNumber() {
+      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
+         ? this.props.match.params.measureNumber
          : null;
    }
 
    goToActivity() {
-      this.props.history.push(`/tiltak/${this.getMeasureId()}/aktivitet/${this.props.activity.id}`);
+      this.props.history.push(`/tiltak/${this.getMeasureNumber()}/aktivitet/${this.props.activity.no}`);
    }
 
    renderActivity() {
@@ -81,8 +82,7 @@ class ActivityTableRow extends Component {
          <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
          <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
          <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-      </React.Fragment>)
-            
+      </React.Fragment>)            
    }
 
    render() {

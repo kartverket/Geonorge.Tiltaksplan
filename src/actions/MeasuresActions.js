@@ -3,16 +3,16 @@ import { apiUrls } from 'components/config';
 import appApi from 'config/appApi';
 
 export const fetchMeasures = () => async (dispatch) => {
-   const apiUrl = apiUrls.measure.getAll;
+   const apiUrl = apiUrls.measure.getAll;   
    const response = await appApi().get(apiUrl);
    dispatch({ type: FETCH_MEASURES, payload: response.data });
 }
 
-export const fetchMeasure = (measureId) => async (dispatch) => {
-   const apiUrl = apiUrls.measure.get.format({ id: measureId })
+export const fetchMeasure = (number) => async (dispatch) => {
+   const apiUrl = apiUrls.measure.get.format({ number })
    const response = await appApi().get(apiUrl);
 
-   dispatch({ type: FETCH_SELECTED_MEASURE, payload: response.data })
+   dispatch({ type: FETCH_SELECTED_MEASURE, payload: response.data });
 }
 
 export const createMeasure = (measure, user) => async (dispatch) => {

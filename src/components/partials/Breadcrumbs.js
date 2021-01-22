@@ -8,7 +8,7 @@ const SelectedMeasureBreadcrumb = () => {
    const selectedMeasure = useSelector(state => state.measures.selectedMeasure);
 
    return selectedMeasure ? (
-      <span>{selectedMeasure.name}</span>
+      <span>{selectedMeasure.no} - {selectedMeasure.name}</span>
    ) : '';
 };
 
@@ -16,7 +16,7 @@ const SelectedActivityBreadcrumb = () => {
   const selectedActivity = useSelector(state => state.activities.selectedActivity);
 
   return selectedActivity ? (
-     <span>{selectedActivity.name}</span>
+     <span>{selectedActivity.no} - {selectedActivity.name}</span>
   ) : '';
 };
 

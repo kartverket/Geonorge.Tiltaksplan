@@ -31,36 +31,35 @@ class MeasuresTable extends Component {
          this.setState({ dataFetched: true });
       });
    }
-   
-   render() {
-    if (!this.state.dataFetched) {
-       return '';
-    }
 
-    return (
-       <React.Fragment>
-       
-       <p>{this.props.translate('MeasureActivitiesDescription')}</p>
-      <table className={style.measuresTable}>
-         <thead>
-            <tr>
-               <th>Nr</th>
-               <th>{this.props.translate('Measure')}</th>
-               <th>Status</th>
-               <th>{this.props.translate('Owner')}</th>
-            </tr>
-         </thead>
-         <tbody>
-            {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
-         </tbody>
-      </table>
-      </React.Fragment>
-   );
- }
+   render() {
+      if (!this.state.dataFetched) {
+         return '';
+      }
+
+      return (
+         <React.Fragment>
+            <p>{this.props.translate('MeasureActivitiesDescription')}</p>
+            <table className={style.measuresTable}>
+               <thead>
+                  <tr>
+                     <th>Nr</th>
+                     <th>{this.props.translate('Measure')}</th>
+                     <th>Status</th>
+                     <th>{this.props.translate('Owner')}</th>
+                  </tr>
+               </thead>
+               <tbody>
+                  {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
+               </tbody>
+            </table>
+         </React.Fragment>
+      );
+   }
 }
 
 
-const mapStateToProps = state => ({ 
+const mapStateToProps = state => ({
    planStatuses: state.options.planStatuses,
    selectedLanguage: state.selectedLanguage
 });

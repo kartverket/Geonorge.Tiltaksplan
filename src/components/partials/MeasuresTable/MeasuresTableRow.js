@@ -26,7 +26,7 @@ class MeasuresTableRow extends Component {
    }
 
    goToMeasure() {
-      this.props.history.push(`/tiltak/${this.props.measure.id}`);
+      this.props.history.push(`/tiltak/${this.props.measure.no}`);
    }
 
    render() {
