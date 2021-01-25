@@ -1,16 +1,29 @@
 <!DOCTYPE html>
 <html lang="no">
-  <head>
-    <meta charset="utf-8" />
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Geonorge Tiltaksplan" />
-    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
-    <title>Geonorge Tiltaksplan</title>
-  </head>
-  <body>
-    <noscript>You need to enable JavaScript to run this app.</noscript>
-    <div id="root"></div>
-  </body>
+
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#000000" />
+  <meta name="description" content="Geonorge Tiltaksplan" />
+  <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+  <title>Geonorge Tiltaksplan</title>
+
+  <script>
+    // Polyfill for Edge legacy browsers
+    if (window.navigator.userAgent.indexOf("Edge/") > -1) {
+      const polyfillScript = document.createElement('script');
+      polyfillScript.src = "https://cdn.jsdelivr.net/npm/@webcomponents/webcomponentsjs@2.5.0/webcomponents-bundle.min.js";
+      document.head.appendChild(polyfillScript);
+    };
+  </script>
+
+</head>
+
+<body>
+  <noscript>You need to enable JavaScript to run this app.</noscript>
+  <div id="root"></div>
+</body>
+
 </html>
