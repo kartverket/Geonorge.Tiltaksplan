@@ -5,6 +5,7 @@ import PropTypes from 'prop-types';
 import DayJS from 'react-dayjs';
 import { withRouter } from 'react-router-dom'
 import showdown from 'showdown';
+import { translate } from 'actions/ConfigActions';
 
 // Stylesheets
 import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
@@ -74,14 +75,14 @@ class ActivityTableRow extends Component {
    renderActivity() {
       const activity = this.props.activity;
       const statusStyle = { width: `${activity.status * 20}%` }
-      return (<React.Fragment>
-         <td>{activity.no}</td>
-         <td>{activity.name}</td>
-         <td className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
-         <td>{this.getParticitants(activity.participants)}</td>
-         <td><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
-         <td><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-         <td><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
+      return (<React.Fragment>        
+         <td data-label="Nr">{activity.no}</td>
+         <td data-label={this.props.translate('Name')}>{activity.name}</td>
+         <td data-label={this.props.translate('Description')} className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
+         <td data-label={this.props.translate('Participants')}>{this.getParticitants(activity.participants)}</td>
+         <td data-label="Status"><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
+         <td data-label={this.props.translate('Start')}><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
+         <td data-label={this.props.translate('End')}><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
       </React.Fragment>)            
    }
 
@@ -98,4 +99,8 @@ ActivityTableRow.propTypes = {
    activity: PropTypes.object.isRequired
 };
 
-export default connect(null, null)(withRouter(ActivityTableRow));
+const mapDispatchToProps = {  
+   translate
+};
+
+export default connect(null, mapDispatchToProps)(withRouter(ActivityTableRow));
