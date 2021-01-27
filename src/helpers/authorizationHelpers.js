@@ -6,11 +6,11 @@ export const hasEditorRole = authInfo => {
   return authInfo && authInfo.roles && authInfo.roles.includes('nd.tiltaksplan');
 }
 
-export const isResponsibleAgency = (authInfo, responsibleAgency) => {
+export const isResponsibleAgency = (authInfo = {}, responsibleAgency = {}) => {
   return parseInt(authInfo.organizationNumber) === responsibleAgency.orgNumber;
 }
 
-export const isOwner = (authInfo, owner) => {
+export const isOwner = (authInfo = {}, owner = {}) => {
   return parseInt(authInfo.organizationNumber) === owner.orgNumber;
 }
 
