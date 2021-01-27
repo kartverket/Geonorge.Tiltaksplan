@@ -3,6 +3,9 @@
     height: 10px;
     width: 100px;
     background-color: #fe0400;
+    @media screen and (max-width: 600px) {
+        display: none;
+    }
 }
 :local(.block) {
     background-color:#589d43;

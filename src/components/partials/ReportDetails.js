@@ -12,7 +12,7 @@ import { withRouter } from 'react-router-dom';
 // Components
 import { SelectDropdown } from 'components/custom-elements';
 import { translate } from 'actions/ConfigActions';
-
+import ValidationErrors from 'components/partials/ValidationErrors';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
@@ -44,39 +44,37 @@ class EditMeasure extends Component {
          editableReport: false,
          selectedOwner: [
             props.selectedMeasure.owner
-         ]
+         ],
+         validationErrors: []
       };
    }
-
 
    componentDidMount() {
       Promise.all([
          this.props.fetchOrganizations(),
          this.props.fetchOptions()
       ])
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
+      .then(() => {
+         this.setState({ dataFetched: true });
+      });
    }
 
    handleChange(data) {
-      const { name, value } = data.target ? data.target : data;
       const measure = this.state.measure;
+      const { name, value } = data.target ? data.target : data;
       let newValue;
+
       if (value instanceof Date) {
          newValue = value.toISOString();
-      } else if (!isNaN(value)) {
-         newValue = parseInt(value);
       } else {
-         newValue = value;
+         const parsed = parseInt(value);
+         newValue = isNaN(parsed) ? value : parsed;
       }
+
       measure[name] = newValue;
 
       this.setState({ measure });
    }
-
-
-
 
    saveMeasure() {
       const measure = this.state.measure;
@@ -88,14 +86,15 @@ class EditMeasure extends Component {
       this.props.updateMeasure(measure, this.props.user)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
+            this.setState({ validationErrors: [] });
          })
-         .catch(_ => {
+         .catch(({ response }) => {
             toastr.error('Kunne ikke oppdatere tiltak');
+            this.setState({ validationErrors: response.data });
          });
    }
 
    getMeasureStatusLabel(planStatuses, measure) {
-
       return planStatuses.find(status => measure.status === status.value).label;
    }
 
@@ -133,6 +132,8 @@ class EditMeasure extends Component {
 
             <div className={`${formsStyle.form} form-container`}>
                <div className={formsStyle.block}>
+                  <ValidationErrors errors={this.state.validationErrors} />
+
                   <Form.Group controlId="formProgress">
                      {
                         this.state.editableReport
@@ -191,8 +192,7 @@ class EditMeasure extends Component {
                                     <SelectDropdown
                                        name="status"
                                        value={this.state.measure.status || 1}
-                                       options={this.props.planStatuses}
-                                       optionValueAsLabel
+                                       options={this.props.planStatuses}                                       
                                        onSelect={this.handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
@@ -200,7 +200,7 @@ class EditMeasure extends Component {
                                  </div>
                               )
                               : (
-                                 <span>{this.renderStars(this.state.measure.status)}</span>
+                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
                               )
                         }
 

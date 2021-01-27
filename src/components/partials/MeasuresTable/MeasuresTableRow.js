@@ -6,6 +6,7 @@ import { withRouter } from 'react-router-dom'
 
 import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scss';
 import StarIcon from 'gfx/icon-star.svg'
+import { translate } from 'actions/ConfigActions';
 
 class MeasuresTableRow extends Component {
 
@@ -26,18 +27,20 @@ class MeasuresTableRow extends Component {
    }
 
    goToMeasure() {
-      this.props.history.push(`/tiltak/${this.props.measure.id}`);
+      this.props.history.push(`/tiltak/${this.props.measure.no}`);
    }
 
    render() {
       const measure = this.props.measure;
 
       return (
+         
+                    
          <tr onClick={this.goToMeasure.bind(this)}>
-            <td>{measure.no}</td>
-            <td>{measure.name}</td>
-            <td>{this.renderStars(this.props.measure.status)}</td>
-            <td>{measure.owner.name}</td>
+            <td data-label="Nr">{measure.no}</td>
+            <td data-label={this.props.translate('Measure')}>{measure.name}</td>
+            <td data-label="Status">{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
+            <td data-label={this.props.translate('Owner')}>{measure.owner.name}</td>
          </tr>
       )
    }
@@ -46,5 +49,8 @@ class MeasuresTableRow extends Component {
 MeasuresTableRow.propTypes = {
    measure: PropTypes.object.isRequired
 };
-
-export default connect(null, null)(withRouter(MeasuresTableRow));
+const mapDispatchToProps = {
+  
+   translate
+};
+export default connect(null, mapDispatchToProps)(withRouter(MeasuresTableRow));

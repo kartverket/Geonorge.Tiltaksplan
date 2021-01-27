@@ -20,24 +20,29 @@ class Activity extends Component {
    }
 
    componentDidMount() {
-      Promise.all([
-         this.props.fetchMeasure(this.getMeasureId()),
-         this.props.fetchActivity(this.getActivityId())
-      ])
-      .then(() => {
-         this.setState({ dataFetched: true });
-      });
+      const measureNumber = this.getMeasureNumber();
+      const activityNumber = this.getActivityNumber();
+      const promises = [this.props.fetchMeasure(measureNumber)];
+
+      if (activityNumber) {
+        promises.push(this.props.fetchActivity(measureNumber, activityNumber));
+      }
+
+      Promise.all(promises)
+        .then(() => {
+          this.setState({ dataFetched: true });
+        });
    }
 
-   getMeasureId() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureId
-         ? this.props.match.params.measureId
+   getMeasureNumber() {
+      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
+         ? this.props.match.params.measureNumber
          : null;
    }
 
-   getActivityId() {
-      return this.props.match && this.props.match.params && this.props.match.params.activityId
-         ? this.props.match.params.activityId
+   getActivityNumber() {
+      return this.props.match && this.props.match.params && this.props.match.params.activityNumber
+         ? this.props.match.params.activityNumber
          : null;
    }
 
@@ -49,7 +54,7 @@ class Activity extends Component {
       return (
          <Container>
             <h1>{this.props.activity.name}</h1>
-            <ActivityDetails newActivity={!this.getActivityId()} />
+            <ActivityDetails newActivity={!this.getActivityNumber()} />
          </Container>
       );
    }
