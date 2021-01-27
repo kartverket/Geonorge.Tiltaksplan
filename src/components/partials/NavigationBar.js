@@ -32,8 +32,8 @@ class NavigationBar extends Component {
     }
     const wasLoggedIn = prevProps.oidc.user;
     const isLoggedIn = this.props.oidc.user;
-    const hadAuthInfo = prevProps.authInfo && prevProps.authInfo.user;
-    const hasAuthInfo = this.props.authInfo && this.props.authInfo.user;
+    const hadAuthInfo = prevProps.authInfo && prevProps.authInfo.organizationNumber;
+    const hasAuthInfo = this.props.authInfo && this.props.authInfo.organizationNumber;
     if ((isLoggedIn !== wasLoggedIn) || (hasAuthInfo !== hadAuthInfo)) {
       this.props.updateOidcCookie(this.props.oidc.user);
       this.props.updateAuthInfo();
