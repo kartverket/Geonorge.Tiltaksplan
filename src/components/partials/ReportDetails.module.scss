@@ -1,0 +1,16 @@
+:local(.openInfo) {
+  transition: all .3s ease-in-out;
+  overflow: hidden;  
+  
+}
+:local(.close) {
+  max-height: 0;
+}
+:local(.open) {
+  font-style: italic;
+  max-height: 1500px;
+  border-radius: 3px;
+  border: 1px dotted lightgrey;
+  padding: 2px;
+  font-weight: 600;
+}

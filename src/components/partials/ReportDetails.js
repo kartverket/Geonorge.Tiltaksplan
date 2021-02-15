@@ -11,11 +11,13 @@ import { withRouter } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
-import { translate } from 'actions/ConfigActions';
+
 import ValidationErrors from 'components/partials/ValidationErrors';
+import ToggleHelpText  from 'components/template/ToggleHelpText';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
+import { translate } from 'actions/ConfigActions';
 import { updateMeasure } from 'actions/MeasuresActions';
 
 // Helpers
@@ -27,6 +29,8 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import style from 'components/partials/ReportDetails.module.scss';
 
 class EditMeasure extends Component {
    constructor(props) {
@@ -40,6 +44,7 @@ class EditMeasure extends Component {
 
       this.state = {
          dataFetched: false,
+         showInfo: false,
          measure: props.selectedMeasure,
          editableReport: false,
          selectedOwner: [
@@ -138,7 +143,7 @@ class EditMeasure extends Component {
                      {
                         this.state.editableReport
                            ? (<React.Fragment>
-                              <Form.Label>{this.props.translate('statusProgress')} </Form.Label>
+                              <Form.Label>{this.props.translate('statusProgress')}  </Form.Label>
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                                  <SimpleMDE
                                     value={this.state.measure.progress || ''}
@@ -161,7 +166,8 @@ class EditMeasure extends Component {
                   </Form.Group>
                   <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
                      <Form.Group controlId="formVolume">
-                        <Form.Label>{this.props.translate('Volume')} </Form.Label>
+                        <Form.Label>{this.props.translate('Volume')} 
+                        <ToggleHelpText resourceKey='VolumeDescription' /> </Form.Label>                      
                         {
                            this.state.editableReport
                               ? (
@@ -184,7 +190,8 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formStatus">
-                        <Form.Label>Status </Form.Label>
+                     
+                        <Form.Label>Status <ToggleHelpText resourceKey='StatusDescription' /></Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -207,7 +214,8 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formTrafficLight">
-                        <Form.Label>{this.props.translate('TrafficLight')} </Form.Label>
+                        <Form.Label>{this.props.translate('TrafficLight')} 
+                        <ToggleHelpText resourceKey='TrafficlightDescription' /> </Form.Label>                       
                         {
                            this.state.editableReport
                               ? (
@@ -229,7 +237,9 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formResults">
-                        <Form.Label>{this.props.translate('Results')}</Form.Label>
+                        <Form.Label>{this.props.translate('Results')} <ToggleHelpText resourceKey='ResultDescription' />
+                        </Form.Label>
+                        
                         {
                            this.state.editableReport
                               ? (
@@ -251,7 +261,9 @@ class EditMeasure extends Component {
                      </Form.Group>
                   </div>
                   <Form.Group controlId="formComments">
-                     <Form.Label>{this.props.translate('Commment')}  </Form.Label>
+                     <Form.Label>{this.props.translate('Comment')}  
+                     <ToggleHelpText resourceKey='CommentDescription' />
+                     </Form.Label>
                      {
                         this.state.editableReport
                            ? (
