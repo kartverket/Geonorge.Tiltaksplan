@@ -245,7 +245,7 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart).setUTCHours(0,0,0,0) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart).setHours(0,0,0,0) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
                 </div>
               )
               : (
@@ -260,7 +260,7 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd).setUTCHours(0,0,0,0) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd).setHours(0,0,0,0) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
                 </div>
               )
               : (
