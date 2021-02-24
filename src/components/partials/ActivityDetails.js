@@ -76,7 +76,7 @@ class ActivityDetails extends Component {
     let newValue;
 
     if (value instanceof Date) {
-      newValue = value.toISOString();
+      newValue = this.formatDate(value);
     } else {
       const parsed = parseInt(value);
       newValue = isNaN(parsed) ? value : parsed;
@@ -117,6 +117,14 @@ class ActivityDetails extends Component {
   getActivityStatusLabel(planStatuses, activity) {
     return planStatuses && activity.status && planStatuses[activity.status] &&
       planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
+  }
+
+  formatDate(date) {
+
+    const diff = 120 // max diff norway
+    var newDateObj = new Date(date.getTime() + diff*60000);
+    return newDateObj;
+
   }
 
   handleDelete() {
@@ -245,7 +253,7 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
                 </div>
               )
               : (
@@ -260,7 +268,7 @@ class ActivityDetails extends Component {
             this.state.editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
                 </div>
               )
               : (
