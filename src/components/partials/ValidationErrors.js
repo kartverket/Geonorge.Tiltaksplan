@@ -1,13 +1,14 @@
 const ValidationErrors = ({ errors }) => {
-   if (!errors.length) {
-      return '';
-   }
-
-   return (
+   return errors && errors.length ? (
       <ul className="validationErrors">
-         { errors.map((error, index) => <li key={`error-${index}`}>{error}</li>) }
+         { Array.isArray(errors)
+            ? errors.map((error, index) => {
+               return (<li key={`error-${index}`}>{error}</li>)
+            })
+            : (<li key={`error-0`}>{errors}</li>)
+         }
       </ul>
-   );
+   ) : '';
 };
 
 export default ValidationErrors
