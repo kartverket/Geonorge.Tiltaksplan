@@ -29,8 +29,7 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import style from 'components/partials/ReportDetails.module.scss';
+
 
 class EditMeasure extends Component {
    constructor(props) {
