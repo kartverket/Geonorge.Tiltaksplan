@@ -282,7 +282,7 @@ class EditMeasure extends Component {
                   ? (
                      <div>
                         {
-                           canEditReport(this.props.authInfo)
+                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
                               ? (
                                  <React.Fragment>
                                     <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
@@ -296,7 +296,7 @@ class EditMeasure extends Component {
                      <div>
 
                         {
-                           canEditMeasure(this.props.authInfo)
+                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
                               ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
                               : ''
                         }
