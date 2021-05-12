@@ -11,7 +11,7 @@ import DayJS from 'react-dayjs';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toastr } from 'react-redux-toastr'
 import Modal from 'react-bootstrap/Modal';
-import { withRouter } from 'react-router-dom';
+import { withRouter, Redirect } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -48,7 +48,8 @@ class ActivityDetails extends Component {
       editable: (this.props.location.state && this.props.location.state.editable) || this.props.newActivity ? true : false,
       dataFetched: false,
       modalOpen: false,
-      validationErrors: []
+      validationErrors: [],
+      redirect: null
     };
 
     this.getMdeInstance = this.getMdeInstance.bind(this);
@@ -188,6 +189,10 @@ class ActivityDetails extends Component {
   }
 
   render() {
+    if (this.state.redirect) {
+      return <Redirect to={this.state.redirect}/>;
+    }
+
     if (!this.state.dataFetched) {
       return '';
     }
@@ -321,18 +326,22 @@ class ActivityDetails extends Component {
           }
         </Form.Group>
         <div className={formsStyle.btngroup}>
-
           {this.state.editable ? (
             <div>
               {
-                canEditActivity(this.props.authInfo)
+                this.props.newActivity
                   ? (
                     <React.Fragment>
-                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-                      <Button variant="primary" onClick={this.saveActivity}>{this.props.newActivity ? 'Opprett' : 'Lagre'}</Button>
+                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ redirect: `/tiltak/${this.props.selectedMeasure.no}/` }) }}>Avbryt oppretting</Button>
+                      <Button variant="primary" onClick={this.saveActivity}>Opprett</Button>
                     </React.Fragment>
                   )
-                  : ''
+                  : (
+                    <React.Fragment>
+                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
+                      <Button variant="primary" onClick={this.saveActivity}>Lagre</Button>
+                    </React.Fragment>
+                  )
               }
             </div>
           ) : (

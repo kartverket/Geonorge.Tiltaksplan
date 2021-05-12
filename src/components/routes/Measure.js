@@ -100,7 +100,7 @@ class Measure extends Component {
                {
                   canAddActivity(this.props.authInfo, this.props.measure.owner)
                      ? (<div className={style.block}>
-                        <Link to={`${this.getMeasureNumber()}/ny-aktivitet`}>
+                        <Link to={`/tiltak/${this.getMeasureNumber()}/ny-aktivitet`}>
                            <button className="btn btn-primary">{this.props.translate('btnCreateActivity')}</button>
                         </Link>
                      </div>)
