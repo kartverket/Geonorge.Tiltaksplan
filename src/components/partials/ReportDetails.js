@@ -29,8 +29,7 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 import 'easymde/dist/easymde.min.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import style from 'components/partials/ReportDetails.module.scss';
+
 
 class EditMeasure extends Component {
    constructor(props) {
@@ -283,7 +282,7 @@ class EditMeasure extends Component {
                   ? (
                      <div>
                         {
-                           canEditReport(this.props.authInfo)
+                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
                               ? (
                                  <React.Fragment>
                                     <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
@@ -297,7 +296,7 @@ class EditMeasure extends Component {
                      <div>
 
                         {
-                           canEditMeasure(this.props.authInfo)
+                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
                               ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
                               : ''
                         }
