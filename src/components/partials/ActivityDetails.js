@@ -66,9 +66,9 @@ class ActivityDetails extends Component {
       this.props.fetchOrganizations(),
       this.props.fetchOptions()
     ])
-    .then(() => {
-      this.setState({ dataFetched: true });
-    });
+      .then(() => {
+        this.setState({ dataFetched: true });
+      });
   }
 
   handleChange(data) {
@@ -165,7 +165,7 @@ class ActivityDetails extends Component {
         toastr.success('Aktiviteten ble oppdatert');
       })
       .catch(({ response }) => {
-        toastr.error('Kunne ikke oppdatere aktivitet');        
+        toastr.error('Kunne ikke oppdatere aktivitet');
         this.setState({ validationErrors: response.data });
         window.scroll(0, 0);
       });
@@ -185,7 +185,7 @@ class ActivityDetails extends Component {
     if (this.state.activity && this.state.activity.participants) {
       return this.state.activity.participants.map((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>)
     }
-    return '';    
+    return '';
   }
 
   render() {
@@ -200,7 +200,7 @@ class ActivityDetails extends Component {
     return this.state.activity ? (
       <React.Fragment>
         <ValidationErrors errors={this.state.validationErrors} />
-        
+
         <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>{this.props.translate('labelNumber')}</Form.Label>
           {this.state.editable
@@ -345,19 +345,19 @@ class ActivityDetails extends Component {
               }
             </div>
           ) : (
-              <div>
-                {
-                  canDeleteActivity(this.props.authInfo)
-                    ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
-                    : ''
-                }
-                {
-                  canEditActivity(this.props.authInfo)
-                    ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
-                    : ''
-                }
-              </div>
-            )}
+            <div>
+              {
+                canDeleteActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
+                  ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
+                  : ''
+              }
+              {
+                canEditActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
+                  ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
+                  : ''
+              }
+            </div>
+          )}
         </div>
         {<Modal
           show={this.state.modalOpen}
