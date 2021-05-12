@@ -42,11 +42,11 @@ export const canEditReport = (authInfo, owner) => {
 
 
 // Measure Activity
-export const canAddActivity = (authInfo, responsibleAgency) => {
+export const canAddActivity = (authInfo, owner) => {
   if (hasAdminRole(authInfo)) {
     return true;
   } else if (hasEditorRole(authInfo)) {
-    return isResponsibleAgency(authInfo, responsibleAgency);
+    return isOwner(authInfo, owner);
   } else {
     return false;
   }
