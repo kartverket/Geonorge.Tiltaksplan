@@ -33,13 +33,23 @@ export const convertMeasureReportsToCSV = (measureReports = [], options) => {
         return {
             "id": measureReport.id,
             "nr": measureReport.no,
-            "fremdrift": measureReport.progress,
+            "fremdrift": FixSpecialCharacters(measureReport.progress),
             "volum": getOptionLabelFromValue(options, 'measureVolume', measureReport.volume),
             "status": getOptionLabelFromValue(options, 'planStatuses', measureReport.status),
             "trafikklys": getOptionLabelFromValue(options, 'trafficLights', measureReport.trafficLight),
             "konkrete resultater": getOptionLabelFromValue(options, 'measureResults', measureReport.results),
-            "kommentar": measureReport.comment
+            "kommentar": FixSpecialCharacters(measureReport.comment)
         }
     });
     return convertObjectArrayToCSV(objectArray);
 }
+
+function FixSpecialCharacters(text) {
+    
+    if (text == null)
+        return "";
+
+    text = text.replace(/"/g,'""');
+    
+    return text;
+  }
