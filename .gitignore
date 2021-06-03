@@ -108,3 +108,6 @@ src/config/config.local.json
 
 # build
 /build
+
+# Misc
+.DS_Store
