@@ -22,6 +22,7 @@ import { updateConfig } from 'actions/ConfigActions';
 
 // Partials
 import NavigationBar from 'components/partials/NavigationBar';
+import Footer from 'components/partials/Footer';
 
 // font awesome
 import { library } from '@fortawesome/fontawesome-svg-core'
@@ -80,6 +81,7 @@ class App extends Component {
                         <Route exact={true} path="/tiltak/:measureNumber/aktivitet/:activityNumber" render={(props) => (<Activity {...props} />)} />
                         <Route render={() => (<NotFound />)} />
                      </Switch>
+                     <Footer />
                      <ReduxToastr
                         timeOut={2000}
                         newestOnTop={false}
