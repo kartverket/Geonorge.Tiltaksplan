@@ -31,9 +31,19 @@ import { canDeleteActivity, canEditActivity } from 'helpers/authorizationHelpers
 
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss';
-import 'easymde/dist/easymde.min.css';
-import "react-datepicker/dist/react-datepicker.css";
-import "style/react-datepicker-override.scss";
+
+
+const editableMdeOptions = {
+  toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"],
+  spellChecker: false
+};
+
+const readOnlyMdeOptions = {
+  toolbar: false,
+  status: false,
+  spellChecker: false,
+  readOnly: true
+};
 
 registerLocale('nb', nb)
 
@@ -123,7 +133,7 @@ class ActivityDetails extends Component {
   formatDate(date) {
 
     const diff = 120 // max diff norway
-    var newDateObj = new Date(date.getTime() + diff*60000);
+    var newDateObj = new Date(date.getTime() + diff * 60000);
     return newDateObj;
 
   }
@@ -172,11 +182,14 @@ class ActivityDetails extends Component {
   }
 
   getMdeInstance(instance) {
-    const container = instance.element.nextSibling;
+    const container = instance?.element?.nextSibling;
     container.setAttribute('tabIndex', '0');
 
     if (!this.state.editable) {
-      instance.togglePreview()
+      const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
+      editableElement.style.display = 'none';
+      instance.togglePreview();
+      instance.codemirror.options.readOnly = true;
       container.classList.add(formsStyle.mdePreview);
     }
   }
@@ -190,7 +203,7 @@ class ActivityDetails extends Component {
 
   render() {
     if (this.state.redirect) {
-      return <Redirect to={this.state.redirect}/>;
+      return <Redirect to={this.state.redirect} />;
     }
 
     if (!this.state.dataFetched) {
@@ -233,19 +246,19 @@ class ActivityDetails extends Component {
           {
             this.state.editable
               ? (
-                <div className={formsStyle.comboInput} style={{display: 'block'}}>
+                <div className={formsStyle.comboInput} style={{ display: 'block' }}>
                   <SimpleMDE
-                    value={this.state.activity.description || ''}
+                    value={this.state.activity?.description || ''}
                     onChange={value => this.handleChange({ name: 'description', value })}
-                    options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
+                    options={editableMdeOptions}
                     getMdeInstance={this.getMdeInstance}
                   />
                 </div>
               )
               : (
                 <SimpleMDE
-                  value={this.state.activity.description || ''}
-                  options={{ toolbar: false, status: false }}
+                  value={this.state.activity?.description || ''}
+                  options={readOnlyMdeOptions}
                   getMdeInstance={this.getMdeInstance} />
               )
           }
