@@ -21,14 +21,13 @@ import { translate } from 'actions/ConfigActions';
 import { updateMeasure } from 'actions/MeasuresActions';
 
 // Helpers
-import { canEditMeasure, canEditReport } from 'helpers/authorizationHelpers';
+import { canEditReport } from 'helpers/authorizationHelpers';
 
 // Assets
 import StarIcon from 'gfx/icon-star.svg'
 
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
-import 'easymde/dist/easymde.min.css';
 
 
 class EditMeasure extends Component {

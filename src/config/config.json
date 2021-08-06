@@ -1,5 +1,6 @@
 {
     "environment": "dev",
+    "BuildVersionNumber": "0.0.0",
     "apiBaseURL": "https://tiltaksplan.dev.geonorge.no/api",
     "oidc": {
         "client_id": "wX8HQI0Myk5OpKN_cqepHbyRUjYa",
