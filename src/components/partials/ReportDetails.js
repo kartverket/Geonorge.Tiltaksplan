@@ -13,7 +13,7 @@ import { withRouter } from 'react-router-dom';
 import { SelectDropdown } from 'components/custom-elements';
 
 import ValidationErrors from 'components/partials/ValidationErrors';
-import ToggleHelpText  from 'components/template/ToggleHelpText';
+import ToggleHelpText from 'components/template/ToggleHelpText';
 
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
@@ -29,6 +29,17 @@ import StarIcon from 'gfx/icon-star.svg'
 // Stylesheets
 import formsStyle from 'components/partials/forms.module.scss'
 
+const editableMdeOptions = {
+   toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"],
+   spellChecker: false
+};
+
+const readOnlyMdeOptions = {
+   toolbar: false,
+   status: false,
+   spellChecker: false,
+   readOnly: true
+};
 
 class EditMeasure extends Component {
    constructor(props) {
@@ -57,9 +68,9 @@ class EditMeasure extends Component {
          this.props.fetchOrganizations(),
          this.props.fetchOptions()
       ])
-      .then(() => {
-         this.setState({ dataFetched: true });
-      });
+         .then(() => {
+            this.setState({ dataFetched: true });
+         });
    }
 
    handleChange(data) {
@@ -102,10 +113,13 @@ class EditMeasure extends Component {
    }
 
    getMdeInstance(instance) {
-      const container = instance.element.nextSibling;
+      const container = instance?.element?.nextSibling;
       container.setAttribute('tabIndex', '0');
       if (!this.state.editableReport) {
-         instance.togglePreview()
+         const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
+         editableElement.style.display = 'none';
+         instance.togglePreview();
+         instance.codemirror.options.readOnly = true;
          container.classList.add(formsStyle.mdePreview);
       }
    }
@@ -146,7 +160,7 @@ class EditMeasure extends Component {
                                  <SimpleMDE
                                     value={this.state.measure.progress || ''}
                                     onChange={value => this.handleChange({ name: 'progress', value })}
-                                    options={{ toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"] }}
+                                    options={editableMdeOptions}
                                     getMdeInstance={this.getMdeInstance}
                                  />
 
@@ -156,7 +170,7 @@ class EditMeasure extends Component {
                            : (
                               <SimpleMDE
                                  value={this.state.measure.progress || ''}
-                                 options={{ toolbar: false, status: false }}
+                                 options={readOnlyMdeOptions}
                                  getMdeInstance={this.getMdeInstance} />
                            )
                      }
@@ -164,8 +178,8 @@ class EditMeasure extends Component {
                   </Form.Group>
                   <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
                      <Form.Group controlId="formVolume">
-                        <Form.Label>{this.props.translate('Volume')} 
-                        <ToggleHelpText resourceKey='VolumeDescription' /> </Form.Label>                      
+                        <Form.Label>{this.props.translate('Volume')}
+                           <ToggleHelpText resourceKey='VolumeDescription' /> </Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -188,7 +202,7 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formStatus">
-                     
+
                         <Form.Label>Status <ToggleHelpText resourceKey='StatusDescription' /></Form.Label>
                         {
                            this.state.editableReport
@@ -197,7 +211,7 @@ class EditMeasure extends Component {
                                     <SelectDropdown
                                        name="status"
                                        value={this.state.measure.status || 1}
-                                       options={this.props.planStatuses}                                       
+                                       options={this.props.planStatuses}
                                        onSelect={this.handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
@@ -212,8 +226,8 @@ class EditMeasure extends Component {
                      </Form.Group>
 
                      <Form.Group controlId="formTrafficLight">
-                        <Form.Label>{this.props.translate('TrafficLight')} 
-                        <ToggleHelpText resourceKey='TrafficlightDescription' /> </Form.Label>                       
+                        <Form.Label>{this.props.translate('TrafficLight')}
+                           <ToggleHelpText resourceKey='TrafficlightDescription' /> </Form.Label>
                         {
                            this.state.editableReport
                               ? (
@@ -237,7 +251,7 @@ class EditMeasure extends Component {
                      <Form.Group controlId="formResults">
                         <Form.Label>{this.props.translate('Results')} <ToggleHelpText resourceKey='ResultDescription' />
                         </Form.Label>
-                        
+
                         {
                            this.state.editableReport
                               ? (
@@ -259,8 +273,8 @@ class EditMeasure extends Component {
                      </Form.Group>
                   </div>
                   <Form.Group controlId="formComments">
-                     <Form.Label>{this.props.translate('Comment')}  
-                     <ToggleHelpText resourceKey='CommentDescription' />
+                     <Form.Label>{this.props.translate('Comment')}
+                        <ToggleHelpText resourceKey='CommentDescription' />
                      </Form.Label>
                      {
                         this.state.editableReport
