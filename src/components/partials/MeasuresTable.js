@@ -47,6 +47,8 @@ class MeasuresTable extends Component {
                      <th>{this.props.translate('Measure')}</th>
                      <th>Status</th>
                      <th>{this.props.translate('Owner')}</th>
+                     <th>Sist&nbsp;oppdatert</th>
+                     <th></th>
                   </tr>
                </thead>
                <tbody>

@@ -8,6 +8,9 @@ import style from 'components/partials/MeasuresTable/MeasuresTableRow.module.scs
 import StarIcon from 'gfx/icon-star.svg'
 import { translate } from 'actions/ConfigActions';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAlignRight } from '@fortawesome/free-solid-svg-icons';
+
 class MeasuresTableRow extends Component {
 
    getMeasureStatusLabel(planStatuses, measure) {
@@ -30,17 +33,28 @@ class MeasuresTableRow extends Component {
       this.props.history.push(`/tiltak/${this.props.measure.no}`);
    }
 
+
+   formatDate (date) {
+      if (date !== null) {
+      const dateArray = date.split("-");
+      const day = dateArray[2].substring(0, 4).split("T");
+          return day[0] + "." + dateArray[1] + "." + dateArray[0];
+      }
+  }
+
    render() {
       const measure = this.props.measure;
 
       return (
          
                     
-         <tr onClick={this.goToMeasure.bind(this)}>
+         <tr>
             <td data-label="Nr">{measure.no}</td>
-            <td data-label={this.props.translate('Measure')}>{measure.name}</td>
+            <td data-label={this.props.translate('Measure')}><a href={measure.infoUrl} target="_blank">{measure.name}</a></td>
             <td data-label="Status">{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
             <td data-label={this.props.translate('Owner')}>{measure.owner.name}</td>
+            <td data-label="Sist oppdatert aktivitet">{this.formatDate(measure.lastUpdatedActivity)}</td>
+            <td data-label="Link til aktivitet" style={{textAlign: 'center', cursor: 'pointer'}}><FontAwesomeIcon className={style.icon} icon="info-circle" color="#007bff" onClick={this.goToMeasure.bind(this)}/></td>
          </tr>
       )
    }
