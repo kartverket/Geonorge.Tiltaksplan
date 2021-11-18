@@ -18,8 +18,17 @@ class MeasuresTable extends Component {
    constructor(props) {
       super(props);
       this.state = {
-         dataFetched: false
+         dataFetched: false,
+         measures: null,
+            sort: {
+            column: null,
+            direction: 'desc',
+            }
       }
+   }
+
+   getMeasureStatusLabel(planStatuses, measure) {
+      return planStatuses.find(status => measure.status === status.value).label;
    }
 
    componentDidMount() {
@@ -28,9 +37,83 @@ class MeasuresTable extends Component {
          this.props.fetchOptions()
       ])
       .then(() => {
-         this.setState({ dataFetched: true });
+         this.setState({ dataFetched: true, measures: this.props.planStatuses });
       });
    }
+
+   onSort = column => {
+      return e => {
+          const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'asc'
+          const sortedMeasures = this.props.measures.sort((a, b) => {
+              if (column === 'owner') {
+                  const nameA = a.owner.name;
+                  const nameB = b.owner.name;
+  
+                  if (nameA < nameB)
+                      return -1
+                  if (nameA < nameB)
+                      return 1
+                  else return 0
+              }
+              else if (column === 'status') {
+
+               const nameA = this.getMeasureStatusLabel(this.props.planStatuses, a)
+               const nameB = this.getMeasureStatusLabel(this.props.planStatuses, b)
+
+               if (nameA < nameB)
+                   return -1
+               if (nameA < nameB)
+                   return 1
+               else return 0
+               }
+               else if (column === 'name') {
+
+                  const nameA = a.name
+                  const nameB = b.name
+   
+                  if (nameA < nameB)
+                      return -1
+                  if (nameA < nameB)
+                      return 1
+                  else return 0
+               }
+               else if (column === 'lastupdated') {
+
+                  const nameA = a.lastUpdatedActivity
+                  const nameB = b.lastUpdatedActivity
+
+                  return new Date(nameA) - new Date(nameB)
+               }
+               else if (column === 'no') {
+
+                  const nameA = a.no
+                  const nameB = b.no
+   
+                  if (nameA < nameB)
+                        return -1
+                  if (nameA < nameB)
+                        return 1
+                  else return 0
+               }
+              else {
+                  return a.first - b.first
+              }
+          })
+
+          if (direction === 'desc') {
+            sortedMeasures.reverse()
+          }
+          
+
+          this.setState({
+              measures: sortedMeasures,
+              sort: {
+                  column,
+                  direction,
+              },
+          })
+      }
+  }
 
    render() {
       if (!this.state.dataFetched) {
@@ -43,11 +126,11 @@ class MeasuresTable extends Component {
             <table className={style.measuresTable}>
                <thead>
                   <tr>
-                     <th>Nr</th>
-                     <th>{this.props.translate('Measure')}</th>
-                     <th>Status</th>
-                     <th>{this.props.translate('Owner')}</th>
-                     <th>Sist&nbsp;oppdatert</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}>Nr</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}>{this.props.translate('Measure')}</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}>Status</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}>{this.props.translate('Owner')}</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}>Sist&nbsp;oppdatert</th>
                      <th></th>
                   </tr>
                </thead>
