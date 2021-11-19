@@ -41,6 +41,16 @@ class MeasuresTable extends Component {
       });
    }
 
+   setArrow = (column) => {
+      let className = 'sort-direction';
+      
+      if (this.state.sort.column === column) {
+        className += this.state.sort.direction === 'asc' ? ` ${style.asc}` : ` ${style.desc}`;
+      }
+      
+      return className;
+      };
+
    onSort = column => {
       return e => {
           const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'asc'
@@ -126,11 +136,11 @@ class MeasuresTable extends Component {
             <table className={style.measuresTable}>
                <thead>
                   <tr>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}>Nr</th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}>{this.props.translate('Measure')}</th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}>Status</th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}>{this.props.translate('Owner')}</th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}>Sist&nbsp;oppdatert</th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}>Nr<span className={this.setArrow('no')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}>{this.props.translate('Measure')}<span className={this.setArrow('name')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}>Status<span className={this.setArrow('status')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}>{this.props.translate('Owner')}<span className={this.setArrow('owner')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}>Sist&nbsp;oppdatert<span className={this.setArrow('lastupdated')}></span></th>
                      <th></th>
                   </tr>
                </thead>
