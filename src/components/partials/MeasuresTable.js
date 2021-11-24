@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 
 // Components
 import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow';
+import { SelectDropdown } from 'components/custom-elements';
+import Form from 'react-bootstrap/Form';
 
 // Actions
 import { fetchMeasures } from 'actions/MeasuresActions';
@@ -11,7 +13,8 @@ import { fetchOptions } from 'actions/OptionsActions';
 import { translate } from 'actions/ConfigActions';
 
 // Stylesheets
-import style from 'components/partials/MeasuresTable.module.scss'
+import style from 'components/partials/MeasuresTable.module.scss';
+import formsStyle from 'components/partials/forms.module.scss';
 
 
 class MeasuresTable extends Component {
@@ -19,17 +22,49 @@ class MeasuresTable extends Component {
       super(props);
       this.state = {
          dataFetched: false,
+         statusSelected: 0,
+         statuses : null,
          measures: null,
             sort: {
             column: null,
             direction: 'desc',
-            }
+            },
+         measuresAll: null
       }
+
+      this.handleChange = this.handleChange.bind(this);
    }
+
+
+
+   handleChange(data) {
+
+      let statusMeasures = this.state.measuresAll;
+      let status = data.value;
+
+      if(status != 0)
+      {
+      statusMeasures = statusMeasures.filter(function (el) {
+         return el.status == status ;
+       });
+      }
+
+      this.setState({
+         statusSelected: status,
+         measures: statusMeasures
+     })
+    }
 
    getMeasureStatusLabel(planStatuses, measure) {
       return planStatuses.find(status => measure.status === status.value).label;
    }
+
+   statusExists(status, arr) {
+      return arr.some(function(el) {
+        return el.value === status;
+      }); 
+    }
+
 
    componentDidMount() {
       Promise.all([
@@ -37,7 +72,13 @@ class MeasuresTable extends Component {
          this.props.fetchOptions()
       ])
       .then(() => {
-         this.setState({ dataFetched: true, measures: this.props.planStatuses });
+         this.setState({ dataFetched: true, measures: this.props.measures, measuresAll: this.props.measures, statuses: this.props.planStatuses });
+         let planStatuses = this.state.statuses;
+         console.log(this.props.measures);
+         let allStatus = {value:0, label: "Alle"};
+         if(!this.statusExists(0, planStatuses))
+            planStatuses.unshift(allStatus);
+         this.setState({ statuses: planStatuses });
       });
    }
 
@@ -54,7 +95,7 @@ class MeasuresTable extends Component {
    onSort = column => {
       return e => {
           const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'asc'
-          const sortedMeasures = this.props.measures.sort((a, b) => {
+          const sortedMeasures = this.state.measures.sort((a, b) => {
               if (column === 'owner') {
                   const nameA = a.owner.name;
                   const nameB = b.owner.name;
@@ -132,7 +173,20 @@ class MeasuresTable extends Component {
 
       return (
          <React.Fragment>
+
             <p>{this.props.translate('MeasureActivitiesDescription')}</p>
+            <div>Status </div>
+            <div className={formsStyle.comboInput}>
+                  <SelectDropdown
+                    name="status"
+                    value={this.state.statusSelected}
+                    options={this.state.statuses}
+                    onSelect={this.handleChange}
+                    className={formsStyle.statusSelect}
+                  />
+
+            </div>
+
             <table className={style.measuresTable}>
                <thead>
                   <tr>
@@ -145,7 +199,7 @@ class MeasuresTable extends Component {
                   </tr>
                </thead>
                <tbody>
-                  {this.props.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
+                  {this.state.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
                </tbody>
             </table>
          </React.Fragment>
