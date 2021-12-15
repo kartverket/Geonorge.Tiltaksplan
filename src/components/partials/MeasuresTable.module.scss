@@ -21,4 +21,11 @@
       text-align: left;
       text-transform: uppercase;
    }
+
+}
+:local(.asc:after){
+   content: '\25B2';
+}
+:local(.desc:after){
+   content: '\25BC';
 }

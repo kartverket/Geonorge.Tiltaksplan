@@ -1,5 +1,5 @@
 :local(tbody tr) {
-   cursor: pointer;
+   cursor: unset;
    
    &:hover {
       background-color: #fbfbfb;
