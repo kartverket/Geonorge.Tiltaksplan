@@ -1,6 +1,7 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import ReactTooltip from 'react-tooltip';
 
 // Components
 import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow';
@@ -186,15 +187,15 @@ class MeasuresTable extends Component {
                   />
 
             </div>
-
+            <ReactTooltip />
             <table className={style.measuresTable}>
                <thead>
                   <tr>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}>Nr<span className={this.setArrow('no')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}>{this.props.translate('Measure')}<span className={this.setArrow('name')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}>Status<span className={this.setArrow('status')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}>{this.props.translate('Owner')}<span className={this.setArrow('owner')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}>Sist&nbsp;oppdatert<span className={this.setArrow('lastupdated')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}><span data-tip="Unikt nummer på tiltaket">Nr</span><span className={this.setArrow('no')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}><span data-tip="Navn på tiltaket">{this.props.translate('Measure')}</span><span className={this.setArrow('name')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}><span data-tip="Viser fremdrift på tiltaket">Status</span><span className={this.setArrow('status')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}><span data-tip="Hovedansvarlig for gjennomføring av tiltaket">{this.props.translate('Owner')}</span><span className={this.setArrow('owner')}></span></th>
+                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}><span data-tip="Siste oppdatering av aktiviteter">Sist&nbsp;oppdatert</span><span className={this.setArrow('lastupdated')}></span></th>
                      <th></th>
                   </tr>
                </thead>
