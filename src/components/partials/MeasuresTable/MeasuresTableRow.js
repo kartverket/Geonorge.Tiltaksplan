@@ -49,12 +49,12 @@ class MeasuresTableRow extends Component {
          
                     
          <tr>
-            <td data-label="Nr">{measure.no}</td>
-            <td data-label={this.props.translate('Measure')}><a href={measure.infoUrl} target="_blank">{measure.name}</a></td>
-            <td data-label="Status">{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
-            <td data-label={this.props.translate('Owner')}>{measure.owner.name}</td>
-            <td data-label="Sist oppdatert aktivitet">{this.formatDate(measure.lastUpdatedActivity)}</td>
-            <td data-label="Link til aktivitet" style={{textAlign: 'center', cursor: 'pointer'}}><FontAwesomeIcon className={style.icon} icon="info-circle" color="#007bff" onClick={this.goToMeasure.bind(this)}/></td>
+            <td data-label="Nr" data-tip="Unikt nummer på tiltaket">{measure.no}</td>
+            <td data-label={this.props.translate('Measure')} data-tip="Overordnet beskrivelse av tiltaket"><a href={measure.infoUrl} target="_blank">{measure.name}</a></td>
+            <td data-label="Status" data-tip="Viser fremdrift på tiltaket">{this.getMeasureStatusLabel(this.props.planStatuses, measure)}</td>
+            <td data-label={this.props.translate('Owner')} data-tip="Hovedansvarlig for gjennomføring av tiltaket">{measure.owner.name}</td>
+            <td data-label="Sist oppdatert aktivitet" data-tip="Sist oppdatert aktivitet/rapport">{this.formatDate(measure.lastUpdatedActivity > measure.lastUpdated ? measure.lastUpdatedActivity : measure.lastUpdated)}</td>
+            <td data-label="Link til aktivitet" style={{textAlign: 'center', cursor: 'pointer'}}><FontAwesomeIcon data-tip="Detaljert beskrivelse - aktiviteter" className={style.icon} icon="info-circle" color="#007bff" onClick={this.goToMeasure.bind(this)}/></td>
          </tr>
       )
    }
