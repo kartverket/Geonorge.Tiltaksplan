@@ -112,7 +112,7 @@ class MeasuresTable extends Component {
                const nameA = this.getMeasureStatusLabel(this.props.planStatuses, a)
                const nameB = this.getMeasureStatusLabel(this.props.planStatuses, b)
 
-               var preferredOrder = ['Oppstartsfase','Gjennomføringsfase', 'Utredningsfase', 'Avsluttende fase', 'Avsluttet','Inngår i annet tiltak','Utgår'];
+               var preferredOrder = ['Oppstartsfase', 'Utredningsfase','Gjennomføringsfase', 'Avsluttende fase', 'Avsluttet','Inngår i annet tiltak','Utgår'];
                   return preferredOrder.indexOf(nameA) - preferredOrder.indexOf(nameB);
                }
                else if (column === 'name') {
