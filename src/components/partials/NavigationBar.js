@@ -68,7 +68,7 @@ class NavigationBar extends Component {
     const language = this.props.selectedLanguage === 'en-US' ? 'en' : 'no';
     return (
       <Fragment>
-        <Helmet htmlAttributes={{ lang : this.props.selectedLanguage }}/>
+        <Helmet htmlAttributes={{ lang: language }}/>
         <main-navigation language={language} isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>;
       </Fragment>
     )
