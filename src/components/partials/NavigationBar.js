@@ -1,7 +1,8 @@
 // Dependencies
-import React, { Component } from 'react';
+import React, { Component, Fragment } from 'react';
 import { connect } from 'react-redux';
 import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigation';
+import { Helmet } from 'react-helmet';
 
 // Actions
 import { updateOidcCookie } from 'actions/AuthenticationActions';
@@ -65,7 +66,12 @@ class NavigationBar extends Component {
   render() {
     const environment = getEnvironmentVariable('environment');
     const language = this.props.selectedLanguage === 'en-US' ? 'en' : 'no';
-    return <main-navigation language={language} isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>;
+    return (
+      <Fragment>
+        <Helmet htmlAttributes={{ lang : this.props.selectedLanguage }}/>
+        <main-navigation language={language} isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>;
+      </Fragment>
+    )
   }
 }
 
