@@ -126,8 +126,19 @@ class ActivityDetails extends Component {
   }
 
   getActivityStatusLabel(planStatuses, activity) {
+
+    let allStatus = {value:0, label: "Alle"};
+    if(!this.statusExists(0, planStatuses))
+       planStatuses.unshift(allStatus);
+
     return planStatuses && activity.status && planStatuses[activity.status] &&
       planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
+  }
+
+  statusExists(status, arr) {
+    return arr.some(function(el) {
+      return el.value === status;
+    }); 
   }
 
   formatDate(date) {
