@@ -1,8 +1,8 @@
 // Dependecies
 import React, { Component } from 'react';
 import { Provider } from 'react-redux';
-import { Route, Switch } from 'react-router';
-import { ConnectedRouter } from 'connected-react-router';
+import { Route, Routes } from "react-router";
+import { HistoryRouter as Router } from "redux-first-history/rr6";
 import ReduxToastr from 'react-redux-toastr';
 
 // Utils
@@ -69,18 +69,18 @@ class App extends Component {
          return (
             <Provider store={store}>
                <OidcProvider userManager={userManager} store={store}>
-                  <ConnectedRouter history={history}>
+                  <Router history={history}>
                      <NavigationBar userManager={userManager} />
-                     <Switch>
-                        <Route exact={true} path="/" render={(props) => (<Measures {...props} />)} />
-                        <Route exact path="/signin-oidc" render={() => (<OidcCallback userManager={userManager}/>)} />
-                        <Route exact path="/signout-callback-oidc" render={() => (<OidcSignoutCallback userManager={userManager}/>)} />
-                        <Route exact={true} path="/tiltak/:measureNumber" render={(props) => (<Measure {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" render={(props) => (<Activity {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet" render={(props) => (<Activity {...props} />)} />
-                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet/:activityNumber" render={(props) => (<Activity {...props} />)} />
-                        <Route render={() => (<NotFound />)} />
-                     </Switch>
+                     <Routes>
+                        <Route exact={true} path="/" element={<Measures />} />
+                        <Route exact path="/signin-oidc" element={<OidcCallback userManager={userManager}/>} />
+                        <Route exact path="/signout-callback-oidc" element={<OidcSignoutCallback userManager={userManager}/>} />
+                        <Route exact={true} path="/tiltak/:measureNumber" element={<Measure />} />
+                        <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" element={<Activity />} />
+                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet" element={<Activity />} />
+                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet/:activityNumber" element={<Activity />} />
+                        <Route element={<NotFound />} />
+                     </Routes>
                      <Footer />
                      <ReduxToastr
                         timeOut={2000}
@@ -93,7 +93,7 @@ class App extends Component {
                         progressBar
                         closeOnToastrClick
                      />
-                  </ConnectedRouter>
+                  </Router>
                </OidcProvider>
             </Provider>
          );

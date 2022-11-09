@@ -1,11 +1,13 @@
 // Dependencies
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { GnTable } from '@kartverket/geonorge-web-components/GnTable';
 
 // Components
 import ActivityTableRow from 'components/partials/ActivityTable/ActivityTableRow';
 import { fetchOptions } from 'actions/OptionsActions';
 import { translate } from 'actions/ConfigActions';
+
 
 // Stylesheets
 import style from 'components/partials/ActivityTable.module.scss'
@@ -39,8 +41,8 @@ class ActivityTable extends Component {
 
       return (
          <React.Fragment>
-   
-            <table className={style.activitiesTable}>
+         <gn-table>
+            <table>
                <thead>
                   <tr>
                      <th>NR</th>
@@ -56,6 +58,7 @@ class ActivityTable extends Component {
                   {activities.map(activity => <ActivityTableRow key={activity.id} activity={activity} planStatuses={this.props.planStatuses} />)}
                </tbody>
             </table>
+         </gn-table>
          </React.Fragment>
       );
    }

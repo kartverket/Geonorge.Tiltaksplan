@@ -2,6 +2,7 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import ReactTooltip from 'react-tooltip';
+import { GnTable } from '@kartverket/geonorge-web-components/GnTable';
 
 // Components
 import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow';
@@ -185,7 +186,8 @@ class MeasuresTable extends Component {
 
             </div>
             <ReactTooltip />
-            <table className={style.measuresTable}>
+            <gn-table hoverable>
+            <table>
                <thead>
                   <tr>
                      <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}><span data-tip="Unikt nummer på tiltaket">Nr</span><span className={this.setArrow('no')}></span></th>
@@ -200,6 +202,7 @@ class MeasuresTable extends Component {
                   {this.state.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
                </tbody>
             </table>
+            </gn-table>
          </React.Fragment>
       );
    }
