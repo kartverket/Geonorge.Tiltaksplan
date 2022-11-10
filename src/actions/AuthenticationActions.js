@@ -1,4 +1,4 @@
-import * as Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 
 export const updateOidcCookie = (user) => dispatch => {
   if (user) {

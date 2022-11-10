@@ -1,6 +1,6 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import DatePicker from "react-datepicker";
@@ -11,7 +11,7 @@ import DayJS from 'react-dayjs';
 import { Typeahead } from 'react-bootstrap-typeahead';
 import { toastr } from 'react-redux-toastr'
 import Modal from 'react-bootstrap/Modal';
-import { withRouter, Redirect } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -47,47 +47,52 @@ const readOnlyMdeOptions = {
 
 registerLocale('nb', nb)
 
-class ActivityDetails extends Component {
-  constructor(props) {
-    super(props);
+const ActivityDetails = (props) => {
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
-    this.state = {
-      activity: this.props.newActivity
-        ? new Activity({ measureId: this.props.selectedMeasure.id })
-        : props.selectedActivity,
-      editable: (this.props.location.state && this.props.location.state.editable) || this.props.newActivity ? true : false,
-      dataFetched: false,
-      modalOpen: false,
-      validationErrors: [],
-      redirect: null
-    };
+// Redux store
+const selectedMeasure = useSelector((state) => state.options.selectedMeasure);
+const user = useSelector((state) => state.oidc.user);
+const planStatuses = useSelector((state) => state.options.planStatuses)
+const organizations = useSelector( (state) => state.organizations.map(organization => {
+  return {
+    organizationId: organization.id,
+    name: organization.name
+  };
+}))
+const authInfo = useSelector((state) => state.authInfo);
+const selectedActivity = useSelector((state) => state.activities.selectedActivity)
 
-    this.getMdeInstance = this.getMdeInstance.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
-    this.saveActivity = this.saveActivity.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-  }
+// Params
+const { measureNumber } = useParams();
 
-  componentDidMount() {
+
+  const[activity, setActivity] = useState(props.newActivity ? new Activity({measureId: selectedMeasure.id}) : selectedActivity);
+  const[editable, setEditable] = useState(props.location?.state?.editable || props.newActivity ? true : false);
+  const[dataFetched, setDataFetched] = useState(false);
+  const[modalOpen, setModalOpen] = useState(false);
+  const[validationErrors, setValidationErrors] = useState(false); 
+
+
+
+  useEffect(() => {
     Promise.all([
-      this.props.fetchOrganizations(),
-      this.props.fetchOptions()
+      dispatch(fetchOrganizations()),
+      dispatch(fetchOptions())
     ])
       .then(() => {
-        this.setState({ dataFetched: true });
+        setDataFetched(true);
       });
-  }
+  }, [dispatch])
 
-  handleChange(data) {
-    const activity = this.state.activity;
+  const handleChange = (data) => {
+    
     const { name, value } = data.target ? data.target : data;
     let newValue;
 
     if (value instanceof Date) {
-      newValue = this.formatDate(value);
+      newValue = formatDate(value);
     } else {
       const parsed = parseInt(value);
       newValue = isNaN(parsed) ? value : parsed;
@@ -95,18 +100,11 @@ class ActivityDetails extends Component {
 
     activity[name] = newValue;
 
-    this.setState({ activity });
+    setActivity(activity);
   }
 
-  openModal() {
-    this.setState({ modalOpen: true });
-  }
 
-  closeModal() {
-    this.setState({ modalOpen: false });
-  }
-
-  handleParticipantsChange(participants) {
+  const handleParticipantsChange = (participants) => {
     if (!participants.length) {
       return;
     }
@@ -116,32 +114,32 @@ class ActivityDetails extends Component {
         delete participant.id;
         delete participant.customOption
       }
-      participant.activityId = this.state.activity.id;
+      participant.activityId = activity.id;
     });
 
-    this.handleChange({
+    handleChange({
       name: 'participants',
       value: participants
     });
   }
 
-  getActivityStatusLabel(planStatuses, activity) {
+  const getActivityStatusLabel = (planStatuses, activity) => {
 
     let allStatus = {value:0, label: "Alle"};
-    if(!this.statusExists(0, planStatuses))
+    if(!statusExists(0, planStatuses))
        planStatuses.unshift(allStatus);
 
     return planStatuses && activity.status && planStatuses[activity.status] &&
       planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
   }
 
-  statusExists(status, arr) {
+  const statusExists = (status, arr) => {
     return arr.some(function(el) {
       return el.value === status;
     }); 
   }
 
-  formatDate(date) {
+  const formatDate = (date) => {
 
     const diff = 120 // max diff norway
     var newDateObj = new Date(date.getTime() + diff * 60000);
@@ -149,54 +147,47 @@ class ActivityDetails extends Component {
 
   }
 
-  handleDelete() {
-    this.props.deleteActivity(this.state.activity, this.props.user)
-      .then(() => {
-        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
-      });
+  const handleDelete = () => {
+    dispatch(deleteActivity(activity, user).then(() => {
+        navigate(`/tiltak/${measureNumber}`);
+      }))}
+
+  
+      
+
+  const saveActivity = () => {
+    props.newActivity ? createNewActivity() : updateCurrentActivity();
   }
 
-  getMeasureNumber() {
-    return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-      ? parseInt(this.props.match.params.measureNumber)
-      : null;
-  }
-
-  saveActivity() {
-    this.props.newActivity ? this.createActivity() : this.updateActivity();
-  }
-
-  createActivity() {
-    this.props.createActivity(this.state.activity, this.props.user)
-      .then(_ => {
-        this.setState({ validationErrors: [] });
-        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
-      })
-      .catch(({ response }) => {
+  const createNewActivity = () => {
+    dispatch(createActivity(activity, user).then(_ => {
+        setValidationErrors([]);
+        navigate(`/tiltak/${measureNumber}`);
+      })).catch(({ response }) => {
         toastr.error('Kunne ikke opprette aktivitet');
-        this.setState({ validationErrors: response.data });
+        setValidationErrors(response.data);
         window.scroll(0, 0);
       });
   }
 
-  updateActivity() {
-    this.props.updateActivity(this.state.activity, this.props.user)
+  const updateCurrentActivity = () => {
+    dispatch(updateActivity(activity, user))
       .then(_ => {
-        this.setState({ validationErrors: [] });
+        setValidationErrors([]);
         toastr.success('Aktiviteten ble oppdatert');
       })
       .catch(({ response }) => {
         toastr.error('Kunne ikke oppdatere aktivitet');
-        this.setState({ validationErrors: response.data });
+        setValidationErrors(response.data);
         window.scroll(0, 0);
       });
   }
 
-  getMdeInstance(instance) {
+  const getMdeInstance = (instance) => {
     const container = instance?.element?.nextSibling;
     container.setAttribute('tabIndex', '0');
 
-    if (!this.state.editable) {
+    if (!editable) {
       const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
       editableElement.style.display = 'none';
       instance.togglePreview();
@@ -205,72 +196,67 @@ class ActivityDetails extends Component {
     }
   }
 
-  getParticipants() {
-    if (this.state.activity && this.state.activity.participants) {
-      return this.state.activity.participants.map((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>)
+  const getParticipants = () => {
+    if (activity?.participants?.length) {
+      return activity.participants.map((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>)
     }
     return '';
   }
 
-  render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
-    }
-
-    if (!this.state.dataFetched) {
+    if (!dataFetched) {
       return '';
     }
 
-    return this.state.activity ? (
+    return activity ? (
       <React.Fragment>
-        <ValidationErrors errors={this.state.validationErrors} />
+        <ValidationErrors errors={validationErrors} />
 
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('labelNumber')}</Form.Label>
-          {this.state.editable
+          <Form.Label>{dispatch(translate('labelNumber'))}</Form.Label>
+          {editable
             ? (
               <div className={formsStyle.comboInput}>
-                <Form.Control type="number" min="0" name="no" value={this.state.activity.no} onChange={this.handleChange} />
+                <Form.Control type="number" min="0" name="no" value={activity.no} onChange={handleChange} />
               </div>
             )
             : (
-              <div>{this.state.activity.no}</div>
+              <div>{activity.no}</div>
             )}
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Activity')} </Form.Label>
+          <Form.Label>{dispatch(translate('Activity'))} </Form.Label>
           {
-            this.state.editable
+            editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
+                  <Form.Control type="text" name="name" value={activity.name} onChange={handleChange} />
                 </div>
               )
               : (
-                <div>{this.state.activity.name}</div>
+                <div>{activity.name}</div>
               )
           }
         </Form.Group>
 
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Description')}  </Form.Label>
+          <Form.Label>{dispatch(translate('Description'))}  </Form.Label>
           {
-            this.state.editable
+            editable
               ? (
                 <div className={formsStyle.comboInput} style={{ display: 'block' }}>
                   <SimpleMDE
-                    value={this.state.activity?.description || ''}
-                    onChange={value => this.handleChange({ name: 'description', value })}
+                    value={activity?.description || ''}
+                    onChange={value => handleChange({ name: 'description', value })}
                     options={editableMdeOptions}
-                    getMdeInstance={this.getMdeInstance}
+                    getMdeInstance={getMdeInstance}
                   />
                 </div>
               )
               : (
                 <SimpleMDE
-                  value={this.state.activity?.description || ''}
+                  value={activity?.description || ''}
                   options={readOnlyMdeOptions}
-                  getMdeInstance={this.getMdeInstance} />
+                  getMdeInstance={getMdeInstance} />
               )
           }
         </Form.Group>
@@ -279,91 +265,91 @@ class ActivityDetails extends Component {
           <Form.Label>Start </Form.Label>
 
           {
-            this.state.editable
+            editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={activity.implementationStart ? new Date(activity.implementationStart) : null} onChange={(date) => handleChange({ name: 'implementationStart', value: date })} />
                 </div>
               )
               : (
-                <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
+                <div><DayJS format="MMMM YYYY">{activity.implementationStart}</DayJS></div>
               )
           }
         </Form.Group>
 
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('End')}  </Form.Label>
+          <Form.Label>{dispatch(translate('End'))}  </Form.Label>
           {
-            this.state.editable
+            editable
               ? (
                 <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
+                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={activity.implementationEnd ? new Date(activity.implementationEnd) : null} onChange={(date) => handleChange({ name: 'implementationEnd', value: date })} />
                 </div>
               )
               : (
-                <div><DayJS format="MMMM YYYY" locale="nb">{this.state.activity.implementationEnd}</DayJS></div>
+                <div><DayJS format="MMMM YYYY" locale="nb">{activity.implementationEnd}</DayJS></div>
               )
           }
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
           <Form.Label>Status </Form.Label>
           {
-            this.state.editable
+            editable
               ? (
                 <div className={formsStyle.comboInput}>
                   <SelectDropdown
                     name="status"
-                    value={this.state.activity.status || 1}
-                    options={this.props.planStatuses}
-                    onSelect={this.handleChange}
+                    value={activity.status || 1}
+                    options={planStatuses}
+                    onSelect={handleChange}
                     className={formsStyle.statusSelect}
                   />
 
                 </div>
               )
               : (
-                <span>{this.getActivityStatusLabel(this.props.planStatuses, this.state.activity)}</span>
+                <span>{getActivityStatusLabel(planStatuses, activity)}</span>
               )
           }
 
         </Form.Group>
         <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Participants')}  </Form.Label>
+          <Form.Label>{dispatch(translate('Participants'))}  </Form.Label>
           {
-            this.state.editable
+            editable
               ? (
                 <Typeahead
                   allowNew
                   multiple
                   id="basic-typeahead-multiple"
                   labelKey="name"
-                  onChange={this.handleParticipantsChange}
-                  options={this.props.organizations}
-                  selected={this.state.activity.participants}
+                  onChange={handleParticipantsChange}
+                  options={organizations}
+                  selected={activity.participants}
                   placeholder="Legg til deltakere..."
                   newSelectionPrefix="Legg til "
                 />
               )
               : (
-                <div>{this.getParticipants()}</div>
+                <div>{getParticipants()}</div>
               )
           }
         </Form.Group>
         <div className={formsStyle.btngroup}>
-          {this.state.editable ? (
+          {editable ? (
             <div>
               {
-                this.props.newActivity
+                props.newActivity
                   ? (
                     <React.Fragment>
-                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ redirect: `/tiltak/${this.props.selectedMeasure.no}/` }) }}>Avbryt oppretting</Button>
-                      <Button variant="primary" onClick={this.saveActivity}>Opprett</Button>
+                      <Button className="mr-2" variant="secondary" onClick={(event) => { navigate(`/tiltak/${selectedMeasure.no}/` ) }}>Avbryt oppretting</Button>
+                      <Button variant="primary" onClick={saveActivity}>Opprett</Button>
                     </React.Fragment>
                   )
                   : (
                     <React.Fragment>
-                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-                      <Button variant="primary" onClick={this.saveActivity}>Lagre</Button>
+                      <Button className="mr-2" variant="secondary" onClick={(event) => { setEditable(false) }}>Avslutt redigering</Button>
+                      <Button variant="primary" onClick={saveActivity}>Lagre</Button>
                     </React.Fragment>
                   )
               }
@@ -371,21 +357,21 @@ class ActivityDetails extends Component {
           ) : (
             <div>
               {
-                canDeleteActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
-                  ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
+                canDeleteActivity(authInfo, selectedActivity.responsibleAgency)
+                  ? <Button className="mr-2" variant="secondary" onClick={openModal} >Slett aktivitet</Button>
                   : ''
               }
               {
-                canEditActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
-                  ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
+                canEditActivity(authInfo, selectedActivity.responsibleAgency)
+                  ? <Button variant="primary" onClick={(event) => { setEditable(true) }}>Rediger aktivitet</Button>
                   : ''
               }
             </div>
           )}
         </div>
         {<Modal
-          show={this.state.modalOpen}
-          onHide={this.closeModal}
+          show={modalOpen}
+          onHide={setModalOpen(false)}
           keyboard={false}
           animation={false}
           centered
@@ -396,40 +382,17 @@ class ActivityDetails extends Component {
           </Modal.Header>
 
           <Modal.Body>
-            <p>Er du sikker på at du vil slette {this.state.activity.name}?</p>
+            <p>Er du sikker på at du vil slette {activity.name}?</p>
           </Modal.Body>
 
           <Modal.Footer>
-            <Button variant="secondary" onClick={this.closeModal}>{this.props.translate('btnCancel')} </Button>
-            <Button variant="danger" onClick={this.handleDelete}>{this.props.translate('btnDelete')} </Button>
+            <Button variant="secondary" onClick={setModalOpen(false)}>{dispatch(translate('btnCancel'))} </Button>
+            <Button variant="danger" onClick={handleDelete}>{dispatch(translate('btnDelete'))} </Button>
           </Modal.Footer>
         </Modal>}
       </React.Fragment>
     ) : ''
-  }
+  
 }
 
-const mapStateToProps = state => ({
-  selectedMeasure: state.measures.selectedMeasure,
-  selectedActivity: state.activities.selectedActivity,
-  organizations: state.organizations.map(organization => {
-    return {
-      organizationId: organization.id,
-      name: organization.name
-    };
-  }),
-  planStatuses: state.options.planStatuses,
-  user: state.oidc.user,
-  authInfo: state.authInfo
-});
-
-const mapDispatchToProps = {
-  createActivity,
-  updateActivity,
-  fetchOrganizations,
-  fetchOptions,
-  deleteActivity,
-  translate
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ActivityDetails));
+export default ActivityDetails;
