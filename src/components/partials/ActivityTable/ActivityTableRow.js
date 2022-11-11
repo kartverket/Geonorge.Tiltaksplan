@@ -15,7 +15,7 @@ const ActivityTableRow = (props) => {
    const navigate = useNavigate();
 
 
-   // Parmas
+   // Params
    const { measureNumber } = useParams();
 
 

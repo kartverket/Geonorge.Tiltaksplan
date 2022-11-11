@@ -358,7 +358,7 @@ const { measureNumber } = useParams();
             <div>
               {
                 canDeleteActivity(authInfo, selectedActivity.responsibleAgency)
-                  ? <Button className="mr-2" variant="secondary" onClick={openModal} >Slett aktivitet</Button>
+                  ? <Button className="mr-2" variant="secondary" onClick={modalOpen(true)} >Slett aktivitet</Button>
                   : ''
               }
               {

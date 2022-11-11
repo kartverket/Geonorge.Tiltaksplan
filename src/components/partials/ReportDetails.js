@@ -1,13 +1,12 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { toastr } from 'react-redux-toastr'
 import SimpleMDE from "react-simplemde-editor";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { withRouter } from 'react-router-dom';
 
 // Components
 import { SelectDropdown } from 'components/custom-elements';
@@ -18,7 +17,7 @@ import ToggleHelpText from 'components/template/ToggleHelpText';
 // Actions
 import { fetchOptions } from 'actions/OptionsActions';
 import { translate } from 'actions/ConfigActions';
-import { updateMeasure } from 'actions/MeasuresActions';
+import { deleteMeasure, updateMeasure } from 'actions/MeasuresActions';
 
 // Helpers
 import { canEditReport } from 'helpers/authorizationHelpers';
@@ -41,40 +40,48 @@ const readOnlyMdeOptions = {
    readOnly: true
 };
 
-class EditMeasure extends Component {
-   constructor(props) {
-      super(props);
 
-      this.handleEditableReportChange = this.handleEditableReportChange.bind(this);
-      this.getMdeInstance = this.getMdeInstance.bind(this);
-      this.handleChange = this.handleChange.bind(this);
-      this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
-      this.saveMeasure = this.saveMeasure.bind(this);
 
-      this.state = {
-         dataFetched: false,
-         showInfo: false,
-         measure: props.selectedMeasure,
-         editableReport: false,
-         selectedOwner: [
-            props.selectedMeasure.owner
-         ],
-         validationErrors: []
-      };
-   }
 
-   componentDidMount() {
+const EditMeasure = (props) => {
+   const dispatch = useDispatch();
+
+
+
+   //Redux store
+
+   const user = useSelector((state) => state.oidc.user);
+   const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
+   const measureVolume = useSelector((state) => state.options.measureVolume);
+   const measureResults = useSelector((state) => state.options.measureResults);
+   const trafficLights = useSelector((state) => state.options.trafficLights);
+   const planStatuses = useSelector((state) => state.options.planStatuses);
+   const authInfo = useSelector((state) => state.authInfo);
+
+
+   //Params
+
+   const[dataFetched, setDataFetched] = useState(false);
+   const[editableReport, setEditableReport] = useState(false);
+   const[validationErrors, setValidationErrors] = useState(false);
+   const[selectedOwner, setSelectedOwner] = useState(props.selectedOwner)
+   const[measure, setMeasure] = useState(selectedMeasure);   
+   const[modalOpen, setModalOpen] = useState(false);
+
+
+
+
+   useEffect(() => {
       Promise.all([
-         this.props.fetchOrganizations(),
-         this.props.fetchOptions()
+         dispatch(fetchOrganizations()),
+         dispatch(fetchOptions())
       ])
          .then(() => {
-            this.setState({ dataFetched: true });
+            setDataFetched(true);
          });
-   }
+   }, [dispatch])
 
-   handleChange(data) {
-      const measure = this.state.measure;
+   const handleChange = (data) => {
       const { name, value } = data.target ? data.target : data;
       let newValue;
 
@@ -87,35 +94,38 @@ class EditMeasure extends Component {
 
       measure[name] = newValue;
 
-      this.setState({ measure });
+       setMeasure(measure);
    }
+   const handleDelete = () => {
+      dispatch(deleteMeasure(measure, user).then(() => {
+          console.log('har vi ikke slett??')
+        }))}
 
-   saveMeasure() {
-      const measure = this.state.measure;
+   const saveMeasure = () => {
 
-      if (this.state.selectedOwner.length) {
-         measure.owner.id = this.state.selectedOwner[0].id
+      if (selectedOwner.length) {
+         measure.owner.id = setSelectedOwner(selectedOwner[0].id)
       }
 
-      this.props.updateMeasure(measure, this.props.user)
+      updateMeasure(measure, user)
          .then(() => {
             toastr.success('Tiltaket ble oppdatert');
-            this.setState({ validationErrors: [] });
+            setValidationErrors(validationErrors);
          })
          .catch(({ response }) => {
             toastr.error('Kunne ikke oppdatere tiltak');
-            this.setState({ validationErrors: response.data });
+           setValidationErrors(response.data);
          });
    }
 
-   getMeasureStatusLabel(planStatuses, measure) {
+   const getMeasureStatusLabel = (planStatuses, measure) => {
       return planStatuses.find(status => measure.status === status.value).label;
    }
 
-   getMdeInstance(instance) {
+   const getMdeInstance = (instance) => {
       const container = instance?.element?.nextSibling;
       container.setAttribute('tabIndex', '0');
-      if (!this.state.editableReport) {
+      if (!editableReport) {
          const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
          editableElement.style.display = 'none';
          instance.togglePreview();
@@ -124,23 +134,14 @@ class EditMeasure extends Component {
       }
    }
 
-   handleEditableReportChange(event) {
-      const editableReport = event.target.checked;
-      this.setState({ editableReport });
-   }
 
-   renderStars(amount) {
+   const renderStars = (amount) => {
       return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
    }
 
-   handleOwnerSelect(data) {
-      this.setState({
-         selectedOwner: data
-      })
-   }
 
-   render() {
-      if (!this.state.dataFetched) {
+
+      if (!dataFetched) {
          return '';
       }
 
@@ -149,19 +150,19 @@ class EditMeasure extends Component {
 
             <div className={`${formsStyle.form} form-container`}>
                <div className={formsStyle.block}>
-                  <ValidationErrors errors={this.state.validationErrors} />
+                  <ValidationErrors errors={validationErrors} />
 
                   <Form.Group controlId="formProgress">
                      {
-                        this.state.editableReport
+                        editableReport
                            ? (<React.Fragment>
-                              <Form.Label>{this.props.translate('statusProgress')}  </Form.Label>
+                              <Form.Label>{dispatch(translate('statusProgress'))}  </Form.Label>
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                                  <SimpleMDE
-                                    value={this.state.measure.progress || ''}
-                                    onChange={value => this.handleChange({ name: 'progress', value })}
+                                    value={measure.progress || ''}
+                                    onChange={value => handleChange({ name: 'progress', value })}
                                     options={editableMdeOptions}
-                                    getMdeInstance={this.getMdeInstance}
+                                    getMdeInstance={getMdeInstance}
                                  />
 
                               </div>
@@ -169,33 +170,33 @@ class EditMeasure extends Component {
                            )
                            : (
                               <SimpleMDE
-                                 value={this.state.measure.progress || ''}
+                                 value={measure.progress || ''}
                                  options={readOnlyMdeOptions}
-                                 getMdeInstance={this.getMdeInstance} />
+                                 getMdeInstance={getMdeInstance} />
                            )
                      }
 
                   </Form.Group>
-                  <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
+                  <div className={`${editableReport ? '' : `${formsStyle.flex}`}`}>
                      <Form.Group controlId="formVolume">
-                        <Form.Label>{this.props.translate('Volume')}
+                        <Form.Label>{dispatch(translate('Volume'))}
                            <ToggleHelpText resourceKey='VolumeDescription' /> </Form.Label>
                         {
-                           this.state.editableReport
+                           editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
                                        name="volume"
-                                       value={this.state.measure.volume || 0}
-                                       options={this.props.measureVolume}
-                                       onSelect={this.handleChange}
+                                       value={measure.volume || 0}
+                                       options={measureVolume}
+                                       onSelect={handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
 
                                  </div>
                               )
                               : (
-                                 <span>{this.renderStars(this.state.measure.volume || 0)}</span>
+                                 <span>{renderStars(measure.volume || 0)}</span>
                               )
                         }
 
@@ -205,101 +206,101 @@ class EditMeasure extends Component {
 
                         <Form.Label>Status <ToggleHelpText resourceKey='StatusDescription' /></Form.Label>
                         {
-                           this.state.editableReport
+                           editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
                                        name="status"
-                                       value={this.state.measure.status || 1}
-                                       options={this.props.planStatuses}
-                                       onSelect={this.handleChange}
+                                       value={measure.status || 1}
+                                       options={planStatuses}
+                                       onSelect={handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
 
                                  </div>
                               )
                               : (
-                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
+                                 <span>{getMeasureStatusLabel(planStatuses, measure)}</span>
                               )
                         }
 
                      </Form.Group>
 
                      <Form.Group controlId="formTrafficLight">
-                        <Form.Label>{this.props.translate('TrafficLight')}
+                        <Form.Label>{dispatch(translate('TrafficLight'))}
                            <ToggleHelpText resourceKey='TrafficlightDescription' /> </Form.Label>
                         {
-                           this.state.editableReport
+                           editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
                                        name="trafficLight"
-                                       value={this.state.measure.trafficLight || 1}
-                                       options={this.props.trafficLights}
-                                       onSelect={this.handleChange}
+                                       value={measure.trafficLight || 1}
+                                       options={trafficLights}
+                                       onSelect={handleChange}
                                        className={formsStyle.trafficLightSelect}
                                     />
 
                                  </div>
                               )
                               : (
-                                 <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + this.state.measure.trafficLight]}`}></span>
+                                 <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + measure.trafficLight]}`}></span>
                               )
                         }
                      </Form.Group>
 
                      <Form.Group controlId="formResults">
-                        <Form.Label>{this.props.translate('Results')} <ToggleHelpText resourceKey='ResultDescription' />
+                        <Form.Label>{dispatch(translate('Results'))} <ToggleHelpText resourceKey='ResultDescription' />
                         </Form.Label>
 
                         {
-                           this.state.editableReport
+                           editableReport
                               ? (
                                  <div className={formsStyle.comboInput}>
                                     <SelectDropdown
                                        name="results"
-                                       value={this.state.measure.results || 1}
-                                       options={this.props.measureResults}
-                                       onSelect={this.handleChange}
+                                       value={measure.results || 1}
+                                       options={measureResults}
+                                       onSelect={handleChange}
                                        className={formsStyle.defaultSelect}
                                     />
 
                                  </div>
                               )
                               : (
-                                 <span>{this.renderStars(this.state.measure.results || 0)}</span>
+                                 <span>{renderStars(measure.results || 0)}</span>
                               )
                         }
                      </Form.Group>
                   </div>
                   <Form.Group controlId="formComments">
-                     <Form.Label>{this.props.translate('Comment')}
+                     <Form.Label>{dispatch(translate('Comment'))}
                         <ToggleHelpText resourceKey='CommentDescription' />
                      </Form.Label>
                      {
-                        this.state.editableReport
+                        editableReport
                            ? (
                               <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                 <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
+                                 <Form.Control as="textarea" name="comment" value={measure.comment || ''} onChange={handleChange} rows={3} />
                               </div>
                            )
                            : (
-                              <span>{this.state.measure.comment}</span>
+                              <span>{measure.comment}</span>
                            )
                      }
                   </Form.Group>
                </div>
             </div>
             {
-               this.state.editableReport
+               editableReport
                   ? (
                      <div>
                         {
-                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
+                           canEditReport(authInfo, selectedMeasure.owner)
                               ? (
                                  <React.Fragment>
-                                    <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
-                                    <Button variant="primary" onClick={this.saveMeasure}>{this.props.translate('btnSave')}</Button>
+                                    <Button className="mr-2" variant="secondary" onClick={(event) => { setEditableReport(false) }}>Avslutt redigering</Button>
+                                    <Button variant="primary" onClick={saveMeasure}>{dispatch(translate('btnSave'))}</Button>
                                  </React.Fragment>
                               )
                               : ''
@@ -309,8 +310,8 @@ class EditMeasure extends Component {
                      <div>
 
                         {
-                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
-                              ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
+                           canEditReport(authInfo, selectedMeasure.owner)
+                              ? <Button variant="primary" onClick={(event) => { setEditableReport(true) }}>{dispatch(translate('btnEditReport'))}</Button>
                               : ''
                         }
                      </div>
@@ -318,50 +319,33 @@ class EditMeasure extends Component {
 
             }
             {<Modal
-               show={this.state.deleteMeasureModalOpen}
-               onHide={this.closeDeleteMeasureModal}
+               show={modalOpen}
+               onHide={setModalOpen(false)}
                keyboard={false}
                animation={false}
                centered
                backdrop="static"
                aria-labelledby="form-dialog-title">
                <Modal.Header closeButton>
-                  <Modal.Title>{this.props.translate('btnDelete')}</Modal.Title>
+                  <Modal.Title>{dispatch(translate('btnDelete'))}</Modal.Title>
                </Modal.Header>
 
                <Modal.Body>
-                  <p>Er du sikker på at du vil slette {this.state.measure.name}?</p>
-                  {this.state.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.state.measure.name : ''}
+                  <p>Er du sikker på at du vil slette {measure.name}?</p>
+                  {measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + measure.name : ''}
                </Modal.Body>
 
                <Modal.Footer>
-                  <Button variant="secondary" onClick={this.closeDeleteMeasureModal}>Avbryt</Button>
-                  <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
+                  <Button variant="secondary" onClick={setModalOpen(false)}>Avbryt</Button>
+                  <Button disabled={measure.activities.length > 0} variant="danger" onClick={handleDelete}>Slett</Button>
                </Modal.Footer>
             </Modal>}
 
 
          </React.Fragment>
       );
-   }
+   
 }
 
-const mapStateToProps = state => ({
-   selectedMeasure: state.measures.selectedMeasure,
-   measureVolume: state.options.measureVolume,
-   measureResults: state.options.measureResults,
-   trafficLights: state.options.trafficLights,
-   planStatuses: state.options.planStatuses,
-   organizations: state.organizations,
-   authInfo: state.authInfo,
-   user: state.oidc.user
-});
 
-const mapDispatchToProps = {
-   fetchOptions,
-   updateMeasure,
-   fetchOrganizations,
-   translate
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditMeasure));
+export default EditMeasure;
