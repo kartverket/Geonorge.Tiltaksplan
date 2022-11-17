@@ -1,104 +1,109 @@
 // Dependecies
-import React, { Component } from 'react';
-import { Provider } from 'react-redux';
+import React, { Component, useEffect, useState } from "react";
+import { Provider } from "react-redux";
 import { Route, Routes } from "react-router";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
-import ReduxToastr from 'react-redux-toastr';
+import ReduxToastr from "react-redux-toastr";
 
 // Utils
-import configureStore, { history } from 'utils/configureStore';
-import userManagerPromise from 'utils/userManager';
+import configureStore, { history } from "utils/configureStore";
+import userManagerPromise from "utils/userManager";
 
 // Routes
-import OidcCallback from 'components/routes/OidcCallback';
-import OidcSignoutCallback from 'components/routes/OidcSignoutCallback';
-import Measures from 'components/routes/Measures';
-import Measure from 'components/routes/Measure';
-import Activity from 'components/routes/Activity';
-import NotFound from 'components/routes/NotFound';
+import OidcCallback from "components/routes/OidcCallback";
+import OidcSignoutCallback from "components/routes/OidcSignoutCallback";
+import Measures from "components/routes/Measures";
+import Measure from "components/routes/Measure";
+import Activity from "components/routes/Activity";
+import NotFound from "components/routes/NotFound";
 
 // Actions
-import { updateConfig } from 'actions/ConfigActions';
+import { updateConfig } from "actions/ConfigActions";
 
 // Partials
-import NavigationBar from 'components/partials/NavigationBar';
-import Footer from 'components/partials/Footer';
+import NavigationBar from "components/partials/NavigationBar";
+import Footer from "components/partials/Footer";
 
 // font awesome
-import { library } from '@fortawesome/fontawesome-svg-core'
-import { fab } from '@fortawesome/free-brands-svg-icons'
-import { faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle, faInfoCircle } from '@fortawesome/free-solid-svg-icons'
-import { OidcProvider } from 'redux-oidc';
+import { library } from "@fortawesome/fontawesome-svg-core";
+import { fab } from "@fortawesome/free-brands-svg-icons";
+import {
+    faCheckSquare,
+    faTrashAlt,
+    faEdit,
+    faPlusCircle,
+    faMinusCircle,
+    faInfoCircle
+} from "@fortawesome/free-solid-svg-icons";
+import { OidcProvider } from "redux-oidc";
 
-library.add(fab, faCheckSquare, faTrashAlt, faEdit,faPlusCircle,faMinusCircle,faInfoCircle)
+library.add(fab, faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle, faInfoCircle);
 
 const initialState = {};
 const storePromise = configureStore(initialState, userManagerPromise);
 let store = null;
 let userManager = null;
 
-class App extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         storeIsLoaded: false,
-         userManagerIsLoaded: false
-      };
-   }
+const App = (props) => {
+    const [storeIsLoaded, setStoreIsLoaded] = useState(false);
+    const [userManagerIsLoaded, setUserManagerIsLoaded] = useState(false);
 
-   componentDidMount() {
-      storePromise.then((storeConfig) => {
-         store = storeConfig;
-         store.dispatch(updateConfig(this.props.config));
+    useEffect(() => {
+        storePromise.then((storeConfig) => {
+            store = storeConfig;
+            store.dispatch(updateConfig(props.config));
 
-         if (!this.state.userManagerIsLoaded) {
-            this.setState({
-               userManagerIsLoaded: true
-            });
-         }
-      });
-      userManagerPromise.then(userManagerConfig => {
-         userManager = userManagerConfig;
-         this.setState({
-            storeIsLoaded: true
-         })
-      })
-   }
-   render() {
-      if (this.state && userManager && this.state.userManagerIsLoaded && this.state.storeIsLoaded) {
-         return (
+            if (!userManagerIsLoaded) {
+                setUserManagerIsLoaded(true);
+            }
+        });
+        userManagerPromise.then((userManagerConfig) => {
+            userManager = userManagerConfig;
+            setStoreIsLoaded(true);
+        });
+    }, []);
+
+    if (userManager && userManagerIsLoaded && storeIsLoaded) {
+        return (
             <Provider store={store}>
-               <OidcProvider userManager={userManager} store={store}>
-                  <Router history={history}>
-                     <NavigationBar userManager={userManager} />
-                     <Routes>
-                        <Route exact={true} path="/" element={<Measures />} />
-                        <Route exact path="/signin-oidc" element={<OidcCallback userManager={userManager}/>} />
-                        <Route exact path="/signout-callback-oidc" element={<OidcSignoutCallback userManager={userManager}/>} />
-                        <Route exact={true} path="/tiltak/:measureNumber" element={<Measure />} />
-                        <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" element={<Activity />} />
-                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet" element={<Activity />} />
-                        <Route exact={true} path="/tiltak/:measureNumber/aktivitet/:activityNumber" element={<Activity />} />
-                        <Route element={<NotFound />} />
-                     </Routes>
-                     <Footer />
-                     <ReduxToastr
-                        timeOut={2000}
-                        newestOnTop={false}
-                        preventDuplicates
-                        position="top-right"
-                        getState={(state) => state.toastr}
-                        transitionIn="fadeIn"
-                        transitionOut="fadeOut"
-                        progressBar
-                        closeOnToastrClick
-                     />
-                  </Router>
-               </OidcProvider>
+                <OidcProvider userManager={userManager} store={store}>
+                    <Router history={history}>
+                        <NavigationBar userManager={userManager} />
+                        <Routes>
+                            <Route exact={true} path="/" element={<Measures />} />
+                            <Route exact path="/signin-oidc" element={<OidcCallback userManager={userManager} />} />
+                            <Route
+                                exact
+                                path="/signout-callback-oidc"
+                                element={<OidcSignoutCallback userManager={userManager} />}
+                            />
+                            <Route exact={true} path="/tiltak/:measureNumber" element={<Measure />} />
+                            <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" element={<Activity />} />
+                            <Route exact={true} path="/tiltak/:measureNumber/aktivitet" element={<Activity />} />
+                            <Route
+                                exact={true}
+                                path="/tiltak/:measureNumber/aktivitet/:activityNumber"
+                                element={<Activity />}
+                            />
+                            <Route element={<NotFound />} />
+                        </Routes>
+                        <Footer />
+                        <ReduxToastr
+                            timeOut={2000}
+                            newestOnTop={false}
+                            preventDuplicates
+                            position="top-right"
+                            getState={(state) => state.toastr}
+                            transitionIn="fadeIn"
+                            transitionOut="fadeOut"
+                            progressBar
+                            closeOnToastrClick
+                        />
+                    </Router>
+                </OidcProvider>
             </Provider>
-         );
-      } else return ''
-   }
-}
+        );
+    } else return null;
+};
 
 export default App;
