@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import ReactDOM from 'react-dom';
 import App from 'App';
+import { createRoot } from 'react-dom/client'
 import ConfigLoader from 'components/ConfigLoader';
 import * as serviceWorker from './serviceWorker';
 import 'extensions';
@@ -22,6 +22,6 @@ class Main extends Component {
     }
 }
 
-ReactDOM.render(<Main />, document.getElementById('root'));
+createRoot(<Main />, document.getElementById('root'));
 
 serviceWorker.unregister();
