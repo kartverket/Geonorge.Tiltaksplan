@@ -38,6 +38,7 @@
     "react-sortablejs": "^6.0.0",
     "react-tooltip": "^4.2.21",
     "redux": "^4.0.5",
+    "redux-first-history": "^5.1.1",
     "redux-oidc": "^4.0.0-beta1",
     "redux-thunk": "^2.3.0",
     "sass": "^1.29.0",
