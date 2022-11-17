@@ -1,56 +1,45 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { saveAs } from 'file-saver';
-import Button from 'react-bootstrap/Button';
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { saveAs } from "file-saver";
+import Button from "react-bootstrap/Button";
 
 // Components
-import Container from 'components/template/Container';
-import MeasureDetails from 'components/partials/MeasureDetails';
-import MeasuresTable from 'components/partials/MeasuresTable';
-import { translate } from 'actions/ConfigActions';
+import Container from "components/template/Container";
+import MeasureDetails from "components/partials/MeasureDetails";
+import MeasuresTable from "components/partials/MeasuresTable";
+import { translate } from "actions/ConfigActions";
+
 // Helpers
-import { convertMeasureReportsToCSV } from 'helpers/csvHelpers';
+import { convertMeasureReportsToCSV } from "helpers/csvHelpers";
 
-// Actions
-import { fetchMeasures } from 'actions/MeasuresActions';
+const Measures = (props) => {
+    const dispatch = useDispatch();
 
+    // Redux store
+    const measures = useSelector((state) => state.measures);
+    const options = useSelector((state) => state.options);
 
-class Measures extends Component {
+    const saveCSVFileForMeasureReports = () => {
+        const filename = "reports.csv";
+        const BOM = "\uFEFF";
+        const csvData = `${BOM} ${convertMeasureReportsToCSV(measures, options)}`;
+        const blob = new Blob([csvData], {
+            type: "text/csv;charset=utf-8"
+        });
+        saveAs(blob, filename);
+    };
 
-
-   saveCSVFileForMeasureReports() {
-      const filename = "reports.csv";
-      const BOM = "\uFEFF";
-      const csvData = `${BOM} ${convertMeasureReportsToCSV(this.props.measures, this.props.options)}`;
-      const blob = new Blob([csvData], {
-         type: "text/csv;charset=utf-8"
-      });
-      saveAs(blob, filename);
-   }
-
-   render() {
-      return (
-         <Container>
-            <h1>{this.props.translate('MeasureActivitiesTitle')}</h1>
+    return (
+        <Container>
+            <h1>{dispatch(translate("MeasureActivitiesTitle"))}</h1>
             <MeasureDetails newMeasure />
-            <MeasuresTable measures={this.props.measures} />
-            <Button variant="primary" onClick={() => this.saveCSVFileForMeasureReports()}>Lagre som CSV</Button>
-         </Container>
-      )
-   }
-}
-
-const mapStateToProps = state => ({
-   authInfo: state.authInfo,
-   measures: state.measures.measures,
-   options: state.options,
-   selectedLanguage: state.selectedLanguage
-});
-
-const mapDispatchToProps = {
-   fetchMeasures,
-   translate
+            <MeasuresTable measures={measures} />
+            <Button variant="primary" onClick={() => saveCSVFileForMeasureReports()}>
+                Lagre som CSV
+            </Button>
+        </Container>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Measures);
+export default Measures;
