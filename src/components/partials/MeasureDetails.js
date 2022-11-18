@@ -1,195 +1,168 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import { toastr } from 'react-redux-toastr';
-import ValidationErrors from 'components/partials/ValidationErrors';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import Button from "react-bootstrap/Button";
+import Modal from "react-bootstrap/Modal";
+import Form from "react-bootstrap/Form";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { toastr } from "react-redux-toastr";
+import ValidationErrors from "components/partials/ValidationErrors";
 
 // Models
-import { Measure } from 'models/measure';
+import { Measure } from "models/measure";
 
 // Actions
-import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { createMeasure, updateMeasure } from 'actions/MeasuresActions';
+import { fetchOrganizations } from "actions/OrganizationsActions";
+import { createMeasure, updateMeasure } from "actions/MeasuresActions";
 
 // Helpers
-import { canAddMeasure, canEditMeasure } from 'helpers/authorizationHelpers';
+import { canAddMeasure, canEditMeasure } from "helpers/authorizationHelpers";
 
 // Stylesheets
-import 'react-bootstrap-typeahead/css/Typeahead.css';
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
+const MeasureDetails = (props) => {
+    const dispatch = useDispatch();
 
-class MeasureDetails extends Component {
-   constructor(props) {
-      super(props);
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [measure, setMeasure] = useState(props.newMeasure ? new Measure() : props.selectedMeasure);
+    const [selectedOwner, setSelectedOwner] = useState(props.newMeasure ? [] : props.selectedMeasure.owner);
+    const [validationErrors, setValidationErrors] = useState([]);
 
-      this.state = {
-         dataFetched: false,
-         modalOpen: false,
-         measure: props.newMeasure
-            ? new Measure()
-            : props.selectedMeasure,
-         selectedOwner: props.newMeasure
-            ? []
-            : [
-               props.selectedMeasure.owner
-            ],
-         validationErrors: []
-      };
+    // Redux store
+    const organizations = useSelector((state) => state.organizations);
+    const user = useSelector((state) => state.oidc.user);
+    const authInfo = useSelector((state) => state.authInfo);
 
-      this.handleChange = this.handleChange.bind(this);
-      this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
-      this.openModal = this.openModal.bind(this);
-      this.closeModal = this.closeModal.bind(this);
-      this.saveMeasure = this.saveMeasure.bind(this);
-   }
+    useEffect(() => {
+        dispatch(fetchOrganizations()).then(() => {
+            setDataFetched(true);
+        });
+    }, [dispatch]);
 
-   componentDidMount() {
-      this.props.fetchOrganizations()
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
-   }
+    const handleOwnerSelect = (data) => {
+        setSelectedOwner(data);
+    };
 
-   openModal() {
-      this.setState({
-         modalOpen: true
-      });
-   }
+    const handleChange = (data) => {
+        const { name, value } = data.target ? data.target : data;
+        const parsed = parseInt(value);
+        measure[name] = isNaN(parsed) ? value : parsed;
+        setMeasure(measure);
+    };
 
-   closeModal() {
-      this.setState({ modalOpen: false });
-   }
-
-   handleOwnerSelect(data) {
-      this.setState({
-         selectedOwner: data
-      })
-   }
-
-   handleChange(data) {
-      const measure = this.state.measure;
-      const { name, value } = data.target ? data.target : data;   
-      const parsed = parseInt(value);
-
-      measure[name] = isNaN(parsed) ? value : parsed;
-
-      this.setState({ measure });
-   }
-
-   saveMeasure() {
-      const measure = this.state.measure;
-
-      if (this.state.selectedOwner.length) {
-         measure.owner.id = this.state.selectedOwner[0].id
-      }
-
-      this.props.newMeasure
-         ? this.props.createMeasure(measure, this.props.user)
-            .then(() => {
-               this.closeModal();
-               this.setState({ validationErrors: [] });
-               toastr.success('Et nytt tiltak ble lagt til');
-            })
-            .catch(({ response }) => {   
-               toastr.error('Kunne ikke opprette tiltak');            
-               this.setState({ validationErrors: response.data });
-            })            
-         : this.props.updateMeasure(measure, this.props.user)
-            .then(() => {
-               this.closeModal();
-               this.setState({ validationErrors: [] });
-               toastr.success('Tiltaket ble oppdatert');
-            })
-            .catch(({ response }) => {
-               toastr.error('Kunne ikke oppdatere tiltak');
-               this.setState({ validationErrors: response.data });
+    const saveMeasure = () => {
+        if (selectedOwner?.length) {
+            setMeasure({
+                ...measure,
+                owner: {
+                    ...measure.owner,
+                    id: selectedOwner[0].id
+                }
             });
-   }
+        }
 
-   showAddMeasureContent(){
-      return this.state.measure && this.props.newMeasure && canAddMeasure(this.props.authInfo);
-   }
+        props.newMeasure
+            ? dispatch(createMeasure(measure, user))
+                  .then(() => {
+                      setModalOpen(false);
+                      setValidationErrors([]);
+                      toastr.success("Et nytt tiltak ble lagt til");
+                  })
+                  .catch(({ response }) => {
+                      toastr.error("Kunne ikke opprette tiltak");
+                      setValidationErrors(response.data);
+                  })
+            : dispatch(updateMeasure(measure, user))
+                  .then(() => {
+                      setModalOpen(false);
+                      setValidationErrors([]);
+                      toastr.success("Tiltaket ble oppdatert");
+                  })
+                  .catch(({ response }) => {
+                      toastr.error("Kunne ikke oppdatere tiltak");
+                      setValidationErrors(response.data);
+                  });
+    };
 
-   showEditMeasureContent() {
-      return this.state.measure && !this.props.newMeasure && canEditMeasure(this.props.authInfo);
-   }
+    const showAddMeasureContent = () => {
+        return measure && props.newMeasure && canAddMeasure(authInfo);
+    };
 
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
+    const showEditMeasureContent = () => {
+        return measure && !props.newMeasure && canEditMeasure(authInfo);
+    };
 
-      return this.showAddMeasureContent() || this.showEditMeasureContent() ? (
-         <React.Fragment>
-            <Button variant="primary" className="marginB-20" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
+    if (!dataFetched) {
+        return "";
+    }
+
+    return showAddMeasureContent() || showEditMeasureContent() ? (
+        <React.Fragment>
+            <Button variant="primary" className="marginB-20" onClick={() => setModalOpen(true)}>
+                {props.newMeasure ? "Opprett tiltak" : "Rediger tiltak"}
+            </Button>
             <Modal
-               show={this.state.modalOpen}
-               onHide={this.closeModal}
-               backdrop="static"
-               centered
-               keyboard={false}
-               animation={false}
+                show={modalOpen}
+                onHide={() => setModalOpen(false)}
+                backdrop="static"
+                centered
+                keyboard={false}
+                animation={false}
             >
-               <Modal.Header closeButton>
-                  <Modal.Title>{this.props.newMeasure ? 'Nytt tiltak' : `${this.state.measure.no} - ${this.state.measure.name}`}</Modal.Title>
-               </Modal.Header>
+                <Modal.Header closeButton>
+                    <Modal.Title>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</Modal.Title>
+                </Modal.Header>
 
-               <Modal.Body>
-                  <ValidationErrors errors={this.state.validationErrors} />
+                <Modal.Body>
+                    <ValidationErrors errors={validationErrors} />
 
-                  <Form.Group controlId="formNo">
-                     <Form.Label>Nummer</Form.Label>
-                     <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} onBlur={this.checkForAvailability} />
-                  </Form.Group>
+                    <Form.Group controlId="formNo">
+                        <Form.Label>Nummer</Form.Label>
+                        <Form.Control type="number" name="no" value={measure.no} onChange={handleChange} />
+                    </Form.Group>
 
-                  <Form.Group controlId="formName">
-                     <Form.Label>Navn</Form.Label>
-                     <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
-                  </Form.Group>
+                    <Form.Group controlId="formName">
+                        <Form.Label>Navn</Form.Label>
+                        <Form.Control type="text" name="name" value={measure.name} onChange={handleChange} />
+                    </Form.Group>
 
-                  <Form.Group controlId="formName">
-                     <Form.Label>Eier</Form.Label>
-                     <Typeahead
-                        id="basic-typeahead-single"
-                        labelKey="name"
-                        onChange={this.handleOwnerSelect}
-                        options={this.props.organizations}
-                        selected={this.state.selectedOwner}
-                        placeholder="Legg til eier..."
-                     />
-                  </Form.Group>
-                  <Form.Group controlId="formInfoUrl">
-                     <Form.Label>Url</Form.Label>
-                     <Form.Control type="text" name="infoUrl" value={this.state.measure.infoUrl} onChange={this.handleChange} placeholder="http://www.name.org" />
-                  </Form.Group>
-               </Modal.Body>
+                    <Form.Group controlId="formName">
+                        <Form.Label>Eier</Form.Label>
+                        <Typeahead
+                            id="basic-typeahead-single"
+                            labelKey="name"
+                            onChange={handleOwnerSelect}
+                            options={organizations}
+                            selected={selectedOwner}
+                            placeholder="Legg til eier..."
+                        />
+                    </Form.Group>
+                    <Form.Group controlId="formInfoUrl">
+                        <Form.Label>Url</Form.Label>
+                        <Form.Control
+                            type="text"
+                            name="infoUrl"
+                            value={measure.infoUrl}
+                            onChange={handleChange}
+                            placeholder="http://www.name.org"
+                        />
+                    </Form.Group>
+                </Modal.Body>
 
-               <Modal.Footer>
-                  <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-                  <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
-               </Modal.Footer>
+                <Modal.Footer>
+                    <Button variant="secondary" onClick={() => setModalOpen(false)}>
+                        Avbryt
+                    </Button>
+                    <Button variant="primary" onClick={saveMeasure}>
+                        Lagre
+                    </Button>
+                </Modal.Footer>
             </Modal>
-         </React.Fragment>
-      ) : '';
-   }
-}
-
-const mapStateToProps = state => {
-   return ({
-      organizations: state.organizations,
-      user: state.oidc.user,
-      authInfo: state.authInfo,
-   });
+        </React.Fragment>
+    ) : null;
 };
 
-const mapDispatchToProps = {
-   fetchOrganizations,
-   createMeasure,
-   updateMeasure
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetails);
+export default MeasureDetails;

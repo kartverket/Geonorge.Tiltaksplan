@@ -20,7 +20,7 @@ const MeasuresTableRow = (props) => {
 
 
    const goToMeasure = () => {
-      navigate(`/tiltak/${this.props.measure.no}`);
+      navigate(`/tiltak/${props.measure.no}`);
    }
 
 
@@ -36,10 +36,10 @@ const MeasuresTableRow = (props) => {
          <tr>
             <td data-label="Nr"><span data-tip="Unikt nummer på tiltaket">{props.measure.no}</span></td>
             <td data-label={dispatch(translate('Measure'))} style={{paddingRight : 20}}><a href={props.measure.infoUrl} target="_blank" data-tip="Overordnet beskrivelse av tiltaket">{props.measure.name}</a></td>
-            <td data-label="Status" style={{paddingRight : 20}}><span data-tip="Viser fremdrift på tiltaket">{getMeasureStatusLabel(this.props.planStatuses, props.measure)}</span></td>
+            <td data-label="Status" style={{paddingRight : 20}}><span data-tip="Viser fremdrift på tiltaket">{getMeasureStatusLabel(props.planStatuses, props.measure)}</span></td>
             <td data-label={dispatch(translate('Owner'))}><span data-tip="Hovedansvarlig for gjennomføring av tiltaket">{props.measure.owner.name}</span></td>
             <td data-label="Sist oppdatert aktivitet"><span data-tip="Sist oppdatert aktivitet/rapport">{formatDate(props.measure.lastUpdatedActivity > props.measure.lastUpdated ? props.measure.lastUpdatedActivity : props.measure.lastUpdated)}</span></td>
-            <td data-label="Link til aktivitet" style={{textAlign: 'center', cursor: 'pointer'}}><FontAwesomeIcon data-tip="Detaljert beskrivelse - aktiviteter" className={style.icon} icon="info-circle" color="#007bff" onClick={goToMeasure.bind(this)}/></td>
+            <td data-label="Link til aktivitet" style={{textAlign: 'center', cursor: 'pointer'}}><FontAwesomeIcon data-tip="Detaljert beskrivelse - aktiviteter" className={style.icon} icon="info-circle" color="#007bff" onClick={goToMeasure}/></td>
          </tr>
       )
    }

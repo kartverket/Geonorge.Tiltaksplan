@@ -1,6 +1,6 @@
 // Dependecies
-import React, { Component, useDebugValue, useEffect, useState } from "react";
-import { connect, useDispatch, useSelector } from "react-redux";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -39,13 +39,14 @@ const Measure = (props) => {
     const measure = useSelector((state) => state.measures.selectedMeasure);
     const user = useSelector((state) => state.oidc.user);
     const authInfo = useSelector((state) => state.authInfo);
-    const selectedLanguage = useSelector((state) => state.selectedLanguage);
 
     useEffect(() => {
-        dispatch(fetchMeasure(measureNumber)).then(() => {
-            setDataFetched(true);
-        });
-    }, []);
+        if (!dataFetched) {
+            dispatch(fetchMeasure(measureNumber)).then(() => {
+                setDataFetched(true);
+            });
+        }
+    }, [dispatch, measureNumber, dataFetched]);
 
     const handleDeleteMeasure = () => {
         dispatch(
@@ -55,7 +56,7 @@ const Measure = (props) => {
         );
     };
 
-    const hasMeasure = measure && Object.keys(measure).length;
+    const hasMeasure = measure && Object.keys(measure)?.length;
     return dataFetched && hasMeasure ? (
         <Container>
             <h1>
@@ -69,9 +70,7 @@ const Measure = (props) => {
                 <Button className="mr-2" variant="secondary" onClick={setDeleteMeasureModalOpen(true)}>
                     Slett tiltaket
                 </Button>
-            ) : (
-                ""
-            )}
+            ) : null}
             <MeasureDetails selectedMeasure={measure} />
             <div
                 className={style.btn}
@@ -95,21 +94,19 @@ const Measure = (props) => {
             </div>
 
             <h2>{dispatch(translate("MeasureActivitiesTitle"))}</h2>
-
             <ActivityTable activities={measure.activities} />
+
             {canAddActivity(authInfo, measure.owner) ? (
                 <div className={style.block}>
                     <Link to={`/tiltak/${measureNumber}/ny-aktivitet`}>
                         <button className="btn btn-primary">{dispatch(translate("btnCreateActivity"))}</button>
                     </Link>
                 </div>
-            ) : (
-                ""
-            )}
+            ) : null}
 
             <Modal
                 show={deleteMeasureModalOpen}
-                onHide={setDeleteMeasureModalOpen(false)}
+                onHide={() => setDeleteMeasureModalOpen(false)}
                 keyboard={false}
                 animation={false}
                 centered
@@ -128,7 +125,7 @@ const Measure = (props) => {
                 </Modal.Body>
 
                 <Modal.Footer>
-                    <Button variant="secondary" onClick={setDeleteMeasureModalOpen(false)}>
+                    <Button variant="secondary" onClick={() => setDeleteMeasureModalOpen(false)}>
                         Avbryt
                     </Button>
                     <Button disabled={measure.activities.length > 0} variant="danger" onClick={handleDeleteMeasure}>
@@ -137,9 +134,7 @@ const Measure = (props) => {
                 </Modal.Footer>
             </Modal>
         </Container>
-    ) : (
-        ""
-    );
+    ) : null;
 };
 
 export default Measure;
