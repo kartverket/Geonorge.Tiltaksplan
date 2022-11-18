@@ -1,9 +1,10 @@
 // Dependecies
-import React, { Component, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Provider } from "react-redux";
 import { Route, Routes } from "react-router";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import ReduxToastr from "react-redux-toastr";
+import { OidcProvider } from "redux-oidc";
 
 // Utils
 import configureStore, { history } from "utils/configureStore";
@@ -35,7 +36,6 @@ import {
     faMinusCircle,
     faInfoCircle
 } from "@fortawesome/free-solid-svg-icons";
-import { OidcProvider } from "redux-oidc";
 
 library.add(fab, faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle, faInfoCircle);
 
@@ -61,7 +61,7 @@ const App = (props) => {
             userManager = userManagerConfig;
             setStoreIsLoaded(true);
         });
-    }, []);
+    }, [props.config, userManagerIsLoaded]);
 
     if (userManager && userManagerIsLoaded && storeIsLoaded) {
         return (
