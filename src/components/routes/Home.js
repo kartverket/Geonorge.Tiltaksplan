@@ -1,17 +1,11 @@
 // Dependencies
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React from "react";
 
 // Template
-import Container from 'components/template/Container';
+import Container from "components/template/Container";
 
+const Home = (props) => {
+    return <Container></Container>;
+};
 
-class Home extends Component {
-  render() {
-    return (
-      <Container></Container>
-    )
-  }
-}
-
-export default connect(null, null)(Home);
+export default Home;
