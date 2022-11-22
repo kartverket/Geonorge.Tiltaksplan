@@ -3,7 +3,7 @@
     "BuildVersionNumber": "0.0.0",
     "apiBaseURL": "https://tiltaksplan.dev.geonorge.no/api",
     "oidc": {
-        "client_id": "tiltaksplan.test.geonorge.no",
+        "client_id": "tiltaksplan.geonorge.no",
         "authority": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/auth",
         "issuer": "https://test2.geoid.no/realms/geoid",
         "redirect_uri": "https://tiltaksplan.dev.geonorge.no/signin-oidc",
