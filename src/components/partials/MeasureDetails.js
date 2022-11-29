@@ -28,7 +28,7 @@ const MeasureDetails = (props) => {
     const [dataFetched, setDataFetched] = useState(false);
     const [modalOpen, setModalOpen] = useState(false);
     const [measure, setMeasure] = useState(props.newMeasure ? new Measure() : props.selectedMeasure);
-    const [selectedOwner, setSelectedOwner] = useState(props.newMeasure ? [] : props.selectedMeasure.owner);
+    const [selectedOwner, setSelectedOwner] = useState(props.newMeasure ? [] : [props.selectedMeasure.owner]);
     const [validationErrors, setValidationErrors] = useState([]);
 
     // Redux store
