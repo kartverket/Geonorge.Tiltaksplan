@@ -115,18 +115,17 @@ const MeasureDetails = (props) => {
                 <Modal.Header closeButton>
                     <Modal.Title>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</Modal.Title>
                 </Modal.Header>
-
                 <Modal.Body>
                     <ValidationErrors errors={validationErrors} />
 
                     <Form.Group controlId="formNo">
                         <Form.Label>Nummer</Form.Label>
-                        <Form.Control type="number" name="no" value={measure.no} onChange={handleChange} />
+                        <Form.Control type="number" name="no" defaultValue={measure.no} onChange={handleChange} />
                     </Form.Group>
 
                     <Form.Group controlId="formName">
                         <Form.Label>Navn</Form.Label>
-                        <Form.Control type="text" name="name" value={measure.name} onChange={handleChange} />
+                        <Form.Control type="text" name="name" defaultValue={measure.name} onChange={handleChange} />
                     </Form.Group>
 
                     <Form.Group controlId="formName">
@@ -145,13 +144,12 @@ const MeasureDetails = (props) => {
                         <Form.Control
                             type="text"
                             name="infoUrl"
-                            value={measure.infoUrl}
+                            defaultValue={measure.infoUrl}
                             onChange={handleChange}
                             placeholder="http://www.name.org"
                         />
                     </Form.Group>
                 </Modal.Body>
-
                 <Modal.Footer>
                     <Button variant="secondary" onClick={() => setModalOpen(false)}>
                         Avbryt

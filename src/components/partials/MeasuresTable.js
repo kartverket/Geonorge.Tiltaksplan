@@ -159,7 +159,7 @@ const MeasuresTable = (props) => {
                 <SelectDropdown
                     name="status"
                     value={statusSelected}
-                    options={statuses}
+                    options={statuses || []}
                     onSelect={handleChange}
                     className={formsStyle.statusSelect}
                 />
