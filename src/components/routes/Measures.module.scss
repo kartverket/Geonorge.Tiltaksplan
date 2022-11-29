@@ -1,5 +1,5 @@
 :local(.block) {
-    margin: 20px 0;   
+    margin: 2000px 0;   
     font-weight: 600;
     input[type='text'],input[type='number'] {
         display: block;
@@ -12,6 +12,10 @@
         width: 20px;
         display: inline;
         height: 1.5em;
+    }
+
+    button {
+        margin-top: 24px;
     }
 
   }

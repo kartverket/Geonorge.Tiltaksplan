@@ -167,6 +167,7 @@ const MeasuresTable = (props) => {
             <ReactTooltip />
             <gn-table hoverable>
                 <table>
+                    <caption>Liste over handlingsplanens tiltak </caption>
                     <thead>
                         <tr>
                             <th style={{ cursor: "pointer" }} onClick={onSort("no")}>
@@ -205,6 +206,7 @@ const MeasuresTable = (props) => {
                             })}
                     </tbody>
                 </table>
+                
             </gn-table>
         </React.Fragment>
     );

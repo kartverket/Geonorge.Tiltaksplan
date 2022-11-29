@@ -50,7 +50,7 @@ const Measures = (props) => {
             <h1>{pageTitle}</h1>
             <MeasureDetails newMeasure />
             <MeasuresTable measures={measures} />
-            <Button variant="primary" onClick={() => saveCSVFileForMeasureReports()}>
+            <Button variant="secondary" onClick={() => saveCSVFileForMeasureReports()}>
                 Lagre som CSV
             </Button>
         </Container>

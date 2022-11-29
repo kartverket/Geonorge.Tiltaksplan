@@ -34,10 +34,11 @@ import {
     faEdit,
     faPlusCircle,
     faMinusCircle,
-    faInfoCircle
+    faInfoCircle,
+    faExternalLinkAlt
 } from "@fortawesome/free-solid-svg-icons";
 
-library.add(fab, faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle, faInfoCircle);
+library.add(fab, faCheckSquare, faTrashAlt, faEdit, faPlusCircle, faMinusCircle, faInfoCircle, faExternalLinkAlt);
 
 const initialState = {};
 const storePromise = configureStore(initialState, userManagerPromise);
