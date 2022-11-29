@@ -8,7 +8,7 @@
     "@fortawesome/free-regular-svg-icons": "^5.15.1",
     "@fortawesome/free-solid-svg-icons": "^5.15.1",
     "@fortawesome/react-fontawesome": "^0.1.12",
-    "@kartverket/geonorge-web-components": "^0.2.16",
+    "@kartverket/geonorge-web-components": "^1.0.6",
     "axios": "^0.21.0",
     "bootstrap": "^4.5.3",
     "connected-react-router": "^6.7.0",
