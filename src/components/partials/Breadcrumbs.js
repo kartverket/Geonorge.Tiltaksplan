@@ -3,6 +3,7 @@ import React from 'react';
 import withBreadcrumbs from 'react-router-breadcrumbs-hoc';
 import { NavLink } from 'react-router-dom'
 import { useSelector } from "react-redux";
+import { BreadcrumbList } from '@kartverket/geonorge-web-components';
 
 // Stylesheets
 import style from 'components/partials/Breadcrumbs.module.scss'
@@ -44,13 +45,11 @@ const Breadcrumbs = ({ breadcrumbs }) => {
    const translationTexts = translations.length && selectedLanguage ? translations.find(translation => {
       return translation.culture === selectedLanguage
    }).texts : null;
-   const breadcrumbTranslation = translationTexts && translationTexts.Breadcrumb ? translationTexts.Breadcrumb : 'Du er her:';
 
    return (
       <div className={style.breadcrumbs}>
-         <span>{breadcrumbTranslation} </span>
-
          <div>
+            {/*
             {breadcrumbs.map(({ match, breadcrumb }, index) => {
                return (
                   <span key={match.url}>
@@ -62,6 +61,7 @@ const Breadcrumbs = ({ breadcrumbs }) => {
                   </span>
                );
             })}
+         */}
          </div>
       </div>
    );
