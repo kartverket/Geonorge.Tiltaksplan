@@ -70,18 +70,18 @@ const App = (props) => {
                     <Router history={history}>
                         <NavigationBar userManager={userManager} />
                         <Routes>
-                            <Route exact={true} path="/" element={<Measures />} />
+                            <Route exact path="/" element={<Measures />} />
                             <Route exact path="/signin-oidc" element={<OidcCallback userManager={userManager} />} />
                             <Route
                                 exact
                                 path="/signout-callback-oidc"
                                 element={<OidcSignoutCallback userManager={userManager} />}
                             />
-                            <Route exact={true} path="/tiltak/:measureNumber" element={<Measure />} />
-                            <Route exact={true} path="/tiltak/:measureNumber/ny-aktivitet" element={<Activity />} />
-                            <Route exact={true} path="/tiltak/:measureNumber/aktivitet" element={<Activity />} />
+                            <Route exact path="/tiltak/:measureNumber" element={<Measure />} />
+                            <Route exact path="/tiltak/:measureNumber/ny-aktivitet" element={<Activity />} />
+                            <Route exact path="/tiltak/:measureNumber/aktivitet" element={<Activity />} />
                             <Route
-                                exact={true}
+                                exact
                                 path="/tiltak/:measureNumber/aktivitet/:activityNumber"
                                 element={<Activity />}
                             />
