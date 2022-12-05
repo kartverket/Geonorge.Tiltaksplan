@@ -9,8 +9,6 @@ import ActivityTableRow from "components/partials/ActivityTable/ActivityTableRow
 import { fetchOptions } from "actions/OptionsActions";
 import { translate } from "actions/ConfigActions";
 
-// Stylesheets
-import style from "components/partials/ActivityTable.module.scss";
 
 const ActivityTable = (props) => {
     const dispatch = useDispatch();
@@ -30,7 +28,7 @@ const ActivityTable = (props) => {
     const renderActivityTableRows = (activities) => {
         if (!activities?.length) {
             return (
-                <div className={style.block}>
+                <div>
                     <p>Tekst mangler</p>
                 </div>
             );
