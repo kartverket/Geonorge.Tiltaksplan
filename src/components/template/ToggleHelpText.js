@@ -20,7 +20,7 @@ class ToggleHelpText extends Component {
 render() { 
     return (
     <React.Fragment>
-        <FontAwesomeIcon className={style.icon} icon="info-circle" color="#007bff" onClick={() => { this.setState({ open: !this.state.open }) }}/>
+        <FontAwesomeIcon className={style.icon} icon="info-circle" color="#3767c7" onClick={() => { this.setState({ open: !this.state.open }) }}/>
             <div className={`${style.openInfo} ${this.state.open ? style.open : style.close}`}>
                 {this.props.translate(this.props.resourceKey)}
             </div>

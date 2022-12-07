@@ -6,6 +6,9 @@
     position: relative;
     display: inline-block;
     padding-right: 1rem;
+    font-weight: 400;
+    color: #3767c7;
+
     }
     [target="_blank"]:after {
     content: "(Åpnes i nytt vindu)";
@@ -17,5 +20,9 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     border: 0;
-    }   
+    
+    }  
+ 
+   
+ 
 

@@ -39,11 +39,11 @@ const MeasuresTableRow = (props) => {
                         data-tip="Detaljert beskrivelse - aktiviteter"                                              
                         icon="external-link-alt"
                         className={style.icon}
-                        color="#007bff"
+                        color="#3767c7"
                         tabIndex="-1"                        
                     /> 
                     
-                </a> : `${props.measure.name}` }
+                </a>  : `${props.measure.name}` }
             </td>
             <td data-label="Status" style={{ paddingRight: 20 }}>
                 <span data-tip="Viser fremdrift på tiltaket">
@@ -70,7 +70,7 @@ const MeasuresTableRow = (props) => {
                         data-tip="Detaljert beskrivelse - aktiviteter"
                         className={style.icon}
                         icon="info-circle"
-                        color="#007bff"
+                        color="#3767c7"
                         tabIndex="-1"
                     />
                 </Link>
