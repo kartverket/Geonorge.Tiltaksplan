@@ -4,16 +4,16 @@
     "apiBaseURL": "https://tiltaksplan.dev.geonorge.no/api",
     "oidc": {
         "client_id": "tiltaksplan.test.geonorge.no",
-        "authority": "https://test.geoid.no/realms/geoid/protocol/openid-connect/auth",
-        "issuer": "https://test.geoid.no/realms/geoid",
+        "authority": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/auth",
+        "issuer": "https://test2.geoid.no/realms/geoid",
         "redirect_uri": "https://tiltaksplan.dev.geonorge.no/signin-oidc",
         "post_logout_redirect_uri": "https://tiltaksplan.dev.geonorge.no/signout-callback-oidc",
         "metadata": {
-            "issuer": "https://test.geoid.no/realms/geoid",
-            "authorization_endpoint": "https://test.geoid.no/realms/geoid/protocol/openid-connect/auth",
-            "userinfo_endpoint": "https://test.geoid.no/realms/geoid/protocol/openid-connect/userinfo",
-            "end_session_endpoint": "https://test.geoid.no/realms/geoid/protocol/openid-connect/logout",
-            "jwks_uri": "https://test.geoid.no/realms/geoid/protocol/openid-connect/certs"
+            "issuer": "https://test2.geoid.no/realms/geoid",
+            "authorization_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/auth",
+            "userinfo_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/userinfo",
+            "end_session_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/logout",
+            "jwks_uri": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/certs"
         },
         "signingKeys": [
             {
