@@ -1,8 +1,9 @@
 // Dependencies
-import React, { useEffect } from "react";
+import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveAs } from "file-saver";
 import Button from "react-bootstrap/Button";
+// eslint-disable-next-line no-unused-vars
 import { BreadcrumbList } from '@kartverket/geonorge-web-components';
 
 // Components
