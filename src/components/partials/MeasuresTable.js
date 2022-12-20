@@ -1,7 +1,7 @@
 // Dependencies
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import ReactTooltip from "react-tooltip";
+import { Tooltip } from "react-tooltip";
 // eslint-disable-next-line no-unused-vars
 import { GnTable } from "@kartverket/geonorge-web-components/GnTable";
 
@@ -164,34 +164,34 @@ const MeasuresTable = (props) => {
                     className={formsStyle.statusSelect}
                 />
             </div>
-            <ReactTooltip />
+            <Tooltip />
             <gn-table hoverable>
                 <table>
                     <caption>Liste over handlingsplanens tiltak </caption>
                     <thead>
                         <tr>
                             <th style={{ cursor: "pointer" }} onClick={onSort("no")}>
-                                <span data-tip="Unikt nummer på tiltaket">Nr</span>
+                                <span data-tooltip-content="Unikt nummer på tiltaket">Nr</span>
                                 <span className={setArrow("no")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("name")}>
-                                <span data-tip="Overordnet beskrivelse av tiltaket">
+                                <span data-tooltip-content="Overordnet beskrivelse av tiltaket">
                                     {dispatch(translate("Measure"))}
                                 </span>
                                 <span className={setArrow("name")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("status")}>
-                                <span data-tip="Viser fremdrift på tiltaket">Status</span>
+                                <span data-tooltip-content="Viser fremdrift på tiltaket">Status</span>
                                 <span className={setArrow("status")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("owner")}>
-                                <span data-tip="Hovedansvarlig for gjennomføring av tiltaket">
+                                <span data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket">
                                     {dispatch(translate("Owner"))}
                                 </span>
                                 <span className={setArrow("owner")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("lastupdated")}>
-                                <span data-tip="Sist oppdatert aktivitet/rapport">Sist&nbsp;oppdatert</span>
+                                <span data-tooltip-content="Sist oppdatert aktivitet/rapport">Sist&nbsp;oppdatert</span>
                                 <span className={setArrow("lastupdated")}></span>
                             </th>
                             <th></th>
