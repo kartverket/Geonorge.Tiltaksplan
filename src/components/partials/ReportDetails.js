@@ -138,9 +138,10 @@ const EditMeasure = (props) => {
                     <ValidationErrors errors={validationErrors} />
 
                     <Form.Group controlId="formProgress">
-                        {editableReport ? (
+                       
+                        {editableReport ? ( 
                             <React.Fragment>
-                                <Form.Label>{dispatch(translate("statusProgress"))} </Form.Label>
+                               <label>Status
                                 <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
                                     <SimpleMDE
                                         value={measure.progress || ""}
@@ -148,14 +149,12 @@ const EditMeasure = (props) => {
                                         options={editableMdeOptions}
                                         getMdeInstance={getMdeInstance}
                                     />
-                                </div>
+                                </div></label>
                             </React.Fragment>
                         ) : (
-                            <SimpleMDE
-                                value={measure.progress || ""}
-                                options={readOnlyMdeOptions}
-                                getMdeInstance={getMdeInstance}
-                            />
+                            <React.Fragment>
+                                {measure.progress || ""}
+                            </React.Fragment>
                         )}
                     </Form.Group>
                     <div className={`${editableReport ? "" : `${formsStyle.flex}`}`}>

@@ -85,10 +85,17 @@ const Measure = (props) => {
                     <h1>
                         {measure.no} - {measure.name}
                     </h1>
-                    {measure.infoUrl ? <a href={`${measure.infoUrl}`}>{dispatch(translate("infoLinkMeasure"))}</a> : ""}
-                    <h5>
+                    {measure.infoUrl ? <a href={`${measure.infoUrl}`} target="_blank">{dispatch(translate("infoLinkMeasure"))}</a> : ""} 
+                    <FontAwesomeIcon
+                        data-tip="Detaljert beskrivelse - aktiviteter"                                              
+                        icon="external-link-alt"
+                        className={style.icon}
+                        color="#3767c7"
+                        tabIndex="-1"                        
+                        />
+                    <p>
                         {dispatch(translate("OwnsBy"))} {measure.owner.name}
-                    </h5>
+                    </p>
                     {canDeleteMeasure(authInfo) ? (
                         <Button className="mr-2" variant="secondary" onClick={() => setDeleteMeasureModalOpen(true)}>
                             Slett tiltaket

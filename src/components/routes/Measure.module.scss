@@ -64,3 +64,18 @@
     cursor: pointer;
   }
 }
+ :local [target="_blank"]:after {
+  content: "(Åpnes i nytt vindu)";
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+  
+  }  
+  :local(.icon) {
+    margin-left: 10px;
+}
