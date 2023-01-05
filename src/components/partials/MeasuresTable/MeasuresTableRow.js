@@ -73,7 +73,7 @@ const MeasuresTableRow = (props) => {
             </td>
             <td data-label="Link til aktivitet" style={{ textAlign: "center", cursor: "pointer" }}>
                 <Tooltip anchorId={`measure-link-${props.measure.id}`} />
-                <Link to={`/tiltak/${props.measure.no}`} alt={props.measure.name}>
+                <Link to={`/tiltak/${props.measure.no}`} title={props.measure.name}>
                     <FontAwesomeIcon
                         id={`measure-link-${props.measure.id}`}
                         data-tooltip-content="Detaljert beskrivelse - aktiviteter"
