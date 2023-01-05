@@ -85,7 +85,7 @@ const Measure = (props) => {
                     <h1>
                         {measure.no} - {measure.name}
                     </h1>
-                    {measure.infoUrl ? <a href={`${measure.infoUrl}`} target="_blank">{dispatch(translate("infoLinkMeasure"))}</a> : ""} 
+                    {measure.infoUrl ? <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">{dispatch(translate("infoLinkMeasure"))}</a> : ""} 
                     <FontAwesomeIcon
                         data-tip="Detaljert beskrivelse - aktiviteter"                                              
                         icon="external-link-alt"
