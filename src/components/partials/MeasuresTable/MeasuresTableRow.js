@@ -1,12 +1,16 @@
 // Dependencies
-import React from "react";
+import React, { Fragment } from "react";
 import { useDispatch } from "react-redux";
 import { Link } from "react-router-dom";
+import { Tooltip } from "react-tooltip";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-import style from "components/partials/MeasuresTable/MeasuresTableRow.module.scss";
+// Actions
 import { translate } from "actions/ConfigActions";
 
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+// Stylesheets
+import style from "components/partials/MeasuresTable/MeasuresTableRow.module.scss";
+
 
 const MeasuresTableRow = (props) => {
     const dispatch = useDispatch();
@@ -27,33 +31,39 @@ const MeasuresTableRow = (props) => {
     return (
         <tr>
             <td data-label="Nr">
-                <span data-tooltip-content="Unikt nummer på tiltaket">{props.measure.no}</span>
+                <Tooltip anchorId={`measure-no-${props.measure.id}`}/>
+                <span id={`measure-no-${props.measure.id}`} data-tooltip-content="Unikt nummer på tiltaket">{props.measure.no}</span>
             </td>
             <td data-label={dispatch(translate("Measure"))} style={{ paddingRight: 20 }}>
-            {props.measure.infoUrl ?  
-                <a href={props.measure.infoUrl} target="_blank" rel="noreferrer" data-tooltip-content="Overordnet beskrivelse av tiltaket">
-
-                    {props.measure.name}
-                     <FontAwesomeIcon
-                        data-tooltip-content="Detaljert beskrivelse - aktiviteter"                                              
-                        icon="external-link-alt"
-                        className={style.icon}
-                        color="#3767c7"
-                        tabIndex="-1"                        
-                    /> 
-                    
-                </a>  : `${props.measure.name}` }
+                {props.measure.infoUrl ? 
+                    <Fragment>
+                        <Tooltip anchorId={`measure-name-${props.measure.id}`} />
+                        <a id={`measure-name-${props.measure.id}`} href={props.measure.infoUrl} target="_blank" rel="noreferrer" data-tooltip-content="Overordnet beskrivelse av tiltaket">
+                            {props.measure.name}
+                            <FontAwesomeIcon
+                                data-tooltip-content="Detaljert beskrivelse - aktiviteter"                                              
+                                icon="external-link-alt"
+                                className={style.icon}
+                                color="#3767c7"
+                                tabIndex="-1"                        
+                            /> 
+                        </a>  
+                    </Fragment>: props.measure.name
+                }
             </td>
             <td data-label="Status" style={{ paddingRight: 20 }}>
-                <span data-tooltip-content="Viser fremdrift på tiltaket">
+                <Tooltip anchorId={`measure-status-${props.measure.id}`} />
+                <span id={`measure-status-${props.measure.id}`} data-tooltip-content="Viser fremdrift på tiltaket">
                     {getMeasureStatusLabel(props.planStatuses, props.measure)}
                 </span>
             </td>
             <td data-label={dispatch(translate("Owner"))}>
-                <span data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket">{props.measure.owner.name}</span>
+                <Tooltip anchorId={`measure-owner-${props.measure.id}`} />
+                <span id={`measure-owner-${props.measure.id}`} data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket">{props.measure.owner.name}</span>
             </td>
             <td data-label="Sist oppdatert aktivitet">
-                <span data-tooltip-content="Sist oppdatert aktivitet/rapport">
+                <Tooltip anchorId={`measure-lastUpdated-${props.measure.id}`} />
+                <span id={`measure-lastUpdated-${props.measure.id}`} data-tooltip-content="Sist oppdatert aktivitet/rapport">
                     {formatDate(
                         props.measure.lastUpdatedActivity > props.measure.lastUpdated
                             ? props.measure.lastUpdatedActivity
@@ -62,10 +72,10 @@ const MeasuresTableRow = (props) => {
                 </span>
             </td>
             <td data-label="Link til aktivitet" style={{ textAlign: "center", cursor: "pointer" }}>
-
-
+                <Tooltip anchorId={`measure-link-${props.measure.id}`} />
                 <Link to={`/tiltak/${props.measure.no}`} alt={props.measure.name}>
                     <FontAwesomeIcon
+                        id={`measure-link-${props.measure.id}`}
                         data-tooltip-content="Detaljert beskrivelse - aktiviteter"
                         className={style.icon}
                         icon="info-circle"

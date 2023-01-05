@@ -17,6 +17,7 @@ import { translate } from "actions/ConfigActions";
 // Stylesheets
 import style from "components/partials/MeasuresTable.module.scss";
 import formsStyle from "components/partials/forms.module.scss";
+import 'react-tooltip/dist/react-tooltip.css'
 
 const MeasuresTable = (props) => {
     const dispatch = useDispatch();
@@ -164,34 +165,38 @@ const MeasuresTable = (props) => {
                     className={formsStyle.statusSelect}
                 />
             </div>
-            <Tooltip />
             <gn-table hoverable>
                 <table>
                     <caption>Liste over handlingsplanens tiltak </caption>
                     <thead>
                         <tr>
                             <th style={{ cursor: "pointer" }} onClick={onSort("no")}>
-                                <span data-tooltip-content="Unikt nummer på tiltaket">Nr</span>
+                                <Tooltip anchorId="measure-no-title"/>
+                                <span id="measure-no-title" data-tooltip-content="Unikt nummer på tiltaket">Nr</span>
                                 <span className={setArrow("no")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("name")}>
-                                <span data-tooltip-content="Overordnet beskrivelse av tiltaket">
+                                <Tooltip anchorId="measure-name-title"/>
+                                <span id="measure-name-title" data-tooltip-content="Overordnet beskrivelse av tiltaket">
                                     {dispatch(translate("Measure"))}
                                 </span>
                                 <span className={setArrow("name")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("status")}>
-                                <span data-tooltip-content="Viser fremdrift på tiltaket">Status</span>
+                                <Tooltip anchorId="measure-status-title"/>
+                                <span id="measure-status-title" data-tooltip-content="Viser fremdrift på tiltaket">Status</span>
                                 <span className={setArrow("status")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("owner")}>
-                                <span data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket">
+                                <Tooltip anchorId="measure-owner-title"/>
+                                <span id="measure-owner-title" data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket">
                                     {dispatch(translate("Owner"))}
                                 </span>
                                 <span className={setArrow("owner")}></span>
                             </th>
                             <th style={{ cursor: "pointer" }} onClick={onSort("lastupdated")}>
-                                <span data-tooltip-content="Sist oppdatert aktivitet/rapport">Sist&nbsp;oppdatert</span>
+                                <Tooltip anchorId="measure-lastUpated-title"/>
+                                <span id="measure-lastUpated-title" data-tooltip-content="Sist oppdatert aktivitet/rapport">Sist&nbsp;oppdatert</span>
                                 <span className={setArrow("lastupdated")}></span>
                             </th>
                             <th></th>
