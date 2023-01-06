@@ -33,12 +33,6 @@ const editableMdeOptions = {
     spellChecker: false
 };
 
-const readOnlyMdeOptions = {
-    toolbar: false,
-    status: false,
-    spellChecker: false,
-    readOnly: true
-};
 
 const EditMeasure = (props) => {
     const dispatch = useDispatch();
