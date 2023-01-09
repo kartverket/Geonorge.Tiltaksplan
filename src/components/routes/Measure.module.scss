@@ -58,8 +58,11 @@
   max-height: 4000px;
 }
 :local(.btn) {
-  font-size: 1.4em;
+  border: none;
+  background: none;
+  font-size: 1.2em;
   margin: 15px 0;
+  width: 100px;
   &:hover {
     cursor: pointer;
   }

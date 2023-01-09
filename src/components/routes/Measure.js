@@ -78,10 +78,11 @@ const Measure = (props) => {
     ]
 
     return (
-        <Container>
+        <Container>           
             <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
             {dataFetched && hasMeasure ? (
                 <Fragment>
+                    <div id="main-content">
                     <h1>
                         {measure.no} - {measure.name}
                     </h1>
@@ -102,15 +103,16 @@ const Measure = (props) => {
                         </Button>
                     ) : null}
                     <MeasureDetails selectedMeasure={measure} />
-                    <div
+                    <button
                         className={style.btn}
+                        aria-hidden={(!open)}
                         onClick={() => {
                             setOpen(!open);
                         }}
                     >
                         {open ? `${dispatch(translate("ReportLinkClose"))}` : `${dispatch(translate("ReportLink"))}`}{" "}
-                        {<FontAwesomeIcon icon={open ? "minus-circle" : "plus-circle"} />}
-                    </div>
+                        {<FontAwesomeIcon icon={open ? "minus-circle" : "plus-circle"} />}                        
+                    </button>
 
                     <div className={`${style.reporting} ${open ? style.reportOpen : style.reportClose}`}>
                         <h2>{dispatch(translate("progressReportTitle"))}</h2>
@@ -167,6 +169,7 @@ const Measure = (props) => {
                             </Button>
                         </Modal.Footer>
                     </Modal>
+                    </div>  
                 </Fragment>
             ) : null}
         </Container>

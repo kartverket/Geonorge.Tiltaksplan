@@ -46,14 +46,16 @@ const Measures = (props) => {
     ]
 
     return (
-        <Container>
+        <Container>           
             <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
+            <div id="main-content">
             <h1>{pageTitle}</h1>
             <MeasureDetails newMeasure />
             <MeasuresTable measures={measures} />
             <Button variant="secondary" onClick={() => saveCSVFileForMeasureReports()}>
                 Lagre som CSV
             </Button>
+            </div>
         </Container>
     );
 };

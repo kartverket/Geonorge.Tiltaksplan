@@ -73,3 +73,32 @@ button.btn {
       background-color: #fe5000;
    }
 }
+.visually-hidden {
+   position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    padding: 0 !important;
+    margin: -1px !important;
+    overflow: hidden !important;
+    clip: rect(0,0,0,0) !important;
+    white-space: nowrap !important;
+    border: 0 !important;
+  
+}
+.jump-to-main {
+   display: block;
+    padding: 0.5rem;
+    text-align: center;
+    text-decoration: none !important;
+    color: #333;
+  
+    outline: none;
+    font-weight: 500;            
+    &:focus {
+    color: #333;
+    position: relative !important;
+    height: auto !important;
+    width: 100% !important;
+    padding: 10px 0 !important;
+    }
+}
