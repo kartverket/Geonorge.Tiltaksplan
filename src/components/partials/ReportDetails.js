@@ -34,7 +34,7 @@ const editableMdeOptions = {
 };
 
 
-const EditMeasure = (props) => {
+const ReportDetails = (props) => {
     const dispatch = useDispatch();
 
     //Redux store
@@ -50,7 +50,6 @@ const EditMeasure = (props) => {
     const [dataFetched, setDataFetched] = useState(false);
     const [editableReport, setEditableReport] = useState(false);
     const [validationErrors, setValidationErrors] = useState(false);
-    const [selectedOwner, setSelectedOwner] = useState(props.selectedOwner);
     const [measure, setMeasure] = useState(selectedMeasure);
     const [modalOpen, setModalOpen] = useState(false);
 
@@ -84,11 +83,7 @@ const EditMeasure = (props) => {
     };
 
     const saveMeasure = () => {
-        if (selectedOwner.length) {
-            measure.owner.id = setSelectedOwner(selectedOwner[0].id);
-        }
-
-        updateMeasure(measure, user)
+        dispatch(updateMeasure(measure, user))
             .then(() => {
                 toastr.success("Tiltaket ble oppdatert");
                 setValidationErrors(validationErrors);
@@ -317,4 +312,4 @@ const EditMeasure = (props) => {
     );
 };
 
-export default EditMeasure;
+export default ReportDetails;
