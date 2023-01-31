@@ -1,6 +1,6 @@
 // Types
 import { UPDATE_AUTH_INFO } from 'constants/types';
-import * as Cookies from 'js-cookie';
+import Cookies from 'js-cookie';
 
 export const updateAuthInfo = () => (dispatch, getState) => {
   const store = getState();
