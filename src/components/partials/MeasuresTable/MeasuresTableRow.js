@@ -9,7 +9,6 @@ import StarIcon from 'gfx/icon-star.svg'
 import { translate } from 'actions/ConfigActions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAlignRight } from '@fortawesome/free-solid-svg-icons';
 
 class MeasuresTableRow extends Component {
 

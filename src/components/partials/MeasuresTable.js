@@ -6,7 +6,6 @@ import ReactTooltip from 'react-tooltip';
 // Components
 import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow';
 import { SelectDropdown } from 'components/custom-elements';
-import Form from 'react-bootstrap/Form';
 
 // Actions
 import { fetchMeasures } from 'actions/MeasuresActions';
@@ -43,10 +42,10 @@ class MeasuresTable extends Component {
       let statusMeasures = this.state.measuresAll;
       let status = data.value;
 
-      if(status != 0)
+      if(status !== 0)
       {
       statusMeasures = statusMeasures.filter(function (el) {
-         return el.status == status ;
+         return el.status === status ;
        });
       }
 
