@@ -5,8 +5,20 @@ import { toastr } from "react-redux-toastr";
 import MDEditor from "@uiw/react-md-editor";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
-import { fetchOrganizations } from "actions/OrganizationsActions";
 
+// Geonorge WebComponents
+/* eslint-disable */
+import {
+    GnButton,
+    GnDialog,
+    GnFieldContainer,
+    GnLabel,
+    GnInput,
+    HeadingText
+} from "@kartverket/geonorge-web-components/GnTable";
+/* eslint-enable */
+
+// Components
 import ValidationErrors from "components/partials/ValidationErrors";
 import ToggleHelpText from "components/template/ToggleHelpText";
 
@@ -14,6 +26,7 @@ import ToggleHelpText from "components/template/ToggleHelpText";
 import { fetchOptions } from "actions/OptionsActions";
 import { translate } from "actions/ConfigActions";
 import { deleteMeasure, updateMeasure } from "actions/MeasuresActions";
+import { fetchOrganizations } from "actions/OrganizationsActions";
 
 // Helpers
 import { canEditReport } from "helpers/authorizationHelpers";
@@ -99,29 +112,30 @@ const ReportDetails = (props) => {
             <div className={`${formsStyle.form} form-container`}>
                 <div className={formsStyle.block}>
                     <ValidationErrors errors={validationErrors} />
-
-                    <gn-label block>
-                        <label htmlFor="measure-progress">Status</label>
-                    </gn-label>
-                    <div data-color-mode="light">
-                        {editableReport ? (
-                            <MDEditor
-                                id="measure-progress"
-                                preview="edit"
-                                height={200}
-                                name="description"
-                                value={measure?.progress || ""}
-                                onChange={(value) => {
-                                    handleChange({ name: "progress", value });
-                                }}
-                            />
-                        ) : (
-                            <MDEditor.Markdown id="measure-progress" source={measure?.progress || ""} />
-                        )}
-                    </div>
+                    <gn-field-container block>
+                        <gn-label block>
+                            <label htmlFor="measure-progress">Status</label>
+                        </gn-label>
+                        <div data-color-mode="light">
+                            {editableReport ? (
+                                <MDEditor
+                                    id="measure-progress"
+                                    preview="edit"
+                                    height={200}
+                                    name="description"
+                                    value={measure?.progress || ""}
+                                    onChange={(value) => {
+                                        handleChange({ name: "progress", value });
+                                    }}
+                                />
+                            ) : (
+                                <MDEditor.Markdown id="measure-progress" source={measure?.progress || ""} />
+                            )}
+                        </div>
+                    </gn-field-container>
 
                     <div className={`${editableReport ? "" : `${formsStyle.flex}`}`}>
-                        <div>
+                        <gn-field-container block>
                             <gn-label block>
                                 <label htmlFor="measure-volume">
                                     {dispatch(translate("Volume"))}
@@ -153,9 +167,9 @@ const ReportDetails = (props) => {
                             ) : (
                                 <span>{renderStars(measure.volume || 0)}</span>
                             )}
-                        </div>
+                        </gn-field-container>
 
-                        <div>
+                        <gn-field-container block>
                             <gn-label block>
                                 <label htmlFor="measure-status">
                                     Status <ToggleHelpText resourceKey="StatusDescription" />
@@ -183,9 +197,9 @@ const ReportDetails = (props) => {
                             ) : (
                                 <span>{getMeasureStatusLabel(planStatuses, measure)}</span>
                             )}
-                        </div>
+                        </gn-field-container>
 
-                        <div>
+                        <gn-field-container block>
                             <gn-label block>
                                 <label htmlFor="measure-trafficLight">
                                     {dispatch(translate("TrafficLight"))}
@@ -214,9 +228,9 @@ const ReportDetails = (props) => {
                                     }`}
                                 ></span>
                             )}
-                        </div>
+                        </gn-field-container>
 
-                        <div>
+                        <gn-field-container block>
                             <gn-label block>
                                 <label htmlFor="measure-results">
                                     {dispatch(translate("Results"))} <ToggleHelpText resourceKey="ResultDescription" />
@@ -244,10 +258,10 @@ const ReportDetails = (props) => {
                             ) : (
                                 <span>{renderStars(measure.results || 0)}</span>
                             )}
-                        </div>
+                        </gn-field-container>
                     </div>
 
-                    <div>
+                    <gn-field-container block>
                         <gn-label block>
                             <label>
                                 {dispatch(translate("Comment"))}
@@ -266,7 +280,7 @@ const ReportDetails = (props) => {
                         ) : (
                             <span>{measure.comment}</span>
                         )}
-                    </div>
+                    </gn-field-container>
                 </div>
             </div>
             {editableReport ? (

@@ -8,8 +8,16 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import MDEditor from "@uiw/react-md-editor";
 
 // Geonorge WebComponents
-// eslint-disable-next-line no-unused-vars
-import { GnButton, GnDialog, GnLabel, GnInput, HeadingText } from "@kartverket/geonorge-web-components/GnTable";
+/* eslint-disable */
+import {
+    GnButton,
+    GnDialog,
+    GnFieldContainer,
+    GnLabel,
+    GnInput,
+    HeadingText
+} from "@kartverket/geonorge-web-components/GnTable";
+/* eslint-enable */
 
 // Components
 import { translate } from "actions/ConfigActions";
@@ -179,140 +187,157 @@ const ActivityDetails = (props) => {
         <React.Fragment>
             <ValidationErrors errors={validationErrors} />
 
-            <gn-label block>
-                <label htmlFor="activity-no">{dispatch(translate("labelNumber"))}</label>
-            </gn-label>
-            {editable ? (
-                <gn-input>
-                    <input
-                        id="activity-no"
-                        name="no"
-                        defaultValue={activity.no}
-                        type="number"
-                        min="0"
-                        onChange={handleChange}
-                    />
-                </gn-input>
-            ) : (
-                <div>{activity.name}</div>
-            )}
-
-            <gn-label block>
-                <label htmlFor="activity-name">{dispatch(translate("Activity"))}</label>
-            </gn-label>
-            {editable ? (
-                <gn-input block fullWidth>
-                    <input id="activity-name" name="name" defaultValue={activity.name} onChange={handleChange} />
-                </gn-input>
-            ) : (
-                <div>{activity.name}</div>
-            )}
-
-            <gn-label block>
-                <label htmlFor="activity-description">{dispatch(translate("Description"))}</label>
-            </gn-label>
-            <div data-color-mode="light">
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-no">{dispatch(translate("labelNumber"))}</label>
+                </gn-label>
                 {editable ? (
-                    <MDEditor
-                        id="activity-description"
-                        preview="edit"
-                        height={200}
-                        name="description"
-                        value={activity?.description || ""}
-                        onChange={(value) => {
-                            handleChange({ name: "description", value });
-                        }}
+                    <gn-input>
+                        <input
+                            id="activity-no"
+                            name="no"
+                            defaultValue={activity.no}
+                            type="number"
+                            min="0"
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                ) : (
+                    <div>{activity.name}</div>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-name">{dispatch(translate("Activity"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input block fullWidth>
+                        <input id="activity-name" name="name" defaultValue={activity.name} onChange={handleChange} />
+                    </gn-input>
+                ) : (
+                    <div>{activity.name}</div>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-description">{dispatch(translate("Description"))}</label>
+                </gn-label>
+                <div data-color-mode="light">
+                    {editable ? (
+                        <MDEditor
+                            id="activity-description"
+                            preview="edit"
+                            height={200}
+                            name="description"
+                            value={activity?.description || ""}
+                            onChange={(value) => {
+                                handleChange({ name: "description", value });
+                            }}
+                        />
+                    ) : (
+                        <MDEditor.Markdown id="activity-description" source={activity?.description || ""} />
+                    )}
+                </div>
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-implementationStart">Start</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input>
+                        <input
+                            id="activity-implementationStart"
+                            name="implementationStart"
+                            defaultValue={
+                                activity.implementationStart?.length
+                                    ? formatInputDateValue(activity.implementationStart)
+                                    : ""
+                            }
+                            type="date"
+                            onChange={(event) =>
+                                handleChange({ name: "implementationStart", value: event.target.value, type: "date" })
+                            }
+                        />
+                    </gn-input>
+                ) : (
+                    <DayJS format="MMMM YYYY" locale="nb">
+                        {activity.implementationStart}
+                    </DayJS>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-implementationEnd">{dispatch(translate("End"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input>
+                        <input
+                            id="activity-implementationEnd"
+                            name="implementationEnd"
+                            defaultValue={
+                                activity.implementationEnd?.length
+                                    ? formatInputDateValue(activity.implementationEnd)
+                                    : ""
+                            }
+                            type="date"
+                            onChange={(event) =>
+                                handleChange({ name: "implementationEnd", value: event.target.value, type: "date" })
+                            }
+                        />
+                    </gn-input>
+                ) : (
+                    <DayJS format="MMMM YYYY" locale="nb">
+                        {activity.implementationEnd}
+                    </DayJS>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-status">Status</label>
+                </gn-label>
+                {editable ? (
+                    <gn-select>
+                        <select name="status" defaultValue={activity.status || 1} onChange={handleChange}>
+                            {planStatuses.map((planStatus) => {
+                                return (
+                                    <option key={planStatus.value} value={planStatus.value}>
+                                        {planStatus.label}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </gn-select>
+                ) : (
+                    <span id="activity-status">{getActivityStatusLabel(planStatuses, activity)}</span>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-participants">{dispatch(translate("Participants"))}</label>
+                </gn-label>
+                {editable ? (
+                    <Typeahead
+                        allowNew
+                        multiple
+                        id="basic-typeahead-multiple"
+                        labelKey="name"
+                        onChange={handleParticipantsChange}
+                        options={organizations}
+                        defaultSelected={activity.participants}
+                        placeholder="Legg til deltakere..."
+                        newSelectionPrefix="Legg til "
                     />
                 ) : (
-                    <MDEditor.Markdown id="activity-description" source={activity?.description || ""} />
+                    <div>{getParticipants()}</div>
                 )}
-            </div>
+            </gn-field-container>
 
-            <gn-label block>
-                <label htmlFor="activity-implementationStart">Start</label>
-            </gn-label>
-            {editable ? (
-                <gn-input>
-                    <input
-                        id="activity-implementationStart"
-                        name="implementationStart"
-                        defaultValue={
-                            activity.implementationStart?.length
-                                ? formatInputDateValue(activity.implementationStart)
-                                : ""
-                        }
-                        type="date"
-                        onChange={(event) =>
-                            handleChange({ name: "implementationStart", value: event.target.value, type: "date" })
-                        }
-                    />
-                </gn-input>
-            ) : (
-                <DayJS format="MMMM YYYY" locale="nb">
-                    {activity.implementationStart}
-                </DayJS>
-            )}
-
-            <gn-label block>
-                <label htmlFor="activity-implementationEnd">{dispatch(translate("End"))}</label>
-            </gn-label>
-            {editable ? (
-                <gn-input>
-                    <input
-                        id="activity-implementationEnd"
-                        name="implementationEnd"
-                        defaultValue={
-                            activity.implementationEnd?.length ? formatInputDateValue(activity.implementationEnd) : ""
-                        }
-                        type="date"
-                        onChange={(event) =>
-                            handleChange({ name: "implementationEnd", value: event.target.value, type: "date" })
-                        }
-                    />
-                </gn-input>
-            ) : (
-                <DayJS format="MMMM YYYY" locale="nb">
-                    {activity.implementationEnd}
-                </DayJS>
-            )}
-
-            <gn-label block>
-                <label htmlFor="activity-status">Status</label>
-            </gn-label>
-            {editable ? (
-                <gn-select>
-                    <select name="status" defaultValue={activity.status || 1} onChange={handleChange}>
-                        {planStatuses.map((planStatus) => {
-                            return (
-                                <option key={planStatus.value} value={planStatus.value}>
-                                    {planStatus.label}
-                                </option>
-                            );
-                        })}
-                    </select>
-                </gn-select>
-            ) : (
-                <span id="activity-status">{getActivityStatusLabel(planStatuses, activity)}</span>
-            )}
-
-            <gn-label block>
-                <label htmlFor="activity-participants">{dispatch(translate("Participants"))}</label>
-            </gn-label>
-            {editable ? (
-                <Typeahead
-                    allowNew
-                    multiple
-                    id="basic-typeahead-multiple"
-                    labelKey="name"
-                    onChange={handleParticipantsChange}
-                    options={organizations}
-                    defaultSelected={activity.participants}
-                    placeholder="Legg til deltakere..."
-                    newSelectionPrefix="Legg til "
-                />
-            ) : (
-                <div>{getParticipants()}</div>
-            )}
             <div className={formsStyle.btngroup}>
                 {editable ? (
                     props.newActivity ? (

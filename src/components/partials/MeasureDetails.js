@@ -7,7 +7,7 @@ import ValidationErrors from "components/partials/ValidationErrors";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { GnButton, GnDialog, GnInput, HeadingText } from "@kartverket/geonorge-web-components";
+import { GnButton, GnDialog, GnFieldContainer, GnInput, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Models
 import { Measure } from "models/measure";
@@ -125,53 +125,68 @@ const MeasureDetails = (props) => {
                     <h2>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</h2>
                 </heading-text>
                 <ValidationErrors errors={validationErrors} />
-                <gn-label block>
-                    <label htmlFor="measure-no">Nummer</label>
-                </gn-label>
-                <gn-input block fullWidth>
-                    <input id="measure-no" type="number" name="no" defaultValue={measure.no} onChange={handleChange} />
-                </gn-input>
 
-                <gn-label block>
-                    <label htmlFor="measure-name">Navn</label>
-                </gn-label>
-                <gn-input block fullWidth>
-                    <input
-                        id="measure-name"
-                        type="text"
-                        name="name"
-                        defaultValue={measure.name}
-                        onChange={handleChange}
-                    />
-                </gn-input>
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-no">Nummer</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-no"
+                            type="number"
+                            name="no"
+                            defaultValue={measure.no}
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-                <gn-label block>
-                    <label htmlFor="measure-owner">Eier</label>
-                </gn-label>
-                <gn-input block fullWidth>
-                    <Typeahead
-                        id="measure-owner"
-                        labelKey="name"
-                        onChange={handleOwnerSelect}
-                        options={organizations}
-                        selected={selectedOwner}
-                        placeholder="Legg til eier..."
-                    />
-                </gn-input>
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-name">Navn</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-name"
+                            type="text"
+                            name="name"
+                            defaultValue={measure.name}
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-                <gn-label block>
-                    <label htmlFor="measure-infoUrl">Url</label>
-                </gn-label>
-                <gn-input block fullWidth>
-                    <input
-                        id="measure-infoUrl"
-                        type="text"
-                        name="infoUrl"
-                        defaultValue={measure.infoUrl}
-                        onChange={handleChange}
-                        placeholder="http://www.name.org"
-                    />
-                </gn-input>
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-owner">Eier</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <Typeahead
+                            id="measure-owner"
+                            labelKey="name"
+                            onChange={handleOwnerSelect}
+                            options={organizations}
+                            selected={selectedOwner}
+                            placeholder="Legg til eier..."
+                        />
+                    </gn-input>
+                </gn-field-container>
+
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-infoUrl">Url</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-infoUrl"
+                            type="text"
+                            name="infoUrl"
+                            defaultValue={measure.infoUrl}
+                            onChange={handleChange}
+                            placeholder="http://www.name.org"
+                        />
+                    </gn-input>
+                </gn-field-container>
 
                 <gn-button color="default">
                     <button onClick={() => closeDialog()}>Avbryt</button>
