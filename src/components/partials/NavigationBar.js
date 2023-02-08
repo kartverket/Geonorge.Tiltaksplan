@@ -65,13 +65,11 @@ const NavigationBar = (props) => {
     return (
         <Fragment>
             <Helmet htmlAttributes={{ lang: language }} />
-            <a href="#main-content" class="visually-hidden jump-to-main">
-                <span>Hopp til hovedinnhold</span>
-            </a>
             <main-navigation
                 language={language}
                 isLoggedIn={oidc.user ? true : false}
                 environment={environment}
+                maincontentid="main-content"
             ></main-navigation>
         </Fragment>
     );
