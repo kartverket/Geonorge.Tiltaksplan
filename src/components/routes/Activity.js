@@ -1,74 +1,56 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 // Components
-import Container from 'components/template/Container';
-import ActivityDetails from 'components/partials/ActivityDetails';
+import Container from "components/template/Container";
+import ActivityDetails from "components/partials/ActivityDetails";
+
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { HeadingText } from "@kartverket/geonorge-web-components";
 
 // Actions
-import { fetchMeasure } from 'actions/MeasuresActions';
-import { fetchActivity } from 'actions/ActivityActions';
+import { fetchMeasure } from "actions/MeasuresActions";
+import { fetchActivity } from "actions/ActivityActions";
+import { useParams } from "react-router";
 
-class Activity extends Component {
-   constructor(props) {
-      super(props);
+const Activity = (props) => {
+    // Redux store
+    const activity = useSelector((state) => state.activities.selectedActivity);
 
-      this.state = {
-         dataFetched: false
-      };
-   }
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
 
-   componentDidMount() {
-      const measureNumber = this.getMeasureNumber();
-      const activityNumber = this.getActivityNumber();
-      const promises = [this.props.fetchMeasure(measureNumber)];
+    // Params
+    const { measureNumber, activityNumber } = useParams();
 
-      if (activityNumber) {
-        promises.push(this.props.fetchActivity(measureNumber, activityNumber));
-      }
+    const dispatch = useDispatch();
 
-      Promise.all(promises)
-        .then(() => {
-          this.setState({ dataFetched: true });
+    useEffect(() => {
+        const promises = [dispatch(fetchMeasure(measureNumber))];
+
+        if (activityNumber) {
+            promises.push(dispatch(fetchActivity(measureNumber, activityNumber)));
+        }
+
+        Promise.all(promises).then(() => {
+            setDataFetched(true);
         });
-   }
+    }, [activityNumber, dispatch, measureNumber]);
 
-   getMeasureNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-         ? this.props.match.params.measureNumber
-         : null;
-   }
-
-   getActivityNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.activityNumber
-         ? this.props.match.params.activityNumber
-         : null;
-   }
-
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
-
-      return (
-         <Container>
-            <h1>{this.props.activity.name}</h1>
-            <ActivityDetails newActivity={!this.getActivityNumber()} />
-         </Container>
-      );
-   }
-}
-
-
-const mapStateToProps = (state) => ({
-   activity: state.activities.selectedActivity
-});
-
-const mapDispatchToProps = {
-   fetchMeasure,
-   fetchActivity
+    return (
+        dataFetched && (
+            <Container>
+                <div id="main-content">
+                    <heading-text>
+                        <h1 underline="true">{!!activityNumber ? activity.name : "Opprett aktivitet"}</h1>
+                    </heading-text>
+                    <ActivityDetails newActivity={!activityNumber} />
+                </div>
+            </Container>
+        )
+    );
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity);
+export default Activity;

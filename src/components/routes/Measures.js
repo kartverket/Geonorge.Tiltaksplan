@@ -1,26 +1,26 @@
 // Dependencies
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { saveAs } from "file-saver";
-import Button from "react-bootstrap/Button";
 // eslint-disable-next-line no-unused-vars
-import { BreadcrumbList } from '@kartverket/geonorge-web-components';
+import { BreadcrumbList, ContentContainer, GnButton, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Components
-import Container from "components/template/Container";
 import MeasureDetails from "components/partials/MeasureDetails";
 import MeasuresTable from "components/partials/MeasuresTable";
 import { translate } from "actions/ConfigActions";
 
-
 // Helpers
 import { convertMeasureReportsToCSV } from "helpers/csvHelpers";
+import { fetchMeasures } from "actions/MeasuresActions";
 
 const Measures = (props) => {
     const dispatch = useDispatch();
 
+    // State
+    const [measures, setMeasures] = useState();
+
     // Redux store
-    const measures = useSelector((state) => state.measures);
     const options = useSelector((state) => state.options);
 
     const saveCSVFileForMeasureReports = () => {
@@ -43,20 +43,34 @@ const Measures = (props) => {
             name: pageTitle,
             url: "/"
         }
-    ]
+    ];
+
+    const handleMeasureDetailsUpdate = () => {
+        dispatch(fetchMeasures()).then((response) => {
+            setMeasures(response.payload);
+        });
+    };
+
+    useEffect(() => {
+        dispatch(fetchMeasures()).then((response) => {
+            setMeasures(response.payload);
+        });
+    }, [dispatch]);
 
     return (
-        <Container>           
+        <content-container>
             <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
             <div id="main-content">
-            <h1>{pageTitle}</h1>
-            <MeasureDetails newMeasure />
-            <MeasuresTable measures={measures} />
-            <Button variant="secondary" onClick={() => saveCSVFileForMeasureReports()}>
-                Lagre som CSV
-            </Button>
+                <heading-text>
+                    <h1 underline="true">{pageTitle}</h1>
+                </heading-text>
+                <MeasureDetails newMeasure onUpdate={handleMeasureDetailsUpdate} />
+                {measures?.length && <MeasuresTable measures={measures} />}
+                <gn-button color="default">
+                    <button onClick={() => saveCSVFileForMeasureReports()}>Lagre som CSV</button>
+                </gn-button>
             </div>
-        </Container>
+        </content-container>
     );
 };
 

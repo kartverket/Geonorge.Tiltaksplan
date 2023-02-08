@@ -45,18 +45,7 @@
 :local(.block) {
   margin: 20px 0;
 }
-:local(.reporting) {
-  transition: all .3s ease-in-out;
-  overflow: hidden;
-  
-}
-:local(.reportClose) {
-  max-height: 0;
-}
-:local(.reportOpen) {
-  
-  max-height: 4000px;
-}
+
 :local(.btn) {
   border: none;
   background: none;
@@ -67,7 +56,7 @@
     cursor: pointer;
   }
 }
- :local [target="_blank"]:after {
+:local [target="_blank"]:after {
   content: "(Åpnes i nytt vindu)";
   position: absolute;
   width: 1px;
@@ -77,8 +66,7 @@
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
   border: 0;
-  
-  }  
-  :local(.icon) {
-    margin-left: 10px;
+}
+:local(.icon) {
+  margin-left: 10px;
 }

@@ -2,15 +2,14 @@
 import React, { Fragment, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 import DayJS from "react-dayjs";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
+// Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { BreadcrumbList } from "@kartverket/geonorge-web-components";
+import { BreadcrumbList, ContentContainer, GnAccordion, GnButton, GnDialog, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Components
-import Container from "components/template/Container";
 import MeasureDetails from "components/partials/MeasureDetails";
 import ReportDetails from "components/partials/ReportDetails";
 import ActivityTable from "components/partials/ActivityTable";
@@ -34,8 +33,7 @@ const Measure = (props) => {
 
     // State
     const [dataFetched, setDataFetched] = useState(false);
-    const [deleteMeasureModalOpen, setDeleteMeasureModalOpen] = useState(false);
-    const [open, setOpen] = useState(false);
+    const [deleteMeasureDialogOpen, setDeleteMeasureDialogOpen] = useState(false);
 
     // Redux store
     const measure = useSelector((state) => state.measures.selectedMeasure);
@@ -75,104 +73,105 @@ const Measure = (props) => {
             name: pageTitle,
             url: `/tiltak/${measureNumber}`
         }
-    ]
+    ];
 
+    const openDeleteMeasureDialog = () => {
+        setDeleteMeasureDialogOpen(false);
+        setTimeout(() => {
+            setDeleteMeasureDialogOpen(true);
+        });
+    };
+
+    const closeDeleteMeasureDialog = () => {
+        setDeleteMeasureDialogOpen(false);
+    };
+
+   
     return (
-        <Container>           
+        <content-container>
             <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
             {dataFetched && hasMeasure ? (
                 <Fragment>
                     <div id="main-content">
-                    <h1>
-                        {measure.no} - {measure.name}
-                    </h1>
-                    {measure.infoUrl ? <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">{dispatch(translate("infoLinkMeasure"))}</a> : ""} 
-                    <FontAwesomeIcon
-                        data-tip="Detaljert beskrivelse - aktiviteter"                                              
-                        icon="external-link-alt"
-                        className={style.icon}
-                        color="#3767c7"
-                        tabIndex="-1"                        
+                        <heading-text>
+                            <h1 underline="true">
+                                {measure.no} - {measure.name}
+                            </h1>
+                        </heading-text>
+                        {measure.infoUrl ? (
+                            <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">
+                                {dispatch(translate("infoLinkMeasure"))}
+                            </a>
+                        ) : (
+                            ""
+                        )}
+                        <FontAwesomeIcon
+                            data-tip="Detaljert beskrivelse - aktiviteter"
+                            icon="external-link-alt"
+                            className={style.icon}
+                            color="#3767c7"
+                            tabIndex="-1"
                         />
-                    <p>
-                        {dispatch(translate("OwnsBy"))} {measure.owner.name}
-                    </p>
-                    {canDeleteMeasure(authInfo) ? (
-                        <Button className="mr-2" variant="secondary" onClick={() => setDeleteMeasureModalOpen(true)}>
-                            Slett tiltaket
-                        </Button>
-                    ) : null}
-                    <MeasureDetails selectedMeasure={measure} />
-                    <button
-                        className={style.btn}
-                        aria-hidden={(!open)}
-                        onClick={() => {
-                            setOpen(!open);
-                        }}
-                    >
-                        {open ? `${dispatch(translate("ReportLinkClose"))}` : `${dispatch(translate("ReportLink"))}`}{" "}
-                        {<FontAwesomeIcon icon={open ? "minus-circle" : "plus-circle"} />}                        
-                    </button>
 
-                    <div className={`${style.reporting} ${open ? style.reportOpen : style.reportClose}`}>
-                        <h2>{dispatch(translate("progressReportTitle"))}</h2>
-                        <p>
-                            {dispatch(translate("lastUpdate"))}{" "}
-                            <DayJS format="DD.MM YYYY" locale="nb">
-                                {measure.lastUpdated}
-                            </DayJS>
+                        <p className="">
+                            {dispatch(translate("OwnsBy"))} {measure.owner.name}
                         </p>
-                        <ReportDetails />
-                    </div>
+                        {canDeleteMeasure(authInfo) ? (
+                            <gn-button color="default">
+                                <button onClick={() => openDeleteMeasureDialog()}>Slett tiltaket</button>
+                            </gn-button>
+                        ) : null}
 
-                    <h2>{dispatch(translate("MeasureActivitiesTitle"))}</h2>
-                    <ActivityTable activities={measure.activities} />
+                        <MeasureDetails selectedMeasure={measure} />
 
-                    {canAddActivity(authInfo, measure.owner) ? (
-                        <div className={style.block}>
-                            <Link to={`/tiltak/${measureNumber}/ny-aktivitet`}>
-                                <button className="btn btn-primary">{dispatch(translate("btnCreateActivity"))}</button>
-                            </Link>
-                        </div>
-                    ) : null}
+                        <gn-accordion title={dispatch(translate("progressReportTitle"))}>
+                            <p>
+                                {dispatch(translate("lastUpdate"))}{" "}
+                                <DayJS format="DD.MM YYYY" locale="nb">
+                                    {measure.lastUpdated}
+                                </DayJS>
+                            </p>
+                            <ReportDetails />
+                        </gn-accordion>
 
-                    <Modal
-                        show={deleteMeasureModalOpen}
-                        onHide={() => setDeleteMeasureModalOpen(false)}
-                        keyboard={false}
-                        animation={false}
-                        centered
-                        backdrop="static"
-                        aria-labelledby="form-dialog-title"
-                    >
-                        <Modal.Header closeButton>
-                            <Modal.Title>Slett tiltak</Modal.Title>
-                        </Modal.Header>
+                        <heading-text>
+                            <h2>{dispatch(translate("MeasureActivitiesTitle"))}</h2>
+                        </heading-text>
+                        <ActivityTable activities={measure.activities} />
 
-                        <Modal.Body>
+                        {canAddActivity(authInfo, measure.owner) ? (
+                            <div className={style.block}>
+                                <Link to={`/tiltak/${measureNumber}/ny-aktivitet`}>
+                                    <gn-button color="primary">
+                                        <button>{dispatch(translate("btnCreateActivity"))}</button>
+                                    </gn-button>
+                                </Link>
+                            </div>
+                        ) : null}
+
+                        <gn-dialog show={deleteMeasureDialogOpen}>
+                            <heading-text>
+                                <h2>Slett tiltak</h2>
+                            </heading-text>
                             <p>Er du sikker på at du vil slette {measure.name}?</p>
                             {measure.activities.length > 0
                                 ? "Du kan ikke slette da det er aktiviteter knyttet til tiltaket" + measure.name
                                 : ""}
-                        </Modal.Body>
-
-                        <Modal.Footer>
-                            <Button variant="secondary" onClick={() => setDeleteMeasureModalOpen(false)}>
-                                Avbryt
-                            </Button>
-                            <Button
-                                disabled={measure.activities.length > 0}
-                                variant="danger"
-                                onClick={handleDeleteMeasure}
-                            >
-                                Slett
-                            </Button>
-                        </Modal.Footer>
-                    </Modal>
-                    </div>  
+                            <div>
+                                <gn-button color="default">
+                                    <button onClick={() => closeDeleteMeasureDialog()}>Avbryt</button>
+                                </gn-button>
+                                <gn-button color="danger">
+                                    <button disabled={measure.activities.length > 0} onClick={handleDeleteMeasure}>
+                                        Slett
+                                    </button>
+                                </gn-button>
+                            </div>
+                        </gn-dialog>
+                    </div>
                 </Fragment>
             ) : null}
-        </Container>
+        </content-container>
     );
 };
 
