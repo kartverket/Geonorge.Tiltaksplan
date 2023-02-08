@@ -5,6 +5,7 @@ import DayJS from "react-dayjs";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
 import { Link, useNavigate, useParams } from "react-router-dom";
+import MDEditor from "@uiw/react-md-editor";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
@@ -28,7 +29,6 @@ import { formatInputDateValue } from "helpers/formatHelpers";
 
 // Stylesheets
 import formsStyle from "components/partials/forms.module.scss";
-import MDEditor from "@uiw/react-md-editor";
 
 const ActivityDetails = (props) => {
     const dispatch = useDispatch();

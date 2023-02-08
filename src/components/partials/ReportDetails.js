@@ -2,14 +2,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toastr } from "react-redux-toastr";
-import SimpleMDE from "react-simplemde-editor";
+import MDEditor from "@uiw/react-md-editor";
 import Button from "react-bootstrap/Button";
-import Form from "react-bootstrap/Form";
 import Modal from "react-bootstrap/Modal";
 import { fetchOrganizations } from "actions/OrganizationsActions";
-
-// Components
-import { SelectDropdown } from "components/custom-elements";
 
 import ValidationErrors from "components/partials/ValidationErrors";
 import ToggleHelpText from "components/template/ToggleHelpText";
@@ -27,11 +23,6 @@ import StarIcon from "gfx/icon-star.svg";
 
 // Stylesheets
 import formsStyle from "components/partials/forms.module.scss";
-
-const editableMdeOptions = {
-    toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"],
-    spellChecker: false
-};
 
 const ReportDetails = (props) => {
     const dispatch = useDispatch();
