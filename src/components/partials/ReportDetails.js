@@ -65,9 +65,7 @@ const ReportDetails = (props) => {
         setMeasure(measure);
     };
     const handleDelete = () => {
-        dispatch(
-            deleteMeasure(measure, user)
-        );
+        dispatch(deleteMeasure(measure, user));
     };
 
     const saveMeasure = () => {
@@ -114,28 +112,29 @@ const ReportDetails = (props) => {
                 <div className={formsStyle.block}>
                     <ValidationErrors errors={validationErrors} />
 
-                    <Form.Group controlId="formProgress">
+                    <gn-label block>
+                        <label htmlFor="measure-progress">Status</label>
+                    </gn-label>
+                    <div data-color-mode="light">
                         {editableReport ? (
-                            <React.Fragment>
-                                <label>
-                                    Status
-                                    <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                        <SimpleMDE
-                                            value={measure.progress || ""}
-                                            onChange={(value) => handleChange({ name: "progress", value })}
-                                            options={editableMdeOptions}
-                                            getMdeInstance={getMdeInstance}
-                                        />
-                                    </div>
-                                </label>
-                            </React.Fragment>
+                            <MDEditor
+                                id="measure-progress"
+                                preview="edit"
+                                height={200}
+                                name="description"
+                                value={measure?.progress || ""}
+                                onChange={(value) => {
+                                    handleChange({ name: "progress", value });
+                                }}
+                            />
                         ) : (
-                            <React.Fragment>{measure.progress || ""}</React.Fragment>
+                            <MDEditor.Markdown id="measure-progress" source={measure?.progress || ""} />
                         )}
-                    </Form.Group>
+                    </div>
+
                     <div className={`${editableReport ? "" : `${formsStyle.flex}`}`}>
                         <div>
-                            <gn-label>
+                            <gn-label block>
                                 <label htmlFor="measure-volume">
                                     {dispatch(translate("Volume"))}
                                     <ToggleHelpText resourceKey="VolumeDescription" />{" "}
@@ -169,7 +168,7 @@ const ReportDetails = (props) => {
                         </div>
 
                         <div>
-                            <gn-label>
+                            <gn-label block>
                                 <label htmlFor="measure-status">
                                     Status <ToggleHelpText resourceKey="StatusDescription" />
                                 </label>
@@ -199,7 +198,7 @@ const ReportDetails = (props) => {
                         </div>
 
                         <div>
-                            <gn-label>
+                            <gn-label block>
                                 <label htmlFor="measure-trafficLight">
                                     {dispatch(translate("TrafficLight"))}
                                     <ToggleHelpText resourceKey="TrafficlightDescription" />{" "}
@@ -230,7 +229,7 @@ const ReportDetails = (props) => {
                         </div>
 
                         <div>
-                            <gn-label>
+                            <gn-label block>
                                 <label htmlFor="measure-results">
                                     {dispatch(translate("Results"))} <ToggleHelpText resourceKey="ResultDescription" />
                                 </label>
@@ -261,7 +260,7 @@ const ReportDetails = (props) => {
                     </div>
 
                     <div>
-                        <gn-label>
+                        <gn-label block>
                             <label>
                                 {dispatch(translate("Comment"))}
                                 <ToggleHelpText resourceKey="CommentDescription" />
@@ -301,9 +300,7 @@ const ReportDetails = (props) => {
                                 {dispatch(translate("btnEditReport"))}
                             </button>
                         </gn-button>
-                    ) : (
-                        ""
-                    )}
+                    ) : null}
                 </div>
             )}
             {
