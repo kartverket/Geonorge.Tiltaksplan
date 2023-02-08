@@ -1,35 +1,41 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import style from 'components/template/ToggleHelpText.module.scss';
+import React, { Fragment, useState } from "react";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { useDispatch } from "react-redux";
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { translate } from 'actions/ConfigActions';
+// Actions
+import { translate } from "actions/ConfigActions";
 
+// Stylesheets
+import style from "components/template/ToggleHelpText.module.scss";
 
-class ToggleHelpText extends Component {
+const ToggleHelpText = (props) => {
+    const dispatch = useDispatch();
 
-    constructor(props) {
-        super(props);
-        this.state = {
-           open: false           
-        };
-     }
+    // State
+    const [expanded, setExpanded] = useState(false);
+    const [initialized, setInitialized] = useState(false);
 
+    const content = dispatch(translate(props.resourceKey));
 
-render() { 
-    return (
-    <React.Fragment>
-        <FontAwesomeIcon className={style.icon} icon="info-circle" color="#3767c7" onClick={() => { this.setState({ open: !this.state.open }) }}/>
-            <div className={`${style.openInfo} ${this.state.open ? style.open : style.close}`}>
-                {this.props.translate(this.props.resourceKey)}
+    return content ? (
+        <Fragment>
+            <FontAwesomeIcon
+                className={`${style.toggleIcon} ${expanded ? style.expanded : ""}`}
+                icon="info-circle"
+                color="#007bff"
+                onClick={() => {
+                    setExpanded(!expanded);
+                    setInitialized(true);
+                }}
+            />
+            <div
+                className={`${style.content} ${initialized ? style.initialized : ""} ${expanded ? style.expanded : ""}`}
+            >
+                <div>{content}</div>
             </div>
-        </React.Fragment>
-        );
-    }
-}
-const mapDispatchToProps = {
-    translate
- };
- 
- export default connect(null, mapDispatchToProps)(ToggleHelpText);
+        </Fragment>
+    ) : null;
+};
+
+export default ToggleHelpText;
