@@ -1,12 +1,13 @@
 // Dependencies
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
-import Form from "react-bootstrap/Form";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
 import ValidationErrors from "components/partials/ValidationErrors";
+
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { GnButton, GnDialog, GnInput, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Models
 import { Measure } from "models/measure";
@@ -26,10 +27,10 @@ const MeasureDetails = (props) => {
 
     // State
     const [dataFetched, setDataFetched] = useState(false);
-    const [modalOpen, setModalOpen] = useState(false);
     const [measure, setMeasure] = useState(props.newMeasure ? new Measure() : props.selectedMeasure);
     const [selectedOwner, setSelectedOwner] = useState(props.newMeasure ? [] : [props.selectedMeasure.owner]);
     const [validationErrors, setValidationErrors] = useState([]);
+    const [dialogOpen, setDialogOpen] = useState([false]);
 
     // Redux store
     const organizations = useSelector((state) => state.organizations);
@@ -43,7 +44,18 @@ const MeasureDetails = (props) => {
     }, [dispatch]);
 
     const handleOwnerSelect = (data) => {
-        setSelectedOwner(data);
+        if (data) {
+            setSelectedOwner(data);
+            if (data[0]?.id) {
+                setMeasure({
+                    ...measure,
+                    owner: {
+                        ...measure.owner,
+                        id: data[0].id
+                    }
+                });
+            }
+        }
     };
 
     const handleChange = (data) => {
@@ -54,22 +66,13 @@ const MeasureDetails = (props) => {
     };
 
     const saveMeasure = () => {
-        if (selectedOwner?.length) {
-            setMeasure({
-                ...measure,
-                owner: {
-                    ...measure.owner,
-                    id: selectedOwner[0].id
-                }
-            });
-        }
-
         props.newMeasure
             ? dispatch(createMeasure(measure, user))
                   .then(() => {
-                      setModalOpen(false);
+                      closeDialog();
                       setValidationErrors([]);
                       toastr.success("Et nytt tiltak ble lagt til");
+                      props.onUpdate();
                   })
                   .catch(({ response }) => {
                       toastr.error("Kunne ikke opprette tiltak");
@@ -77,9 +80,10 @@ const MeasureDetails = (props) => {
                   })
             : dispatch(updateMeasure(measure, user))
                   .then(() => {
-                      setModalOpen(false);
+                      closeDialog(false);
                       setValidationErrors([]);
                       toastr.success("Tiltaket ble oppdatert");
+                      props.onUpdate();
                   })
                   .catch(({ response }) => {
                       toastr.error("Kunne ikke oppdatere tiltak");
@@ -99,66 +103,83 @@ const MeasureDetails = (props) => {
         return "";
     }
 
+    const openDialog = () => {
+        setDialogOpen(false);
+        setTimeout(() => {
+            setDialogOpen(true);
+        });
+    };
+
+    const closeDialog = () => {
+        setDialogOpen(false);
+    };
+
     return showAddMeasureContent() || showEditMeasureContent() ? (
         <React.Fragment>
-            <Button variant="primary" className="marginB-20" onClick={() => setModalOpen(true)}>
-                {props.newMeasure ? "Opprett tiltak" : "Rediger tiltak"}
-            </Button>
-            <Modal
-                show={modalOpen}
-                onHide={() => setModalOpen(false)}
-                backdrop="static"
-                centered
-                keyboard={false}
-                animation={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <ValidationErrors errors={validationErrors} />
+            <gn-button color="primary">
+                <button onClick={() => openDialog()}>{props.newMeasure ? "Opprett tiltak" : "Rediger tiltak"}</button>
+            </gn-button>
 
-                    <Form.Group controlId="formNo">
-                        <Form.Label>Nummer</Form.Label>
-                        <Form.Control type="number" name="no" defaultValue={measure.no} onChange={handleChange} />
-                    </Form.Group>
+            <gn-dialog show={dialogOpen}>
+                <heading-text>
+                    <h2>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</h2>
+                </heading-text>
+                <ValidationErrors errors={validationErrors} />
+                <gn-label block>
+                    <label htmlFor="measure-no">Nummer</label>
+                </gn-label>
+                <gn-input block fullWidth>
+                    <input id="measure-no" type="number" name="no" defaultValue={measure.no} onChange={handleChange} />
+                </gn-input>
 
-                    <Form.Group controlId="formName">
-                        <Form.Label>Navn</Form.Label>
-                        <Form.Control type="text" name="name" defaultValue={measure.name} onChange={handleChange} />
-                    </Form.Group>
+                <gn-label block>
+                    <label htmlFor="measure-name">Navn</label>
+                </gn-label>
+                <gn-input block fullWidth>
+                    <input
+                        id="measure-name"
+                        type="text"
+                        name="name"
+                        defaultValue={measure.name}
+                        onChange={handleChange}
+                    />
+                </gn-input>
 
-                    <Form.Group controlId="formName">
-                        <Form.Label>Eier</Form.Label>
-                        <Typeahead
-                            id="basic-typeahead-single"
-                            labelKey="name"
-                            onChange={handleOwnerSelect}
-                            options={organizations}
-                            selected={selectedOwner}
-                            placeholder="Legg til eier..."
-                        />
-                    </Form.Group>
-                    <Form.Group controlId="formInfoUrl">
-                        <Form.Label>Url</Form.Label>
-                        <Form.Control
-                            type="text"
-                            name="infoUrl"
-                            defaultValue={measure.infoUrl}
-                            onChange={handleChange}
-                            placeholder="http://www.name.org"
-                        />
-                    </Form.Group>
-                </Modal.Body>
-                <Modal.Footer>
-                    <Button variant="secondary" onClick={() => setModalOpen(false)}>
-                        Avbryt
-                    </Button>
-                    <Button variant="primary" onClick={saveMeasure}>
-                        Lagre
-                    </Button>
-                </Modal.Footer>
-            </Modal>
+                <gn-label block>
+                    <label htmlFor="measure-owner">Eier</label>
+                </gn-label>
+                <gn-input block fullWidth>
+                    <Typeahead
+                        id="measure-owner"
+                        labelKey="name"
+                        onChange={handleOwnerSelect}
+                        options={organizations}
+                        selected={selectedOwner}
+                        placeholder="Legg til eier..."
+                    />
+                </gn-input>
+
+                <gn-label block>
+                    <label htmlFor="measure-infoUrl">Url</label>
+                </gn-label>
+                <gn-input block fullWidth>
+                    <input
+                        id="measure-infoUrl"
+                        type="text"
+                        name="infoUrl"
+                        defaultValue={measure.infoUrl}
+                        onChange={handleChange}
+                        placeholder="http://www.name.org"
+                    />
+                </gn-input>
+
+                <gn-button color="default">
+                    <button onClick={() => closeDialog()}>Avbryt</button>
+                </gn-button>
+                <gn-button color="primary">
+                    <button onClick={saveMeasure}>Lagre</button>
+                </gn-button>
+            </gn-dialog>
         </React.Fragment>
     ) : null;
 };
