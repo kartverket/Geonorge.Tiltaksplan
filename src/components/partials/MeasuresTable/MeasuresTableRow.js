@@ -16,7 +16,7 @@ const MeasuresTableRow = (props) => {
     const dispatch = useDispatch();
 
     const getMeasureStatusLabel = (planStatuses, measure) => {
-        return planStatuses.find((status) => measure.status === status.value).label;
+        return planStatuses?.length ? planStatuses.find((status) => measure.status === status.value)?.label : '';
     };
 
     const formatDate = (date) => {
