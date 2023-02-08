@@ -1,19 +1,19 @@
 // Dependencies
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-
-// Components
-import Container from "components/template/Container";
-import ActivityDetails from "components/partials/ActivityDetails";
+import { useParams } from "react-router";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { HeadingText } from "@kartverket/geonorge-web-components";
+import { BreadcrumbList, ContentContainer, HeadingText } from "@kartverket/geonorge-web-components";
+
+// Components
+import ActivityDetails from "components/partials/ActivityDetails";
 
 // Actions
 import { fetchMeasure } from "actions/MeasuresActions";
 import { fetchActivity } from "actions/ActivityActions";
-import { useParams } from "react-router";
+import { translate } from "actions/ConfigActions";
 
 const Activity = (props) => {
     // Redux store
@@ -39,16 +39,40 @@ const Activity = (props) => {
         });
     }, [activityNumber, dispatch, measureNumber]);
 
+    const measureActivitiesTitle = dispatch(translate("MeasureActivitiesTitle"));
+    const measureTitle = dispatch(translate("infoLinkMeasure"));
+    const pageTitle = !!activityNumber ? activity.name : "Opprett aktivitet";
+    const pageUrl = !!activityNumber ? `/tiltak/${measureNumber}/aktivitet/${activityNumber}` : `/tiltak/${measureNumber}/ny-aktivitet`;
+    const breadcrumbs = [
+        {
+            name: "Geonorge",
+            url: "@AppSettings.UrlGeonorgeRoot"
+        },
+        {
+            name: measureActivitiesTitle,
+            url: "/"
+        },
+        {
+            name: measureTitle,
+            url: `/tiltak/${measureNumber}`
+        },
+        {
+            name: pageTitle,
+            url: pageUrl
+        }
+    ];
+
     return (
         dataFetched && (
-            <Container>
+            <content-container>
+                <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
                 <div id="main-content">
                     <heading-text>
-                        <h1 underline="true">{!!activityNumber ? activity.name : "Opprett aktivitet"}</h1>
+                        <h1 underline="true">{pageTitle}</h1>
                     </heading-text>
                     <ActivityDetails newActivity={!activityNumber} />
                 </div>
-            </Container>
+            </content-container>
         )
     );
 };
