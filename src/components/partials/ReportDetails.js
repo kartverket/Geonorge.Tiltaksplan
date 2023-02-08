@@ -33,7 +33,6 @@ const editableMdeOptions = {
     spellChecker: false
 };
 
-
 const ReportDetails = (props) => {
     const dispatch = useDispatch();
 
@@ -127,80 +126,111 @@ const ReportDetails = (props) => {
                     <ValidationErrors errors={validationErrors} />
 
                     <Form.Group controlId="formProgress">
-                       
-                        {editableReport ? ( 
+                        {editableReport ? (
                             <React.Fragment>
-                               <label>Status
-                                <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                    <SimpleMDE
-                                        value={measure.progress || ""}
-                                        onChange={(value) => handleChange({ name: "progress", value })}
-                                        options={editableMdeOptions}
-                                        getMdeInstance={getMdeInstance}
-                                    />
-                                </div></label>
+                                <label>
+                                    Status
+                                    <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
+                                        <SimpleMDE
+                                            value={measure.progress || ""}
+                                            onChange={(value) => handleChange({ name: "progress", value })}
+                                            options={editableMdeOptions}
+                                            getMdeInstance={getMdeInstance}
+                                        />
+                                    </div>
+                                </label>
                             </React.Fragment>
                         ) : (
-                            <React.Fragment>
-                                {measure.progress || ""}
-                            </React.Fragment>
+                            <React.Fragment>{measure.progress || ""}</React.Fragment>
                         )}
                     </Form.Group>
                     <div className={`${editableReport ? "" : `${formsStyle.flex}`}`}>
-                        <Form.Group controlId="formVolume">
-                            <Form.Label>
-                                {dispatch(translate("Volume"))}
-                                <ToggleHelpText resourceKey="VolumeDescription" />{" "}
-                            </Form.Label>
+                        <div>
+                            <gn-label>
+                                <label htmlFor="measure-volume">
+                                    {dispatch(translate("Volume"))}
+                                    <ToggleHelpText resourceKey="VolumeDescription" />{" "}
+                                </label>
+                            </gn-label>
                             {editableReport ? (
-                                <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
+                                <gn-select>
+                                    <select
+                                        id="measure-volume"
                                         name="volume"
                                         value={measure.volume || 0}
-                                        options={measureVolume}
-                                        onSelect={handleChange}
-                                        className={formsStyle.defaultSelect}
-                                    />
-                                </div>
+                                        onSelect={(event) =>
+                                            handleChange({ name: "volume", value: event?.target?.value })
+                                        }
+                                    >
+                                        {measureVolume.map((measureVolumeOption) => {
+                                            return (
+                                                <option
+                                                    key={measureVolumeOption.value}
+                                                    value={measureVolumeOption.value}
+                                                >
+                                                    {measureVolumeOption.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
                             ) : (
                                 <span>{renderStars(measure.volume || 0)}</span>
                             )}
-                        </Form.Group>
+                        </div>
 
-                        <Form.Group controlId="formStatus">
-                            <Form.Label>
-                                Status <ToggleHelpText resourceKey="StatusDescription" />
-                            </Form.Label>
+                        <div>
+                            <gn-label>
+                                <label htmlFor="measure-status">
+                                    Status <ToggleHelpText resourceKey="StatusDescription" />
+                                </label>
+                            </gn-label>
                             {editableReport ? (
-                                <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
+                                <gn-select>
+                                    <select
+                                        id="measure-status"
                                         name="status"
-                                        value={measure.status || 1}
-                                        options={planStatuses}
-                                        onSelect={handleChange}
-                                        className={formsStyle.defaultSelect}
-                                    />
-                                </div>
+                                        defaultValue={measure.status || 1}
+                                        onSelect={(event) =>
+                                            handleChange({ name: "status", value: event?.target?.value })
+                                        }
+                                    >
+                                        {planStatuses.map((planStatus) => {
+                                            return (
+                                                <option key={planStatus.value} value={planStatus.value}>
+                                                    {planStatus.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
                             ) : (
                                 <span>{getMeasureStatusLabel(planStatuses, measure)}</span>
                             )}
-                        </Form.Group>
+                        </div>
 
-                        <Form.Group controlId="formTrafficLight">
-                            <Form.Label>
-                                {dispatch(translate("TrafficLight"))}
-                                <ToggleHelpText resourceKey="TrafficlightDescription" />{" "}
-                            </Form.Label>
+                        <div>
+                            <gn-label>
+                                <label htmlFor="measure-trafficLight">
+                                    {dispatch(translate("TrafficLight"))}
+                                    <ToggleHelpText resourceKey="TrafficlightDescription" />{" "}
+                                </label>
+                            </gn-label>
                             {editableReport ? (
-                                <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
+                                <gn-select>
+                                    <select
+                                        id="measure-trafficLight"
                                         name="trafficLight"
-                                        value={measure.trafficLight || 1}
-                                        options={trafficLights}
-                                        onSelect={handleChange}
-                                        className={formsStyle.trafficLightSelect}
-                                    />
-                                </div>
+                                        defaultValue={measure.trafficLight || 1}
+                                        onSelect={(event) =>
+                                            handleChange({ name: "trafficLight", value: event?.target?.value })
+                                        }
+                                    >
+                                        {trafficLights.map((trafficLight) => {
+                                            return <option value={trafficLight.value}>{trafficLight.label}</option>;
+                                        })}
+                                    </select>
+                                </gn-select>
                             ) : (
                                 <span
                                     className={`${formsStyle.trafficLight} ${
@@ -208,70 +238,80 @@ const ReportDetails = (props) => {
                                     }`}
                                 ></span>
                             )}
-                        </Form.Group>
+                        </div>
 
-                        <Form.Group controlId="formResults">
-                            <Form.Label>
-                                {dispatch(translate("Results"))} <ToggleHelpText resourceKey="ResultDescription" />
-                            </Form.Label>
-
+                        <div>
+                            <gn-label>
+                                <label htmlFor="measure-results">
+                                    {dispatch(translate("Results"))} <ToggleHelpText resourceKey="ResultDescription" />
+                                </label>
+                            </gn-label>
                             {editableReport ? (
-                                <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
+                                <gn-select>
+                                    <select
+                                        id="measure-results"
                                         name="results"
-                                        value={measure.results || 1}
-                                        options={measureResults}
-                                        onSelect={handleChange}
-                                        className={formsStyle.defaultSelect}
-                                    />
-                                </div>
+                                        defaultValue={measure.results || 1}
+                                        onSelect={(event) =>
+                                            handleChange({ name: "results", value: event?.target?.value })
+                                        }
+                                    >
+                                        {measureResults.map((measureResult) => {
+                                            return (
+                                                <option key={measureResult.value} value={measureResult.value}>
+                                                    {measureResult.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
                             ) : (
                                 <span>{renderStars(measure.results || 0)}</span>
                             )}
-                        </Form.Group>
+                        </div>
                     </div>
-                    <Form.Group controlId="formComments">
-                        <Form.Label>
-                            {dispatch(translate("Comment"))}
-                            <ToggleHelpText resourceKey="CommentDescription" />
-                        </Form.Label>
+
+                    <div>
+                        <gn-label>
+                            <label>
+                                {dispatch(translate("Comment"))}
+                                <ToggleHelpText resourceKey="CommentDescription" />
+                            </label>
+                        </gn-label>
                         {editableReport ? (
-                            <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                <Form.Control
-                                    as="textarea"
+                            <gn-textarea block fullWidth>
+                                <textarea
                                     name="comment"
-                                    value={measure.comment || ""}
+                                    defaultValue={measure.comment || ""}
                                     onChange={handleChange}
-                                    rows={3}
+                                    rows={4}
                                 />
-                            </div>
+                            </gn-textarea>
                         ) : (
                             <span>{measure.comment}</span>
                         )}
-                    </Form.Group>
+                    </div>
                 </div>
             </div>
             {editableReport ? (
-                <div>
-                    {canEditReport(authInfo, selectedMeasure.owner) ? (
-                        <React.Fragment>
-                            <Button className="mr-2" variant="secondary" onClick={() => setEditableReport(false)}>
-                                Avslutt redigering
-                            </Button>
-                            <Button variant="primary" onClick={saveMeasure}>
-                                {dispatch(translate("btnSave"))}
-                            </Button>
-                        </React.Fragment>
-                    ) : (
-                        ""
-                    )}
-                </div>
+                canEditReport(authInfo, selectedMeasure.owner) ? (
+                    <div>
+                        <gn-button color="default">
+                            <button onClick={() => setEditableReport(false)}>Avslutt redigering</button>
+                        </gn-button>
+                        <gn-button color="primary">
+                            <button onClick={saveMeasure}>{dispatch(translate("btnSave"))}</button>
+                        </gn-button>
+                    </div>
+                ) : null
             ) : (
                 <div>
                     {canEditReport(authInfo, selectedMeasure.owner) ? (
-                        <Button variant="primary" onClick={() => setEditableReport(true)}>
-                            {dispatch(translate("btnEditReport"))}
-                        </Button>
+                        <gn-button color="primary">
+                            <button onClick={() => setEditableReport(true)}>
+                                {dispatch(translate("btnEditReport"))}
+                            </button>
+                        </gn-button>
                     ) : (
                         ""
                     )}
