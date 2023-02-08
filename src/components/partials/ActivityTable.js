@@ -1,6 +1,8 @@
 // Dependencies
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
+
+// Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
 import { GnTable } from "@kartverket/geonorge-web-components/GnTable";
 
