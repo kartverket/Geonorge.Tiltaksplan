@@ -53,14 +53,11 @@ const App = (props) => {
         storePromise.then((storeConfig) => {
             store = storeConfig;
             store.dispatch(updateConfig(props.config));
-
-            if (!userManagerIsLoaded) {
-                setUserManagerIsLoaded(true);
-            }
+            setStoreIsLoaded(true);
         });
         userManagerPromise.then((userManagerConfig) => {
             userManager = userManagerConfig;
-            setStoreIsLoaded(true);
+            setUserManagerIsLoaded(true);
         });
     }, [props.config, userManagerIsLoaded]);
 
