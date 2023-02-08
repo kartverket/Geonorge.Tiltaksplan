@@ -3,8 +3,6 @@ import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toastr } from "react-redux-toastr";
 import MDEditor from "@uiw/react-md-editor";
-import Button from "react-bootstrap/Button";
-import Modal from "react-bootstrap/Modal";
 
 // Geonorge WebComponents
 /* eslint-disable */
@@ -54,7 +52,6 @@ const ReportDetails = (props) => {
     const [editableReport, setEditableReport] = useState(false);
     const [validationErrors, setValidationErrors] = useState(false);
     const [measure, setMeasure] = useState(selectedMeasure);
-    const [modalOpen, setModalOpen] = useState(false);
 
     useEffect(() => {
         Promise.all([dispatch(fetchOrganizations()), dispatch(fetchOptions())]).then(() => {
@@ -76,9 +73,6 @@ const ReportDetails = (props) => {
         measure[name] = newValue;
 
         setMeasure(measure);
-    };
-    const handleDelete = () => {
-        dispatch(deleteMeasure(measure, user));
     };
 
     const saveMeasure = () => {
@@ -305,37 +299,6 @@ const ReportDetails = (props) => {
                     ) : null}
                 </div>
             )}
-            {
-                <Modal
-                    show={modalOpen}
-                    onHide={() => setModalOpen(false)}
-                    keyboard={false}
-                    animation={false}
-                    centered
-                    backdrop="static"
-                    aria-labelledby="form-dialog-title"
-                >
-                    <Modal.Header closeButton>
-                        <Modal.Title>{dispatch(translate("btnDelete"))}</Modal.Title>
-                    </Modal.Header>
-
-                    <Modal.Body>
-                        <p>Er du sikker på at du vil slette {measure.name}?</p>
-                        {measure.activities.length > 0
-                            ? "Du kan ikke slette da det er aktiviteter knyttet til tiltaket" + measure.name
-                            : ""}
-                    </Modal.Body>
-
-                    <Modal.Footer>
-                        <Button variant="secondary" onClick={() => setModalOpen(false)}>
-                            Avbryt
-                        </Button>
-                        <Button disabled={measure.activities.length > 0} variant="danger" onClick={handleDelete}>
-                            Slett
-                        </Button>
-                    </Modal.Footer>
-                </Modal>
-            }
         </React.Fragment>
     );
 };
