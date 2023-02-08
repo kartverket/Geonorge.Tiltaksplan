@@ -1,8 +1,6 @@
 // Dependencies
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { registerLocale } from "react-datepicker";
-import nb from "date-fns/locale/nb";
 import DayJS from "react-dayjs";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
@@ -31,8 +29,6 @@ import { formatInputDateValue } from "helpers/formatHelpers";
 // Stylesheets
 import formsStyle from "components/partials/forms.module.scss";
 import MDEditor from "@uiw/react-md-editor";
-
-registerLocale("nb", nb);
 
 const ActivityDetails = (props) => {
     const dispatch = useDispatch();

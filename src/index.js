@@ -7,8 +7,6 @@ import "extensions";
 import "index.scss";
 import "dayjs/locale/nb";
 import dayjs from "dayjs";
-import "react-datepicker/dist/react-datepicker.css";
-import "style/react-datepicker-override.scss";
 
 dayjs.locale("nb");
 
