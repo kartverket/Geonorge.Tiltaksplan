@@ -84,7 +84,6 @@ const ActivityDetails = (props) => {
     };
 
     const handleParticipantsChange = (participants) => {
-        console.log({ participants });
         if (!participants.length) {
             return;
         }

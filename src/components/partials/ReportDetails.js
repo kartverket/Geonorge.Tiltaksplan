@@ -75,9 +75,7 @@ const ReportDetails = (props) => {
     };
     const handleDelete = () => {
         dispatch(
-            deleteMeasure(measure, user).then(() => {
-                console.log("har vi ikke slett??");
-            })
+            deleteMeasure(measure, user)
         );
     };
 
