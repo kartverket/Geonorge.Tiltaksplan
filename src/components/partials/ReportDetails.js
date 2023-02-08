@@ -84,18 +84,6 @@ const ReportDetails = (props) => {
         return planStatuses.find((status) => measure.status === status.value).label;
     };
 
-    const getMdeInstance = (instance) => {
-        const container = instance?.element?.nextSibling;
-        container.setAttribute("tabIndex", "0");
-        if (!editableReport) {
-            const editableElement = container.getElementsByClassName("CodeMirror-scroll")?.[0];
-            editableElement.style.display = "none";
-            instance.togglePreview();
-            instance.codemirror.options.readOnly = true;
-            container.classList.add(formsStyle.mdePreview);
-        }
-    };
-
     const renderStars = (amount) => {
         return [...Array(amount).keys()].map((nr) => (
             <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />
