@@ -23,7 +23,7 @@ import ToggleHelpText from "components/template/ToggleHelpText";
 // Actions
 import { fetchOptions } from "actions/OptionsActions";
 import { translate } from "actions/ConfigActions";
-import { deleteMeasure, updateMeasure } from "actions/MeasuresActions";
+import { updateMeasure } from "actions/MeasuresActions";
 import { fetchOrganizations } from "actions/OrganizationsActions";
 
 // Helpers
@@ -38,7 +38,7 @@ import formsStyle from "components/partials/forms.module.scss";
 const ReportDetails = (props) => {
     const dispatch = useDispatch();
 
-    //Redux store
+    // Redux store
     const user = useSelector((state) => state.oidc.user);
     const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
     const measureVolume = useSelector((state) => state.options.measureVolume);
@@ -47,7 +47,7 @@ const ReportDetails = (props) => {
     const planStatuses = useSelector((state) => state.options.planStatuses);
     const authInfo = useSelector((state) => state.authInfo);
 
-    //Params
+    // State
     const [dataFetched, setDataFetched] = useState(false);
     const [editableReport, setEditableReport] = useState(false);
     const [validationErrors, setValidationErrors] = useState(false);
