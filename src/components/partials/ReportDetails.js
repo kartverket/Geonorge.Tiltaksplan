@@ -265,7 +265,7 @@ const ReportDetails = (props) => {
                             </label>
                         </gn-label>
                         {editableReport ? (
-                            <gn-textarea block fullWidth>
+                            <gn-textarea block fullWidth resize="vertical">
                                 <textarea
                                     name="comment"
                                     defaultValue={measure.comment || ""}
