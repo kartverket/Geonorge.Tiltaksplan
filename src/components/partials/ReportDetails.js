@@ -52,6 +52,7 @@ const ReportDetails = (props) => {
     const [editableReport, setEditableReport] = useState(false);
     const [validationErrors, setValidationErrors] = useState(false);
     const [measure, setMeasure] = useState(selectedMeasure);
+    const [measureProgressMarkdown, setMeasureProgressMarkdown] = useState(selectedMeasure?.progress);
 
     useEffect(() => {
         Promise.all([dispatch(fetchOrganizations()), dispatch(fetchOptions())]).then(() => {
@@ -117,13 +118,14 @@ const ReportDetails = (props) => {
                                     preview="edit"
                                     height={200}
                                     name="description"
-                                    value={measure?.progress || ""}
+                                    value={measureProgressMarkdown || ""}
                                     onChange={(value) => {
                                         handleChange({ name: "progress", value });
+                                        setMeasureProgressMarkdown(value);
                                     }}
                                 />
                             ) : (
-                                <MDEditor.Markdown id="measure-progress" source={measure?.progress || ""} />
+                                <MDEditor.Markdown id="measure-progress" source={measureProgressMarkdown || ""} />
                             )}
                         </div>
                     </gn-field-container>
@@ -141,8 +143,8 @@ const ReportDetails = (props) => {
                                     <select
                                         id="measure-volume"
                                         name="volume"
-                                        value={measure.volume || 0}
-                                        onSelect={(event) =>
+                                        defaultValue={measure.volume || 0}
+                                        onChange={(event) =>
                                             handleChange({ name: "volume", value: event?.target?.value })
                                         }
                                     >
@@ -175,7 +177,7 @@ const ReportDetails = (props) => {
                                         id="measure-status"
                                         name="status"
                                         defaultValue={measure.status || 1}
-                                        onSelect={(event) =>
+                                        onChange={(event) =>
                                             handleChange({ name: "status", value: event?.target?.value })
                                         }
                                     >
@@ -206,12 +208,12 @@ const ReportDetails = (props) => {
                                         id="measure-trafficLight"
                                         name="trafficLight"
                                         defaultValue={measure.trafficLight || 1}
-                                        onSelect={(event) =>
+                                        onChange={(event) =>
                                             handleChange({ name: "trafficLight", value: event?.target?.value })
                                         }
                                     >
                                         {trafficLights.map((trafficLight) => {
-                                            return <option value={trafficLight.value}>{trafficLight.label}</option>;
+                                            return <option key={trafficLight.value} value={trafficLight.value}>{trafficLight.label}</option>;
                                         })}
                                     </select>
                                 </gn-select>
@@ -236,7 +238,7 @@ const ReportDetails = (props) => {
                                         id="measure-results"
                                         name="results"
                                         defaultValue={measure.results || 1}
-                                        onSelect={(event) =>
+                                        onChange={(event) =>
                                             handleChange({ name: "results", value: event?.target?.value })
                                         }
                                     >
