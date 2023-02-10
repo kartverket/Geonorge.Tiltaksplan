@@ -44,6 +44,8 @@ const ActivityDetails = (props) => {
 
     // Redux store
     const selectedMeasure = useSelector((state) => state.options.selectedMeasure);
+    const authInfo = useSelector((state) => state.authInfo);
+    const selectedActivity = useSelector((state) => state.activities.selectedActivity);
     const user = useSelector((state) => state.oidc.user);
     const planStatuses = useSelector((state) => state.options.planStatuses);
     const organizations = useSelector((state) =>
@@ -54,20 +56,19 @@ const ActivityDetails = (props) => {
             };
         })
     );
-    const authInfo = useSelector((state) => state.authInfo);
-    const selectedActivity = useSelector((state) => state.activities.selectedActivity);
-
-    // Params
-    const { measureNumber } = useParams();
 
     // State
     const [activity, setActivity] = useState(
         props.newActivity ? new Activity({ measureId: selectedMeasure?.id }) : selectedActivity
     );
+    const [activityDescriptionMarkdown, setActivityDescriptionMarkdown] = useState(activity?.description || "");
     const [editable, setEditable] = useState(props.location?.state?.editable || props.newActivity ? true : false);
     const [dataFetched, setDataFetched] = useState(false);
     const [dialogOpen, setDialogOpen] = useState([false]);
     const [validationErrors, setValidationErrors] = useState(false);
+
+    // Params
+    const { measureNumber } = useParams();
 
     useEffect(() => {
         Promise.all([dispatch(fetchOrganizations()), dispatch(fetchOptions())]).then(() => {
@@ -203,7 +204,7 @@ const ActivityDetails = (props) => {
                         />
                     </gn-input>
                 ) : (
-                    <div>{activity.name}</div>
+                    <div>{activity.no}</div>
                 )}
             </gn-field-container>
 
@@ -231,13 +232,14 @@ const ActivityDetails = (props) => {
                             preview="edit"
                             height={200}
                             name="description"
-                            value={activity?.description || ""}
+                            value={activityDescriptionMarkdown || ""}
                             onChange={(value) => {
                                 handleChange({ name: "description", value });
+                                setActivityDescriptionMarkdown(value);
                             }}
                         />
                     ) : (
-                        <MDEditor.Markdown id="activity-description" source={activity?.description || ""} />
+                        <MDEditor.Markdown id="activity-description" source={activityDescriptionMarkdown || ""} />
                     )}
                 </div>
             </gn-field-container>
@@ -322,17 +324,19 @@ const ActivityDetails = (props) => {
                     <label htmlFor="activity-participants">{dispatch(translate("Participants"))}</label>
                 </gn-label>
                 {editable ? (
-                    <Typeahead
-                        allowNew
-                        multiple
-                        id="basic-typeahead-multiple"
-                        labelKey="name"
-                        onChange={handleParticipantsChange}
-                        options={organizations}
-                        defaultSelected={activity.participants}
-                        placeholder="Legg til deltakere..."
-                        newSelectionPrefix="Legg til "
-                    />
+                    <gn-input block fullwidth>
+                        <Typeahead
+                            allowNew
+                            multiple
+                            id="activity-participants"
+                            labelKey="name"
+                            onChange={handleParticipantsChange}
+                            options={organizations}
+                            defaultSelected={activity.participants}
+                            placeholder="Legg til deltakere..."
+                            newSelectionPrefix="Legg til "
+                        />
+                    </gn-input>
                 ) : (
                     <div>{getParticipants()}</div>
                 )}
