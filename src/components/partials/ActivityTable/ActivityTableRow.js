@@ -1,106 +1,68 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import PropTypes from 'prop-types';
-import DayJS from 'react-dayjs';
-import { withRouter } from 'react-router-dom'
-import showdown from 'showdown';
-import { translate } from 'actions/ConfigActions';
+import React from "react";
+import { useDispatch } from "react-redux";
+import DayJS from "react-dayjs";
+import { Link, useParams } from "react-router-dom";
+import MDEditor from "@uiw/react-md-editor";
+import { translate } from "actions/ConfigActions";
 
 // Stylesheets
-import style from 'components/partials/ActivityTable/ActivityTableRow.module.scss';
+import style from "components/partials/ActivityTable/ActivityTableRow.module.scss";
 
+const ActivityTableRow = (props) => {
+    const dispatch = useDispatch();
 
-class ActivityTableRow extends Component {
-   constructor(props) {
-      super(props);
+    // Params
+    const { measureNumber } = useParams();
 
-      this.state = {
-         modalOpen: false
-      };
+    const getStatustext = (status) => {
+        const foundStatus = props.planStatuses.find((planStatus) => planStatus.value === status);
+        return foundStatus ? foundStatus.label : "";
+    };
 
-      this.openModal = this.openModal.bind(this);
-      this.closeModal = this.closeModal.bind(this);
-      this.handleChange = this.handleChange.bind(this);
-      this.converter = new showdown.Converter();
-   }
+    const getParticitants = (participants) => {
+        return participants && participants.length
+            ? participants.map((participant, index) => {
+                  return participant.name + (participants.length - index > 1 ? ", " : " ");
+              })
+            : null;
+    };
 
-   markdownToHtml(value) {
-      return {
-         __html: this.converter.makeHtml(value)
-      };
-   }
+    const renderActivity = () => {
+        const statusStyle = { width: `${props.activity.status * 20}%` };
+        return (
+            <React.Fragment>
+                <td data-label="Nr">{props.activity?.no}</td>
+                <td data-label={dispatch(translate("Name"))}>
+                    <Link to={`/tiltak/${measureNumber}/aktivitet/${props.activity?.no}`}>{props.activity.name}</Link>
+                </td>
+                <td data-label={dispatch(translate("Description"))} className={style.htmlCell}>
+                    <div className="container" data-color-mode="light">
+                        <MDEditor.Markdown source={props.activity.description} />
+                    </div>
+                </td>
+                <td data-label={dispatch(translate("Participants"))}>{getParticitants(props.activity.participants)}</td>
+                <td data-label="Status">
+                    <div className={style.statusbar}>
+                        <div className={style.block} style={statusStyle}></div>
+                    </div>
+                    {getStatustext(props.activity.status)}
+                </td>
+                <td data-label={dispatch(translate("Start"))}>
+                    <DayJS format="DD.MM.YYYY">{props.activity.implementationStart}</DayJS>
+                </td>
+                <td data-label={dispatch(translate("End"))}>
+                    <DayJS format="DD.MM.YYYY">{props.activity.implementationEnd}</DayJS>
+                </td>
+            </React.Fragment>
+        );
+    };
 
-   getStatustext(status) {
-      const foundStatus = this.props.planStatuses
-         .find(planStatus => planStatus.value === status);
-
-      return foundStatus ? foundStatus.label : '';
-   }
-
-   getParticitants(participants) {
-      return participants && participants.length ? participants.map((participant, index) => {
-         return (
-            participant.name + (participants.length - index > 1 ? ', ' : ' ')
-         )
-      }) : null;
-   }
-
-   handleChange(event) {
-      this.setState();
-   }
-   
-   openModal() {
-      this.setState({ modalOpen: true });
-   }
-
-   closeModal() {
-      this.setState({ modalOpen: false });
-   }
-
-   saveModal() {
-      this.closeModal();
-   }
-
-   getMeasureNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-         ? this.props.match.params.measureNumber
-         : null;
-   }
-
-   goToActivity() {
-      this.props.history.push(`/tiltak/${this.getMeasureNumber()}/aktivitet/${this.props.activity.no}`);
-   }
-
-   renderActivity() {
-      const activity = this.props.activity;
-      const statusStyle = { width: `${activity.status * 20}%` }
-      return (<React.Fragment>        
-         <td data-label="Nr">{activity.no}</td>
-         <td data-label={this.props.translate('Name')}>{activity.name}</td>
-         <td data-label={this.props.translate('Description')} className={style.htmlCell} dangerouslySetInnerHTML={this.markdownToHtml(activity.description)}></td>
-         <td data-label={this.props.translate('Participants')}>{this.getParticitants(activity.participants)}</td>
-         <td data-label="Status"><div className={style.statusbar}><div className={style.block} style={statusStyle}></div></div>{this.getStatustext(activity.status)}</td>
-         <td data-label={this.props.translate('Start')}><DayJS format="DD.MM.YYYY">{activity.implementationStart}</DayJS></td>
-         <td data-label={this.props.translate('End')}><DayJS format="DD.MM.YYYY">{activity.implementationEnd}</DayJS></td>
-      </React.Fragment>)            
-   }
-
-   render() {
-      return (
-         <React.Fragment>
-            <tr onClick={() => this.goToActivity()}>{this.renderActivity()}</tr>            
-         </React.Fragment>
-      );
-   }
-}
-
-ActivityTableRow.propTypes = {
-   activity: PropTypes.object.isRequired
+    return (
+        <React.Fragment>
+            <tr>{renderActivity()}</tr>
+        </React.Fragment>
+    );
 };
 
-const mapDispatchToProps = {  
-   translate
-};
-
-export default connect(null, mapDispatchToProps)(withRouter(ActivityTableRow));
+export default ActivityTableRow;

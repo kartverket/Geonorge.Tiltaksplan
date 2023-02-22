@@ -1,151 +1,178 @@
 // Dependecies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import DayJS from 'react-dayjs';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { Fragment, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import DayJS from "react-dayjs";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { BreadcrumbList, ContentContainer, GnAccordion, GnButton, GnDialog, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Components
-import Container from 'components/template/Container';
-import MeasureDetails from 'components/partials/MeasureDetails';
-import ReportDetails from 'components/partials/ReportDetails';
-import ActivityTable from 'components/partials/ActivityTable';
+import MeasureDetails from "components/partials/MeasureDetails";
+import ReportDetails from "components/partials/ReportDetails";
+import ActivityTable from "components/partials/ActivityTable";
 
 // Actions
-import { fetchMeasure, deleteMeasure } from 'actions/MeasuresActions';
-import { translate } from 'actions/ConfigActions';
+import { fetchMeasure, deleteMeasure } from "actions/MeasuresActions";
+import { translate } from "actions/ConfigActions";
 
 // Helpers
-import { canDeleteMeasure, canAddActivity } from 'helpers/authorizationHelpers';
+import { canDeleteMeasure, canAddActivity } from "helpers/authorizationHelpers";
 
 // Stylesheets
-import style from 'components/routes/Measure.module.scss';
+import style from "components/routes/Measure.module.scss";
 
-class Measure extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         dataFetched: false,
-         deleteMeasureModalOpen: false,
-         open: false
-      };
-      this.openDeleteMeasureModal = this.openDeleteMeasureModal.bind(this);
-      this.closeDeleteMeasureModal = this.closeDeleteMeasureModal.bind(this);
-      this.handleDeleteMeasure = this.handleDeleteMeasure.bind(this);
-   }
+const Measure = (props) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-   componentDidMount() {
-      this.props.fetchMeasure(this.getMeasureNumber())
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
-   }
+    // Params
+    const { measureNumber } = useParams();
 
-   openDeleteMeasureModal() {
-      this.setState({ deleteMeasureModalOpen: true });
-   }
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
+    const [deleteMeasureDialogOpen, setDeleteMeasureDialogOpen] = useState(false);
 
-   closeDeleteMeasureModal() {
-      this.setState({ deleteMeasureModalOpen: false });
-   }
+    // Redux store
+    const measure = useSelector((state) => state.measures.selectedMeasure);
+    const user = useSelector((state) => state.oidc.user);
+    const authInfo = useSelector((state) => state.authInfo);
 
-   handleDeleteMeasure() {
-      this.props.deleteMeasure(this.props.measure, this.props.user)
-         .then(() => {
-            this.props.history.push(`/`);
-         });
-   }
+    const hasMeasure = measure && Object.keys(measure)?.length;
 
-   getMeasureNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-         ? this.props.match.params.measureNumber
-         : null;
-   }
+    const handleDeleteMeasure = () => {
+        dispatch(
+            deleteMeasure(measure, user).then(() => {
+                navigate("/");
+            })
+        );
+    };
 
-   render() {
-      const hasMeasure = this.props.measure && Object.keys(this.props.measure).length;
-      return this.state.dataFetched && hasMeasure
-         ? (
-            <Container>
-               <h1>{this.props.measure.no} - {this.props.measure.name}</h1>
-               {this.props.measure.infoUrl ?
-                  <a href={`${this.props.measure.infoUrl}`}>{this.props.translate('infoLinkMeasure')}</a> : ''
-               }
-               <h5>{this.props.translate('OwnsBy')} {this.props.measure.owner.name}</h5>
-               {
-                  canDeleteMeasure(this.props.authInfo)
-                     ? <Button className="mr-2" variant="secondary" onClick={this.openDeleteMeasureModal}>Slett tiltaket</Button>
-                     : ''
-               }
-               <MeasureDetails selectedMeasure={this.props.measure} />
-               <div className={style.btn} onClick={() => { this.setState({ open: !this.state.open }) }}>
-                  {this.state.open ? `${this.props.translate('ReportLinkClose')}` : `${this.props.translate('ReportLink')}`} {<FontAwesomeIcon icon={this.state.open ? 'minus-circle' : 'plus-circle'} />}
-               </div>
+    useEffect(() => {
+        if (!dataFetched) {
+            dispatch(fetchMeasure(measureNumber)).then(() => {
+                setDataFetched(true);
+            });
+        }
+    }, [dispatch, measureNumber, dataFetched]);
 
+    const measureActivitiesTitle = dispatch(translate("MeasureActivitiesTitle"));
+    const pageTitle = dispatch(translate("infoLinkMeasure"));
+    const breadcrumbs = [
+        {
+            name: "Geonorge",
+            url: "@AppSettings.UrlGeonorgeRoot"
+        },
+        {
+            name: measureActivitiesTitle,
+            url: "/"
+        },
+        {
+            name: pageTitle,
+            url: `/tiltak/${measureNumber}`
+        }
+    ];
 
-               <div className={`${style.reporting} ${this.state.open ? style.reportOpen : style.reportClose}`}>
-                  <h2>{this.props.translate('progressReportTitle')}</h2>
-                  <p>{this.props.translate('lastUpdate')} <DayJS format="DD.MM YYYY" locale="nb">{this.props.measure.lastUpdated}</DayJS></p>
+    const openDeleteMeasureDialog = () => {
+        setDeleteMeasureDialogOpen(false);
+        setTimeout(() => {
+            setDeleteMeasureDialogOpen(true);
+        });
+    };
 
-                  <ReportDetails />
-               </div>
+    const closeDeleteMeasureDialog = () => {
+        setDeleteMeasureDialogOpen(false);
+    };
 
-               <h2>{this.props.translate('MeasureActivitiesTitle')}</h2>
+   
+    return (
+        <content-container>
+            <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
+            {dataFetched && hasMeasure ? (
+                <Fragment>
+                    <div id="main-content">
+                        <heading-text>
+                            <h1 underline="true">
+                                {measure.no} - {measure.name}
+                            </h1>
+                        </heading-text>
+                        {measure.infoUrl ? (
+                            <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">
+                                {dispatch(translate("infoLinkMeasure"))}
+                            </a>
+                        ) : (
+                            ""
+                        )}
+                        <FontAwesomeIcon
+                            data-tip="Detaljert beskrivelse - aktiviteter"
+                            icon="external-link-alt"
+                            className={style.icon}
+                            color="#3767c7"
+                            tabIndex="-1"
+                        />
 
+                        <p className="">
+                            {dispatch(translate("OwnsBy"))} {measure.owner.name}
+                        </p>
+                        {canDeleteMeasure(authInfo) ? (
+                            <gn-button color="default">
+                                <button onClick={() => openDeleteMeasureDialog()}>Slett tiltaket</button>
+                            </gn-button>
+                        ) : null}
 
-               <ActivityTable activities={this.props.measure.activities} />
-               {
-                  canAddActivity(this.props.authInfo, this.props.measure.owner)
-                     ? (<div className={style.block}>
-                        <Link to={`/tiltak/${this.getMeasureNumber()}/ny-aktivitet`}>
-                           <button className="btn btn-primary">{this.props.translate('btnCreateActivity')}</button>
-                        </Link>
-                     </div>)
-                     : ''
-               }
+                        <MeasureDetails selectedMeasure={measure} />
 
-               <Modal
-                  show={this.state.deleteMeasureModalOpen}
-                  onHide={this.closeDeleteMeasureModal}
-                  keyboard={false}
-                  animation={false}
-                  centered
-                  backdrop="static"
-                  aria-labelledby="form-dialog-title">
-                  <Modal.Header closeButton>
-                     <Modal.Title>Slett tiltak</Modal.Title>
-                  </Modal.Header>
+                        <gn-accordion title={dispatch(translate("progressReportTitle"))}>
+                            <p>
+                                {dispatch(translate("lastUpdate"))}{" "}
+                                <DayJS format="DD.MM YYYY" locale="nb">
+                                    {measure.lastUpdated}
+                                </DayJS>
+                            </p>
+                            <ReportDetails />
+                        </gn-accordion>
 
-                  <Modal.Body>
-                     <p>Er du sikker på at du vil slette {this.props.measure.name}?</p>
-                     {this.props.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.props.measure.name : ''}
-                  </Modal.Body>
+                        <heading-text>
+                            <h2>{dispatch(translate("MeasureActivitiesTitle"))}</h2>
+                        </heading-text>
+                        <ActivityTable activities={measure.activities} />
 
-                  <Modal.Footer>
-                     <Button variant="secondary" onClick={this.closeDeleteMeasureModal}>Avbryt</Button>
-                     <Button disabled={this.props.measure.activities.length > 0} variant="danger" onClick={this.handleDeleteMeasure}>Slett</Button>
-                  </Modal.Footer>
-               </Modal>
-            </Container>
-         )
-         : '';
-   }
-}
+                        {canAddActivity(authInfo, measure.owner) ? (
+                            <div className={style.block}>
+                                <Link to={`/tiltak/${measureNumber}/ny-aktivitet`}>
+                                    <gn-button color="primary">
+                                        <button>{dispatch(translate("btnCreateActivity"))}</button>
+                                    </gn-button>
+                                </Link>
+                            </div>
+                        ) : null}
 
-const mapStateToProps = (state) => ({
-   measure: state.measures.selectedMeasure,
-   user: state.oidc.user,
-   authInfo: state.authInfo,
-   selectedLanguage: state.selectedLanguage
-});
-
-const mapDispatchToProps = {
-   fetchMeasure,
-   deleteMeasure,
-   translate
+                        <gn-dialog show={deleteMeasureDialogOpen}>
+                            <heading-text>
+                                <h2>Slett tiltak</h2>
+                            </heading-text>
+                            <p>Er du sikker på at du vil slette {measure.name}?</p>
+                            {measure.activities.length > 0
+                                ? "Du kan ikke slette da det er aktiviteter knyttet til tiltaket" + measure.name
+                                : ""}
+                            <div>
+                                <gn-button color="default">
+                                    <button onClick={() => closeDeleteMeasureDialog()}>Avbryt</button>
+                                </gn-button>
+                                <gn-button color="danger">
+                                    <button disabled={measure.activities.length > 0} onClick={handleDeleteMeasure}>
+                                        Slett
+                                    </button>
+                                </gn-button>
+                            </div>
+                        </gn-dialog>
+                    </div>
+                </Fragment>
+            ) : null}
+        </content-container>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Measure);
+export default Measure;

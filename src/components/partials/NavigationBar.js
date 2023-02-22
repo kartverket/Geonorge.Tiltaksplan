@@ -1,91 +1,78 @@
 // Dependencies
-import React, { Component, Fragment } from 'react';
-import { connect } from 'react-redux';
-import { MainNavigation } from '@kartverket/geonorge-web-components/MainNavigation';
-import { Helmet } from 'react-helmet';
+import React, { Fragment, useCallback, useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { MainNavigation } from "@kartverket/geonorge-web-components/MainNavigation";
+import { Helmet } from "react-helmet";
 
 // Actions
-import { updateOidcCookie } from 'actions/AuthenticationActions';
-import { updateAuthInfo } from 'actions/AuthorizationActions';
-import { updateSelectedLanguage } from 'actions/SelectedLanguageActions';
+import { updateOidcCookie } from "actions/AuthenticationActions";
+import { updateAuthInfo } from "actions/AuthorizationActions";
+import { updateSelectedLanguage } from "actions/SelectedLanguageActions";
 
 // Helpers
-import { getEnvironmentVariable } from 'helpers/environmentVariableHelpers.js';
+import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
-class NavigationBar extends Component {
+const NavigationBar = (props) => {
+    const dispatch = useDispatch();
+    // State
+    const [mainNavigationIsInitialized, setMainNavigationIsInitialized] = useState(false);
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      mainNavigationIsInitialized: false
-    };
-  }
+    // Redux store
+    const oidc = useSelector((state) => state.oidc);
+    const authInfo = useSelector((state) => state.authInfo);
+    const selectedLanguage = useSelector((state) => state.selectedLanguage);
 
-  componentDidMount() {
-    if (!this.props.oidc.isLoadingUser) {
-      this.initMainNavigation();
-    }
-  }
+    const initMainNavigation = useCallback(() => {
+        const userManager = props.userManager;
+        MainNavigation.setup("main-navigation", {
+            onSignInClick: () => {
+                userManager.signinRedirect();
+            },
+            onSignOutClick: () => {
+                userManager.signoutRedirect({ id_token_hint: oidc.user.id_token });
+                userManager.removeUser();
+            },
+            onNorwegianLanguageSelect: () => {
+                dispatch(updateSelectedLanguage("nb-NO"));
+            },
+            onEnglishLanguageSelect: () => {
+                dispatch(updateSelectedLanguage("en-US"));
+            }
+        });
+        setMainNavigationIsInitialized(true);
+    }, [dispatch, oidc?.user?.id_token, props.userManager]);
 
-  componentDidUpdate(prevProps) {
-    if (!this.state.mainNavigationIsInitialized) {
-      this.initMainNavigation();
-    }
-    const wasLoggedIn = prevProps.oidc.user;
-    const isLoggedIn = this.props.oidc.user;
-    const hadAuthInfo = prevProps.authInfo && prevProps.authInfo.organizationNumber;
-    const hasAuthInfo = this.props.authInfo && this.props.authInfo.organizationNumber;
-    if ((isLoggedIn !== wasLoggedIn) || (hasAuthInfo !== hadAuthInfo)) {
-      this.props.updateOidcCookie(this.props.oidc.user);
-      this.props.updateAuthInfo();
-    }
-  }
+    useEffect(() => {
+        if (!oidc.isLoadingUser) {
+            initMainNavigation();
+        }
+    }, [initMainNavigation, oidc.isLoadingUser]);
 
-  initMainNavigation() {
-    const userManager = this.props.userManager;
-    MainNavigation.setup('main-navigation', {
-      onSignInClick: () => {
-        userManager.signinRedirect();
-      },
-      onSignOutClick: () => {
-        userManager.signoutRedirect({ 'id_token_hint': this.props.oidc.user.id_token });
-        userManager.removeUser();
-      },
-      onNorwegianLanguageSelect: () => {
-        this.props.updateSelectedLanguage('nb-NO');
-      },
-      onEnglishLanguageSelect: () => {
-        this.props.updateSelectedLanguage('en-US');
-      }
-    });
-    this.setState({
-      mainNavigationIsInitialized: true
-    });
-  }
+    useEffect(() => {
+        if (!mainNavigationIsInitialized) {
+            initMainNavigation();
+        }
+        const isLoggedIn = !!oidc?.user;
+        const hasAuthInfo = !!authInfo?.organizationNumber?.length;
+        if (isLoggedIn || hasAuthInfo) {
+            dispatch(updateOidcCookie(oidc.user));
+            dispatch(updateAuthInfo());
+        }
+    }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, oidc.user]);
 
-  render() {
-    const environment = getEnvironmentVariable('environment');
-    const language = this.props.selectedLanguage === 'en-US' ? 'en' : 'no';
+    const environment = getEnvironmentVariable("environment");
+    const language = selectedLanguage === "en-US" ? "en" : "no";
     return (
-      <Fragment>
-        <Helmet htmlAttributes={{ lang: language }}/>
-        <main-navigation language={language} isLoggedIn={this.props.oidc.user ? true : false} environment={environment}></main-navigation>;
-      </Fragment>
-    )
-  }
-}
+        <Fragment>
+            <Helmet htmlAttributes={{ lang: language }} />
+            <main-navigation
+                language={language}
+                isLoggedIn={oidc.user ? true : false}
+                environment={environment}
+                maincontentid="main-content"
+            ></main-navigation>
+        </Fragment>
+    );
+};
 
-const mapStateToProps = state => ({
-  oidc: state.oidc,
-  config: state.config,
-  authInfo: state.authInfo,
-  selectedLanguage: state.selectedLanguage
-});
-
-const mapDispatchToProps = {
-  updateOidcCookie,
-  updateAuthInfo,
-  updateSelectedLanguage
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(NavigationBar);
+export default NavigationBar;

@@ -19,5 +19,7 @@
         margin: 5px;
     }
 }
-
+:local(table td) {
+    vertical-align: top;
+} 
 

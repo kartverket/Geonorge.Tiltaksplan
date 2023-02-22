@@ -45,22 +45,28 @@
 :local(.block) {
   margin: 20px 0;
 }
-:local(.reporting) {
-  transition: all .3s ease-in-out;
-  overflow: hidden;
-  
-}
-:local(.reportClose) {
-  max-height: 0;
-}
-:local(.reportOpen) {
-  
-  max-height: 4000px;
-}
+
 :local(.btn) {
-  font-size: 1.4em;
+  border: none;
+  background: none;
+  font-size: 1.2em;
   margin: 15px 0;
+  width: 100px;
   &:hover {
     cursor: pointer;
   }
+}
+:local [target="_blank"]:after {
+  content: "(Åpnes i nytt vindu)";
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  border: 0;
+}
+:local(.icon) {
+  margin-left: 10px;
 }

@@ -1,195 +1,202 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Button from 'react-bootstrap/Button';
-import Modal from 'react-bootstrap/Modal';
-import Form from 'react-bootstrap/Form';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import { toastr } from 'react-redux-toastr';
-import ValidationErrors from 'components/partials/ValidationErrors';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { toastr } from "react-redux-toastr";
+import ValidationErrors from "components/partials/ValidationErrors";
+
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { GnButton, GnDialog, GnFieldContainer, GnInput, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Models
-import { Measure } from 'models/measure';
+import { Measure } from "models/measure";
 
 // Actions
-import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { createMeasure, updateMeasure } from 'actions/MeasuresActions';
+import { fetchOrganizations } from "actions/OrganizationsActions";
+import { createMeasure, updateMeasure } from "actions/MeasuresActions";
 
 // Helpers
-import { canAddMeasure, canEditMeasure } from 'helpers/authorizationHelpers';
+import { canAddMeasure, canEditMeasure } from "helpers/authorizationHelpers";
 
 // Stylesheets
-import 'react-bootstrap-typeahead/css/Typeahead.css';
+import "react-bootstrap-typeahead/css/Typeahead.css";
 
+const MeasureDetails = (props) => {
+    const dispatch = useDispatch();
 
-class MeasureDetails extends Component {
-   constructor(props) {
-      super(props);
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
+    const [measure, setMeasure] = useState(props.newMeasure ? new Measure() : props.selectedMeasure);
+    const [selectedOwner, setSelectedOwner] = useState(props.newMeasure ? [] : [props.selectedMeasure.owner]);
+    const [validationErrors, setValidationErrors] = useState([]);
+    const [dialogOpen, setDialogOpen] = useState([false]);
 
-      this.state = {
-         dataFetched: false,
-         modalOpen: false,
-         measure: props.newMeasure
-            ? new Measure()
-            : props.selectedMeasure,
-         selectedOwner: props.newMeasure
-            ? []
-            : [
-               props.selectedMeasure.owner
-            ],
-         validationErrors: []
-      };
+    // Redux store
+    const organizations = useSelector((state) => state.organizations);
+    const user = useSelector((state) => state.oidc.user);
+    const authInfo = useSelector((state) => state.authInfo);
 
-      this.handleChange = this.handleChange.bind(this);
-      this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
-      this.openModal = this.openModal.bind(this);
-      this.closeModal = this.closeModal.bind(this);
-      this.saveMeasure = this.saveMeasure.bind(this);
-   }
+    useEffect(() => {
+        dispatch(fetchOrganizations()).then(() => {
+            setDataFetched(true);
+        });
+    }, [dispatch]);
 
-   componentDidMount() {
-      this.props.fetchOrganizations()
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
-   }
+    const handleOwnerSelect = (data) => {
+        if (data) {
+            setSelectedOwner(data);
+            if (data[0]?.id) {
+                setMeasure({
+                    ...measure,
+                    owner: {
+                        ...measure.owner,
+                        id: data[0].id
+                    }
+                });
+            }
+        }
+    };
 
-   openModal() {
-      this.setState({
-         modalOpen: true
-      });
-   }
+    const handleChange = (data) => {
+        const { name, value } = data.target ? data.target : data;
+        const parsed = parseInt(value);
+        measure[name] = isNaN(parsed) ? value : parsed;
+        setMeasure(measure);
+    };
 
-   closeModal() {
-      this.setState({ modalOpen: false });
-   }
+    const saveMeasure = () => {
+        props.newMeasure
+            ? dispatch(createMeasure(measure, user))
+                  .then(() => {
+                      closeDialog();
+                      setValidationErrors([]);
+                      toastr.success("Et nytt tiltak ble lagt til");
+                      props.onUpdate();
+                  })
+                  .catch(({ response }) => {
+                      toastr.error("Kunne ikke opprette tiltak");
+                      setValidationErrors(response.data);
+                  })
+            : dispatch(updateMeasure(measure, user))
+                  .then(() => {
+                      closeDialog(false);
+                      setValidationErrors([]);
+                      toastr.success("Tiltaket ble oppdatert");
+                      props.onUpdate();
+                  })
+                  .catch(({ response }) => {
+                      toastr.error("Kunne ikke oppdatere tiltak");
+                      setValidationErrors(response.data);
+                  });
+    };
 
-   handleOwnerSelect(data) {
-      this.setState({
-         selectedOwner: data
-      })
-   }
+    const showAddMeasureContent = () => {
+        return measure && props.newMeasure && canAddMeasure(authInfo);
+    };
 
-   handleChange(data) {
-      const measure = this.state.measure;
-      const { name, value } = data.target ? data.target : data;   
-      const parsed = parseInt(value);
+    const showEditMeasureContent = () => {
+        return measure && !props.newMeasure && canEditMeasure(authInfo);
+    };
 
-      measure[name] = isNaN(parsed) ? value : parsed;
+    if (!dataFetched) {
+        return "";
+    }
 
-      this.setState({ measure });
-   }
+    const openDialog = () => {
+        setDialogOpen(false);
+        setTimeout(() => {
+            setDialogOpen(true);
+        });
+    };
 
-   saveMeasure() {
-      const measure = this.state.measure;
+    const closeDialog = () => {
+        setDialogOpen(false);
+    };
 
-      if (this.state.selectedOwner.length) {
-         measure.owner.id = this.state.selectedOwner[0].id
-      }
+    return showAddMeasureContent() || showEditMeasureContent() ? (
+        <React.Fragment>
+            <gn-button color="primary">
+                <button onClick={() => openDialog()}>{props.newMeasure ? "Opprett tiltak" : "Rediger tiltak"}</button>
+            </gn-button>
 
-      this.props.newMeasure
-         ? this.props.createMeasure(measure, this.props.user)
-            .then(() => {
-               this.closeModal();
-               this.setState({ validationErrors: [] });
-               toastr.success('Et nytt tiltak ble lagt til');
-            })
-            .catch(({ response }) => {   
-               toastr.error('Kunne ikke opprette tiltak');            
-               this.setState({ validationErrors: response.data });
-            })            
-         : this.props.updateMeasure(measure, this.props.user)
-            .then(() => {
-               this.closeModal();
-               this.setState({ validationErrors: [] });
-               toastr.success('Tiltaket ble oppdatert');
-            })
-            .catch(({ response }) => {
-               toastr.error('Kunne ikke oppdatere tiltak');
-               this.setState({ validationErrors: response.data });
-            });
-   }
+            <gn-dialog show={dialogOpen}>
+                <heading-text>
+                    <h2>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</h2>
+                </heading-text>
+                <ValidationErrors errors={validationErrors} />
 
-   showAddMeasureContent(){
-      return this.state.measure && this.props.newMeasure && canAddMeasure(this.props.authInfo);
-   }
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-no">Nummer</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-no"
+                            type="number"
+                            name="no"
+                            defaultValue={measure.no}
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-   showEditMeasureContent() {
-      return this.state.measure && !this.props.newMeasure && canEditMeasure(this.props.authInfo);
-   }
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-name">Navn</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-name"
+                            type="text"
+                            name="name"
+                            defaultValue={measure.name}
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-owner">Eier</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <Typeahead
+                            id="measure-owner"
+                            labelKey="name"
+                            onChange={handleOwnerSelect}
+                            options={organizations}
+                            selected={selectedOwner}
+                            placeholder="Legg til eier..."
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-      return this.showAddMeasureContent() || this.showEditMeasureContent() ? (
-         <React.Fragment>
-            <Button variant="primary" className="marginB-20" onClick={this.openModal}>{this.props.newMeasure ? 'Opprett tiltak' : 'Rediger tiltak'}</Button>
-            <Modal
-               show={this.state.modalOpen}
-               onHide={this.closeModal}
-               backdrop="static"
-               centered
-               keyboard={false}
-               animation={false}
-            >
-               <Modal.Header closeButton>
-                  <Modal.Title>{this.props.newMeasure ? 'Nytt tiltak' : `${this.state.measure.no} - ${this.state.measure.name}`}</Modal.Title>
-               </Modal.Header>
+                <gn-field-container block>
+                    <gn-label block>
+                        <label htmlFor="measure-infoUrl">Url</label>
+                    </gn-label>
+                    <gn-input block fullWidth>
+                        <input
+                            id="measure-infoUrl"
+                            type="text"
+                            name="infoUrl"
+                            defaultValue={measure.infoUrl}
+                            onChange={handleChange}
+                            placeholder="http://www.name.org"
+                        />
+                    </gn-input>
+                </gn-field-container>
 
-               <Modal.Body>
-                  <ValidationErrors errors={this.state.validationErrors} />
-
-                  <Form.Group controlId="formNo">
-                     <Form.Label>Nummer</Form.Label>
-                     <Form.Control type="number" name="no" value={this.state.measure.no} onChange={this.handleChange} onBlur={this.checkForAvailability} />
-                  </Form.Group>
-
-                  <Form.Group controlId="formName">
-                     <Form.Label>Navn</Form.Label>
-                     <Form.Control type="text" name="name" value={this.state.measure.name} onChange={this.handleChange} />
-                  </Form.Group>
-
-                  <Form.Group controlId="formName">
-                     <Form.Label>Eier</Form.Label>
-                     <Typeahead
-                        id="basic-typeahead-single"
-                        labelKey="name"
-                        onChange={this.handleOwnerSelect}
-                        options={this.props.organizations}
-                        selected={this.state.selectedOwner}
-                        placeholder="Legg til eier..."
-                     />
-                  </Form.Group>
-                  <Form.Group controlId="formInfoUrl">
-                     <Form.Label>Url</Form.Label>
-                     <Form.Control type="text" name="infoUrl" value={this.state.measure.infoUrl} onChange={this.handleChange} placeholder="http://www.name.org" />
-                  </Form.Group>
-               </Modal.Body>
-
-               <Modal.Footer>
-                  <Button variant="secondary" onClick={this.closeModal}>Avbryt</Button>
-                  <Button variant="primary" onClick={this.saveMeasure}>Lagre</Button>
-               </Modal.Footer>
-            </Modal>
-         </React.Fragment>
-      ) : '';
-   }
-}
-
-const mapStateToProps = state => {
-   return ({
-      organizations: state.organizations,
-      user: state.oidc.user,
-      authInfo: state.authInfo,
-   });
+                <gn-button color="default">
+                    <button onClick={() => closeDialog()}>Avbryt</button>
+                </gn-button>
+                <gn-button color="primary">
+                    <button onClick={saveMeasure}>Lagre</button>
+                </gn-button>
+            </gn-dialog>
+        </React.Fragment>
+    ) : null;
 };
 
-const mapDispatchToProps = {
-   fetchOrganizations,
-   createMeasure,
-   updateMeasure
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(MeasureDetails);
+export default MeasureDetails;

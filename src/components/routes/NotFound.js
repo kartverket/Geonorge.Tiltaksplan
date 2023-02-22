@@ -1,18 +1,21 @@
 // Dependencies
-import React, {Component} from 'react';
-import {connect} from 'react-redux';
+import React from "react";
 
-// Template
-import Container from 'components/template/Container';
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { ContentContainer, HeadingText } from "@kartverket/geonorge-web-components";
 
-class NotFound extends Component {
+const NotFound = () => {
+    return (
+        <content-container>
+            <div id="main-content">
+                <heading-text>
+                    <h1>404</h1>
+                </heading-text>
+                <p>Siden finnes ikke</p>
+            </div>
+        </content-container>
+    );
+};
 
-  render() {
-    return (<Container>
-      <h1>404</h1>
-      <p>Siden finnes ikke</p>
-    </Container>)
-  }
-}
-
-export default connect(null, null)(NotFound);
+export default NotFound;

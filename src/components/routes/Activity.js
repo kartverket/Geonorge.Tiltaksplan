@@ -1,74 +1,80 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { useParams } from "react-router";
+
+// Geonorge WebComponents
+// eslint-disable-next-line no-unused-vars
+import { BreadcrumbList, ContentContainer, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Components
-import Container from 'components/template/Container';
-import ActivityDetails from 'components/partials/ActivityDetails';
+import ActivityDetails from "components/partials/ActivityDetails";
 
 // Actions
-import { fetchMeasure } from 'actions/MeasuresActions';
-import { fetchActivity } from 'actions/ActivityActions';
+import { fetchMeasure } from "actions/MeasuresActions";
+import { fetchActivity } from "actions/ActivityActions";
+import { translate } from "actions/ConfigActions";
 
-class Activity extends Component {
-   constructor(props) {
-      super(props);
+const Activity = (props) => {
+    // Redux store
+    const activity = useSelector((state) => state.activities.selectedActivity);
 
-      this.state = {
-         dataFetched: false
-      };
-   }
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
 
-   componentDidMount() {
-      const measureNumber = this.getMeasureNumber();
-      const activityNumber = this.getActivityNumber();
-      const promises = [this.props.fetchMeasure(measureNumber)];
+    // Params
+    const { measureNumber, activityNumber } = useParams();
 
-      if (activityNumber) {
-        promises.push(this.props.fetchActivity(measureNumber, activityNumber));
-      }
+    const dispatch = useDispatch();
 
-      Promise.all(promises)
-        .then(() => {
-          this.setState({ dataFetched: true });
+    useEffect(() => {
+        const promises = [dispatch(fetchMeasure(measureNumber))];
+
+        if (activityNumber) {
+            promises.push(dispatch(fetchActivity(measureNumber, activityNumber)));
+        }
+
+        Promise.all(promises).then(() => {
+            setDataFetched(true);
         });
-   }
+    }, [activityNumber, dispatch, measureNumber]);
 
-   getMeasureNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-         ? this.props.match.params.measureNumber
-         : null;
-   }
+    const measureActivitiesTitle = dispatch(translate("MeasureActivitiesTitle"));
+    const measureTitle = dispatch(translate("infoLinkMeasure"));
+    const pageTitle = !!activityNumber ? activity.name : "Opprett aktivitet";
+    const pageUrl = !!activityNumber ? `/tiltak/${measureNumber}/aktivitet/${activityNumber}` : `/tiltak/${measureNumber}/ny-aktivitet`;
+    const breadcrumbs = [
+        {
+            name: "Geonorge",
+            url: "@AppSettings.UrlGeonorgeRoot"
+        },
+        {
+            name: measureActivitiesTitle,
+            url: "/"
+        },
+        {
+            name: measureTitle,
+            url: `/tiltak/${measureNumber}`
+        },
+        {
+            name: pageTitle,
+            url: pageUrl
+        }
+    ];
 
-   getActivityNumber() {
-      return this.props.match && this.props.match.params && this.props.match.params.activityNumber
-         ? this.props.match.params.activityNumber
-         : null;
-   }
-
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
-
-      return (
-         <Container>
-            <h1>{this.props.activity.name}</h1>
-            <ActivityDetails newActivity={!this.getActivityNumber()} />
-         </Container>
-      );
-   }
-}
-
-
-const mapStateToProps = (state) => ({
-   activity: state.activities.selectedActivity
-});
-
-const mapDispatchToProps = {
-   fetchMeasure,
-   fetchActivity
+    return (
+        dataFetched && (
+            <content-container>
+                <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
+                <div id="main-content">
+                    <heading-text>
+                        <h1 underline="true">{pageTitle}</h1>
+                    </heading-text>
+                    <ActivityDetails newActivity={!activityNumber} />
+                </div>
+            </content-container>
+        )
+    );
 };
 
-
-export default connect(mapStateToProps, mapDispatchToProps)(Activity);
+export default Activity;
