@@ -115,7 +115,7 @@ const MeasuresTable = (props) => {
             dispatch(fetchOptions()).then(() => {
                 setDataFetched(true);
                 let newPlanStatuses = planStatuses;
-                let allStatus = { value: 0, label: "Alle" };
+                let allStatus = { value: 0, label: "Alle aktive" };
                 if (!statusExists(0, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allStatus);
                 setStatuses(newPlanStatuses);
             });
@@ -198,7 +198,7 @@ const MeasuresTable = (props) => {
                                 .filter((measure) => {
                                     if (statusSelected !== 0) {
                                         return measure.status === statusSelected;
-                                    } else return true;
+                                    } else return (measure.status != 5 && measure.status != 7) ;
                                 })
                                 .map((measure) => {
                                     return (
