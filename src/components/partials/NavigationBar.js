@@ -24,6 +24,10 @@ const NavigationBar = (props) => {
 
     const initMainNavigation = useCallback(() => {
         const userManager = props.userManager;
+        userManager.events.addAccessTokenExpiring(function(){
+            console.log("token expiring...");
+            userManager.startSilentRenew(); 
+        });
         MainNavigation.setup("main-navigation", {
             onSignInClick: () => {
                 userManager.signinRedirect();

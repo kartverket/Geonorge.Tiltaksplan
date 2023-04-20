@@ -27,6 +27,7 @@
         ],
         "response_type": "id_token token",
         "scope": "openid profile",
+        "automaticSilentRenew": true,
         "loadUserInfo": false
     }
 }
