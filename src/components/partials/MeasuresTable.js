@@ -198,7 +198,7 @@ const MeasuresTable = (props) => {
                                 .filter((measure) => {
                                     if (statusSelected !== 0) {
                                         return measure.status === statusSelected;
-                                    } else return (measure.status != 5 && measure.status != 7) ;
+                                    } else return (measure.status != 5 && measure.status != 6 && measure.status != 7) ;
                                 })
                                 .map((measure) => {
                                     return (
