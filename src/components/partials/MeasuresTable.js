@@ -118,7 +118,7 @@ const MeasuresTable = (props) => {
                 let allStatus = { value: -1, label: "Alle" };
                 if (!statusExists(-1, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allStatus);
 
-                let allActiveStatus = { value: 0, label: "Alle aktive" };
+                let allActiveStatus = { value: 0, label: "Aktive" };
                 if (!statusExists(0, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allActiveStatus);
 
                 setStatuses(newPlanStatuses);
