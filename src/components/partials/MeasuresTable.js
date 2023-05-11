@@ -115,8 +115,12 @@ const MeasuresTable = (props) => {
             dispatch(fetchOptions()).then(() => {
                 setDataFetched(true);
                 let newPlanStatuses = planStatuses;
-                let allStatus = { value: 0, label: "Alle aktive" };
-                if (!statusExists(0, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allStatus);
+                let allStatus = { value: -1, label: "Alle" };
+                if (!statusExists(-1, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allStatus);
+
+                let allActiveStatus = { value: 0, label: "Alle aktive" };
+                if (!statusExists(0, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allActiveStatus);
+
                 setStatuses(newPlanStatuses);
             });
         }
@@ -196,6 +200,9 @@ const MeasuresTable = (props) => {
                         {!!sortedMeasures?.length &&
                             sortedMeasures
                                 .filter((measure) => {
+                                    if (statusSelected == -1) {
+                                        return true;
+                                    }
                                     if (statusSelected !== 0) {
                                         return measure.status === statusSelected;
                                     } else return (measure.status != 5 && measure.status != 6 && measure.status != 7) ;
