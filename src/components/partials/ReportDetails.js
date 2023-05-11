@@ -1,367 +1,308 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { toastr } from 'react-redux-toastr'
-import SimpleMDE from "react-simplemde-editor";
-import Button from 'react-bootstrap/Button';
-import Form from 'react-bootstrap/Form';
-import Modal from 'react-bootstrap/Modal';
-import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { withRouter } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { toastr } from "react-redux-toastr";
+import MDEditor from "@uiw/react-md-editor";
+
+// Geonorge WebComponents
+/* eslint-disable */
+import {
+    GnButton,
+    GnDialog,
+    GnFieldContainer,
+    GnLabel,
+    GnInput,
+    HeadingText
+} from "@kartverket/geonorge-web-components/GnTable";
+/* eslint-enable */
 
 // Components
-import { SelectDropdown } from 'components/custom-elements';
-
-import ValidationErrors from 'components/partials/ValidationErrors';
-import ToggleHelpText from 'components/template/ToggleHelpText';
+import ValidationErrors from "components/partials/ValidationErrors";
+import ToggleHelpText from "components/template/ToggleHelpText";
 
 // Actions
-import { fetchOptions } from 'actions/OptionsActions';
-import { translate } from 'actions/ConfigActions';
-import { updateMeasure } from 'actions/MeasuresActions';
+import { fetchOptions } from "actions/OptionsActions";
+import { translate } from "actions/ConfigActions";
+import { updateMeasure } from "actions/MeasuresActions";
+import { fetchOrganizations } from "actions/OrganizationsActions";
 
 // Helpers
-import { canEditReport } from 'helpers/authorizationHelpers';
+import { canEditReport } from "helpers/authorizationHelpers";
 
 // Assets
-import StarIcon from 'gfx/icon-star.svg'
+import StarIcon from "gfx/icon-star.svg";
 
 // Stylesheets
-import formsStyle from 'components/partials/forms.module.scss'
+import formsStyle from "components/partials/forms.module.scss";
 
-const editableMdeOptions = {
-   toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"],
-   spellChecker: false
-};
+const ReportDetails = (props) => {
+    const dispatch = useDispatch();
 
-const readOnlyMdeOptions = {
-   toolbar: false,
-   status: false,
-   spellChecker: false,
-   readOnly: true
-};
+    // Redux store
+    const user = useSelector((state) => state.oidc.user);
+    const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
+    const measureVolume = useSelector((state) => state.options.measureVolume);
+    const measureResults = useSelector((state) => state.options.measureResults);
+    const trafficLights = useSelector((state) => state.options.trafficLights);
+    const planStatuses = useSelector((state) => state.options.planStatuses);
+    const authInfo = useSelector((state) => state.authInfo);
 
-class EditMeasure extends Component {
-   constructor(props) {
-      super(props);
+    // State
+    const [dataFetched, setDataFetched] = useState(false);
+    const [editableReport, setEditableReport] = useState(false);
+    const [validationErrors, setValidationErrors] = useState(false);
+    const [measure, setMeasure] = useState(selectedMeasure);
+    const [measureProgressMarkdown, setMeasureProgressMarkdown] = useState(selectedMeasure?.progress);
 
-      this.handleEditableReportChange = this.handleEditableReportChange.bind(this);
-      this.getMdeInstance = this.getMdeInstance.bind(this);
-      this.handleChange = this.handleChange.bind(this);
-      this.handleOwnerSelect = this.handleOwnerSelect.bind(this);
-      this.saveMeasure = this.saveMeasure.bind(this);
+    useEffect(() => {
+        Promise.all([dispatch(fetchOrganizations()), dispatch(fetchOptions())]).then(() => {
+            setDataFetched(true);
+        });
+    }, [dispatch]);
 
-      this.state = {
-         dataFetched: false,
-         showInfo: false,
-         measure: props.selectedMeasure,
-         editableReport: false,
-         selectedOwner: [
-            props.selectedMeasure.owner
-         ],
-         validationErrors: []
-      };
-   }
+    const handleChange = (data) => {
+        const { name, value } = data.target ? data.target : data;
+        let newValue;
 
-   componentDidMount() {
-      Promise.all([
-         this.props.fetchOrganizations(),
-         this.props.fetchOptions()
-      ])
-         .then(() => {
-            this.setState({ dataFetched: true });
-         });
-   }
+        if (value instanceof Date) {
+            newValue = value.toISOString();
+        } else {
+            const parsed = parseInt(value);
+            newValue = isNaN(parsed) ? value : parsed;
+        }
 
-   handleChange(data) {
-      const measure = this.state.measure;
-      const { name, value } = data.target ? data.target : data;
-      let newValue;
+        measure[name] = newValue;
 
-      if (value instanceof Date) {
-         newValue = value.toISOString();
-      } else {
-         const parsed = parseInt(value);
-         newValue = isNaN(parsed) ? value : parsed;
-      }
+        setMeasure(measure);
+    };
 
-      measure[name] = newValue;
+    const saveMeasure = () => {
+        dispatch(updateMeasure(measure, user))
+            .then(() => {
+                toastr.success("Tiltaket ble oppdatert");
+                setValidationErrors(validationErrors);
+            })
+            .catch(({ response }) => {
+                toastr.error("Kunne ikke oppdatere tiltak");
+                setValidationErrors(response.data);
+            });
+    };
 
-      this.setState({ measure });
-   }
+    const getMeasureStatusLabel = (planStatuses, measure) => {
+        return planStatuses.find((status) => measure.status === status.value).label;
+    };
 
-   saveMeasure() {
-      const measure = this.state.measure;
+    const renderStars = (amount) => {
+        return [...Array(amount).keys()].map((nr) => (
+            <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />
+        ));
+    };
 
-      if (this.state.selectedOwner.length) {
-         measure.owner.id = this.state.selectedOwner[0].id
-      }
+    if (!dataFetched) {
+        return "";
+    }
 
-      this.props.updateMeasure(measure, this.props.user)
-         .then(() => {
-            toastr.success('Tiltaket ble oppdatert');
-            this.setState({ validationErrors: [] });
-         })
-         .catch(({ response }) => {
-            toastr.error('Kunne ikke oppdatere tiltak');
-            this.setState({ validationErrors: response.data });
-         });
-   }
-
-   getMeasureStatusLabel(planStatuses, measure) {
-      return planStatuses.find(status => measure.status === status.value).label;
-   }
-
-   getMdeInstance(instance) {
-      const container = instance?.element?.nextSibling;
-      container.setAttribute('tabIndex', '0');
-      if (!this.state.editableReport) {
-         const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
-         editableElement.style.display = 'none';
-         instance.togglePreview();
-         instance.codemirror.options.readOnly = true;
-         container.classList.add(formsStyle.mdePreview);
-      }
-   }
-
-   handleEditableReportChange(event) {
-      const editableReport = event.target.checked;
-      this.setState({ editableReport });
-   }
-
-   renderStars(amount) {
-      return [...Array(amount).keys()].map(nr => <img key={`star-${nr}`} className={formsStyle.star} src={StarIcon} alt="Stjerne" />)
-   }
-
-   handleOwnerSelect(data) {
-      this.setState({
-         selectedOwner: data
-      })
-   }
-
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
-
-      return (
-         <React.Fragment>
-
+    return (
+        <React.Fragment>
             <div className={`${formsStyle.form} form-container`}>
-               <div className={formsStyle.block}>
-                  <ValidationErrors errors={this.state.validationErrors} />
+                <div className={formsStyle.block}>
+                    <ValidationErrors errors={validationErrors} />
+                    <gn-field-container block>
+                        <gn-label block>
+                            <label htmlFor="measure-progress">Status</label>
+                        </gn-label>
+                        <div data-color-mode="light">
+                            {editableReport ? (
+                                <MDEditor
+                                    id="measure-progress"
+                                    preview="edit"
+                                    height={200}
+                                    name="description"
+                                    value={measureProgressMarkdown || ""}
+                                    onChange={(value) => {
+                                        handleChange({ name: "progress", value });
+                                        setMeasureProgressMarkdown(value);
+                                    }}
+                                />
+                            ) : (
+                                <MDEditor.Markdown id="measure-progress" source={measureProgressMarkdown || ""} />
+                            )}
+                        </div>
+                    </gn-field-container>
 
-                  <Form.Group controlId="formProgress">
-                     {
-                        this.state.editableReport
-                           ? (<React.Fragment>
-                              <Form.Label>{this.props.translate('statusProgress')}  </Form.Label>
-                              <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                 <SimpleMDE
-                                    value={this.state.measure.progress || ''}
-                                    onChange={value => this.handleChange({ name: 'progress', value })}
-                                    options={editableMdeOptions}
-                                    getMdeInstance={this.getMdeInstance}
-                                 />
+                    <div className={`${editableReport ? "" : `${formsStyle.flex}`}`}>
+                        <gn-field-container block>
+                            <gn-label block>
+                                <label htmlFor="measure-volume">
+                                    {dispatch(translate("Volume"))}
+                                    <ToggleHelpText resourceKey="VolumeDescription" />{" "}
+                                </label>
+                            </gn-label>
+                            {editableReport ? (
+                                <gn-select>
+                                    <select
+                                        id="measure-volume"
+                                        name="volume"
+                                        defaultValue={measure.volume || 0}
+                                        onChange={(event) =>
+                                            handleChange({ name: "volume", value: event?.target?.value })
+                                        }
+                                    >
+                                        {measureVolume.map((measureVolumeOption) => {
+                                            return (
+                                                <option
+                                                    key={measureVolumeOption.value}
+                                                    value={measureVolumeOption.value}
+                                                >
+                                                    {measureVolumeOption.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
+                            ) : (
+                                <span>{renderStars(measure.volume || 0)}</span>
+                            )}
+                        </gn-field-container>
 
-                              </div>
-                           </React.Fragment>
-                           )
-                           : (
-                              <SimpleMDE
-                                 value={this.state.measure.progress || ''}
-                                 options={readOnlyMdeOptions}
-                                 getMdeInstance={this.getMdeInstance} />
-                           )
-                     }
+                        <gn-field-container block>
+                            <gn-label block>
+                                <label htmlFor="measure-status">
+                                    Status <ToggleHelpText resourceKey="StatusDescription" />
+                                </label>
+                            </gn-label>
+                            {editableReport ? (
+                                <gn-select>
+                                    <select
+                                        id="measure-status"
+                                        name="status"
+                                        defaultValue={measure.status || 1}
+                                        onChange={(event) =>
+                                            handleChange({ name: "status", value: event?.target?.value })
+                                        }
+                                    >
+                                        {planStatuses.map((planStatus) => {
+                                            return (
+                                                <option key={planStatus.value} value={planStatus.value}>
+                                                    {planStatus.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
+                            ) : (
+                                <span>{getMeasureStatusLabel(planStatuses, measure)}</span>
+                            )}
+                        </gn-field-container>
 
-                  </Form.Group>
-                  <div className={`${this.state.editableReport ? '' : `${formsStyle.flex}`}`}>
-                     <Form.Group controlId="formVolume">
-                        <Form.Label>{this.props.translate('Volume')}
-                           <ToggleHelpText resourceKey='VolumeDescription' /> </Form.Label>
-                        {
-                           this.state.editableReport
-                              ? (
-                                 <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
-                                       name="volume"
-                                       value={this.state.measure.volume || 0}
-                                       options={this.props.measureVolume}
-                                       onSelect={this.handleChange}
-                                       className={formsStyle.defaultSelect}
-                                    />
+                        <gn-field-container block>
+                            <gn-label block>
+                                <label htmlFor="measure-trafficLight">
+                                    {dispatch(translate("TrafficLight"))}
+                                    <ToggleHelpText resourceKey="TrafficlightDescription" />{" "}
+                                </label>
+                            </gn-label>
+                            {editableReport ? (
+                                <gn-select>
+                                    <select
+                                        id="measure-trafficLight"
+                                        name="trafficLight"
+                                        defaultValue={measure.trafficLight || 1}
+                                        onChange={(event) =>
+                                            handleChange({ name: "trafficLight", value: event?.target?.value })
+                                        }
+                                    >
+                                        {trafficLights.map((trafficLight) => {
+                                            return <option key={trafficLight.value} value={trafficLight.value}>{trafficLight.label}</option>;
+                                        })}
+                                    </select>
+                                </gn-select>
+                            ) : (
+                                <span
+                                    className={`${formsStyle.trafficLight} ${
+                                        formsStyle["light-" + measure.trafficLight]
+                                    }`}
+                                ></span>
+                            )}
+                        </gn-field-container>
 
-                                 </div>
-                              )
-                              : (
-                                 <span>{this.renderStars(this.state.measure.volume || 0)}</span>
-                              )
-                        }
+                        <gn-field-container block>
+                            <gn-label block>
+                                <label htmlFor="measure-results">
+                                    {dispatch(translate("Results"))} <ToggleHelpText resourceKey="ResultDescription" />
+                                </label>
+                            </gn-label>
+                            {editableReport ? (
+                                <gn-select>
+                                    <select
+                                        id="measure-results"
+                                        name="results"
+                                        defaultValue={measure.results || 1}
+                                        onChange={(event) =>
+                                            handleChange({ name: "results", value: event?.target?.value })
+                                        }
+                                    >
+                                        {measureResults.map((measureResult) => {
+                                            return (
+                                                <option key={measureResult.value} value={measureResult.value}>
+                                                    {measureResult.label}
+                                                </option>
+                                            );
+                                        })}
+                                    </select>
+                                </gn-select>
+                            ) : (
+                                <span>{renderStars(measure.results || 0)}</span>
+                            )}
+                        </gn-field-container>
+                    </div>
 
-                     </Form.Group>
-
-                     <Form.Group controlId="formStatus">
-
-                        <Form.Label>Status <ToggleHelpText resourceKey='StatusDescription' /></Form.Label>
-                        {
-                           this.state.editableReport
-                              ? (
-                                 <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
-                                       name="status"
-                                       value={this.state.measure.status || 1}
-                                       options={this.props.planStatuses}
-                                       onSelect={this.handleChange}
-                                       className={formsStyle.defaultSelect}
-                                    />
-
-                                 </div>
-                              )
-                              : (
-                                 <span>{this.getMeasureStatusLabel(this.props.planStatuses, this.state.measure)}</span>
-                              )
-                        }
-
-                     </Form.Group>
-
-                     <Form.Group controlId="formTrafficLight">
-                        <Form.Label>{this.props.translate('TrafficLight')}
-                           <ToggleHelpText resourceKey='TrafficlightDescription' /> </Form.Label>
-                        {
-                           this.state.editableReport
-                              ? (
-                                 <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
-                                       name="trafficLight"
-                                       value={this.state.measure.trafficLight || 1}
-                                       options={this.props.trafficLights}
-                                       onSelect={this.handleChange}
-                                       className={formsStyle.trafficLightSelect}
-                                    />
-
-                                 </div>
-                              )
-                              : (
-                                 <span className={`${formsStyle.trafficLight} ${formsStyle['light-' + this.state.measure.trafficLight]}`}></span>
-                              )
-                        }
-                     </Form.Group>
-
-                     <Form.Group controlId="formResults">
-                        <Form.Label>{this.props.translate('Results')} <ToggleHelpText resourceKey='ResultDescription' />
-                        </Form.Label>
-
-                        {
-                           this.state.editableReport
-                              ? (
-                                 <div className={formsStyle.comboInput}>
-                                    <SelectDropdown
-                                       name="results"
-                                       value={this.state.measure.results || 1}
-                                       options={this.props.measureResults}
-                                       onSelect={this.handleChange}
-                                       className={formsStyle.defaultSelect}
-                                    />
-
-                                 </div>
-                              )
-                              : (
-                                 <span>{this.renderStars(this.state.measure.results || 0)}</span>
-                              )
-                        }
-                     </Form.Group>
-                  </div>
-                  <Form.Group controlId="formComments">
-                     <Form.Label>{this.props.translate('Comment')}
-                        <ToggleHelpText resourceKey='CommentDescription' />
-                     </Form.Label>
-                     {
-                        this.state.editableReport
-                           ? (
-                              <div className={`${formsStyle.comboInput} ${formsStyle.fullWidth}`}>
-                                 <Form.Control as="textarea" name="comment" value={this.state.measure.comment || ''} onChange={this.handleChange} rows={3} />
-                              </div>
-                           )
-                           : (
-                              <span>{this.state.measure.comment}</span>
-                           )
-                     }
-                  </Form.Group>
-               </div>
+                    <gn-field-container block>
+                        <gn-label block>
+                            <label>
+                                {dispatch(translate("Comment"))}
+                                <ToggleHelpText resourceKey="CommentDescription" />
+                            </label>
+                        </gn-label>
+                        {editableReport ? (
+                            <gn-textarea block fullWidth resize="vertical">
+                                <textarea
+                                    name="comment"
+                                    defaultValue={measure.comment || ""}
+                                    onChange={handleChange}
+                                    rows={4}
+                                />
+                            </gn-textarea>
+                        ) : (
+                            <span>{measure.comment}</span>
+                        )}
+                    </gn-field-container>
+                </div>
             </div>
-            {
-               this.state.editableReport
-                  ? (
-                     <div>
-                        {
-                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
-                              ? (
-                                 <React.Fragment>
-                                    <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editableReport: false }) }}>Avslutt redigering</Button>
-                                    <Button variant="primary" onClick={this.saveMeasure}>{this.props.translate('btnSave')}</Button>
-                                 </React.Fragment>
-                              )
-                              : ''
-                        }
-                     </div>
-                  ) : (
-                     <div>
-
-                        {
-                           canEditReport(this.props.authInfo, this.props.selectedMeasure.owner)
-                              ? <Button variant="primary" onClick={(event) => { this.setState({ editableReport: true }) }}>{this.props.translate('btnEditReport')}</Button>
-                              : ''
-                        }
-                     </div>
-                  )
-
-            }
-            {<Modal
-               show={this.state.deleteMeasureModalOpen}
-               onHide={this.closeDeleteMeasureModal}
-               keyboard={false}
-               animation={false}
-               centered
-               backdrop="static"
-               aria-labelledby="form-dialog-title">
-               <Modal.Header closeButton>
-                  <Modal.Title>{this.props.translate('btnDelete')}</Modal.Title>
-               </Modal.Header>
-
-               <Modal.Body>
-                  <p>Er du sikker på at du vil slette {this.state.measure.name}?</p>
-                  {this.state.measure.activities.length > 0 ? 'Du kan ikke slette da det er aktiviteter knyttet til tiltaket' + this.state.measure.name : ''}
-               </Modal.Body>
-
-               <Modal.Footer>
-                  <Button variant="secondary" onClick={this.closeDeleteMeasureModal}>Avbryt</Button>
-                  <Button disabled={this.state.measure.activities.length > 0} variant="danger" onClick={this.handleDelete}>Slett</Button>
-               </Modal.Footer>
-            </Modal>}
-
-
-         </React.Fragment>
-      );
-   }
-}
-
-const mapStateToProps = state => ({
-   selectedMeasure: state.measures.selectedMeasure,
-   measureVolume: state.options.measureVolume,
-   measureResults: state.options.measureResults,
-   trafficLights: state.options.trafficLights,
-   planStatuses: state.options.planStatuses,
-   organizations: state.organizations,
-   authInfo: state.authInfo,
-   user: state.oidc.user
-});
-
-const mapDispatchToProps = {
-   fetchOptions,
-   updateMeasure,
-   fetchOrganizations,
-   translate
+            {editableReport ? (
+                canEditReport(authInfo, selectedMeasure.owner) ? (
+                    <div>
+                        <gn-button color="default">
+                            <button onClick={() => setEditableReport(false)}>Avslutt redigering</button>
+                        </gn-button>
+                        <gn-button color="primary">
+                            <button onClick={saveMeasure}>{dispatch(translate("btnSave"))}</button>
+                        </gn-button>
+                    </div>
+                ) : null
+            ) : (
+                <div>
+                    {canEditReport(authInfo, selectedMeasure.owner) ? (
+                        <gn-button color="primary">
+                            <button onClick={() => setEditableReport(true)}>
+                                {dispatch(translate("btnEditReport"))}
+                            </button>
+                        </gn-button>
+                    ) : null}
+                </div>
+            )}
+        </React.Fragment>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(EditMeasure));
+export default ReportDetails;

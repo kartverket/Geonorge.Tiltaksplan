@@ -1,219 +1,226 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import ReactTooltip from 'react-tooltip';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Tooltip } from "react-tooltip";
+// eslint-disable-next-line no-unused-vars
+import { GnTable, GnSelect } from "@kartverket/geonorge-web-components/GnTable";
 
 // Components
-import MeasuresTableRow from 'components/partials/MeasuresTable/MeasuresTableRow';
-import { SelectDropdown } from 'components/custom-elements';
+import MeasuresTableRow from "components/partials/MeasuresTable/MeasuresTableRow";
 
 // Actions
-import { fetchMeasures } from 'actions/MeasuresActions';
-import { fetchOptions } from 'actions/OptionsActions';
-import { translate } from 'actions/ConfigActions';
+import { fetchOptions } from "actions/OptionsActions";
+import { translate } from "actions/ConfigActions";
 
 // Stylesheets
-import style from 'components/partials/MeasuresTable.module.scss';
-import formsStyle from 'components/partials/forms.module.scss';
+import style from "components/partials/MeasuresTable.module.scss";
+import "react-tooltip/dist/react-tooltip.css";
 
+const MeasuresTable = (props) => {
+    const dispatch = useDispatch();
 
-class MeasuresTable extends Component {
-   constructor(props) {
-      super(props);
-      this.state = {
-         dataFetched: false,
-         statusSelected: 0,
-         statuses : null,
-         measures: null,
-            sort: {
-            column: null,
-            direction: 'desc',
-            },
-         measuresAll: null
-      }
+    const [dataFetched, setDataFetched] = useState(false);
+    const [statusSelected, setStatusSelected] = useState(0);
+    const [statuses, setStatuses] = useState();
+    const [sortedMeasures, setSortedMesaures] = useState(props.measures);
+    const [sort, setSort] = useState({ column: null, direction: "desc" });
 
-      this.handleChange = this.handleChange.bind(this);
-   }
+    // Redux store
+    const planStatuses = useSelector((state) => state.options.planStatuses);
 
+    const handleChange = (statusValueString) => {
+        const statusValue = parseInt(statusValueString);
+        setStatusSelected(statusValue);
+    };
 
+    const getMeasureStatusLabel = (planStatuses, measure) => {
+        return planStatuses?.length ? planStatuses.find((status) => measure.status === status.value)?.label : "";
+    };
 
-   handleChange(data) {
+    const statusExists = (status, arr) => {
+        return arr?.length
+            ? arr.some(function (el) {
+                  return el.value === status;
+              })
+            : null;
+    };
 
-      let statusMeasures = this.state.measuresAll;
-      let status = data.value;
+    const setArrow = (column) => {
+        let className = "sort-direction";
+        if (sort.column === column) {
+            className += sort.direction === "asc" ? ` ${style.asc}` : ` ${style.desc}`;
+        }
+        return className;
+    };
 
-      if(status !== 0)
-      {
-      statusMeasures = statusMeasures.filter(function (el) {
-         return el.status === status ;
-       });
-      }
+    const onSort = (column) => {
+        return (e) => {
+            const direction = sort.column ? (sort.direction === "asc" ? "desc" : "asc") : "asc";
+            const sortedMeasures = props.measures.sort((a, b) => {
+                if (column === "owner") {
+                    const nameA = a.owner.name;
+                    const nameB = b.owner.name;
 
-      this.setState({
-         statusSelected: status,
-         measures: statusMeasures
-     })
-    }
+                    if (nameA < nameB) return -1;
+                    if (nameA < nameB) return 1;
+                    else return 0;
+                } else if (column === "status") {
+                    const nameA = getMeasureStatusLabel(planStatuses, a);
+                    const nameB = getMeasureStatusLabel(planStatuses, b);
 
-   getMeasureStatusLabel(planStatuses, measure) {
-      return planStatuses.find(status => measure.status === status.value).label;
-   }
+                    var preferredOrder = [
+                        "Oppstartsfase",
+                        "Utredningsfase",
+                        "Gjennomføringsfase",
+                        "Avsluttende fase",
+                        "Avsluttet",
+                        "Inngår i annet tiltak",
+                        "Utgår"
+                    ];
+                    return preferredOrder.indexOf(nameA) - preferredOrder.indexOf(nameB);
+                } else if (column === "name") {
+                    const nameA = a.name;
+                    const nameB = b.name;
 
-   statusExists(status, arr) {
-      return arr.some(function(el) {
-        return el.value === status;
-      }); 
-    }
+                    if (nameA < nameB) return -1;
+                    if (nameA < nameB) return 1;
+                    else return 0;
+                } else if (column === "lastupdated") {
+                    const nameA = a.lastUpdatedActivity;
+                    const nameB = b.lastUpdatedActivity;
 
+                    return new Date(nameA) - new Date(nameB);
+                } else if (column === "no") {
+                    const nameA = a.no;
+                    const nameB = b.no;
 
-   componentDidMount() {
-      Promise.all([
-         this.props.fetchMeasures(),
-         this.props.fetchOptions()
-      ])
-      .then(() => {
-         this.setState({ dataFetched: true, measures: this.props.measures, measuresAll: this.props.measures, statuses: this.props.planStatuses });
-         let planStatuses = this.state.statuses;
-         console.log(this.props.measures);
-         let allStatus = {value:0, label: "Alle"};
-         if(!this.statusExists(0, planStatuses))
-            planStatuses.unshift(allStatus);
-         this.setState({ statuses: planStatuses });
-      });
-   }
+                    if (nameA < nameB) return -1;
+                    if (nameA < nameB) return 1;
+                    else return 0;
+                } else {
+                    return a.first - b.first;
+                }
+            });
 
-   setArrow = (column) => {
-      let className = 'sort-direction';
-      
-      if (this.state.sort.column === column) {
-        className += this.state.sort.direction === 'asc' ? ` ${style.asc}` : ` ${style.desc}`;
-      }
-      
-      return className;
-      };
+            if (direction === "desc") {
+                sortedMeasures.reverse();
+            }
+            setSortedMesaures(sortedMeasures);
+            setSort({ column, direction });
+        };
+    };
 
-   onSort = column => {
-      return e => {
-          const direction = this.state.sort.column ? (this.state.sort.direction === 'asc' ? 'desc' : 'asc') : 'asc'
-          const sortedMeasures = this.state.measures.sort((a, b) => {
-              if (column === 'owner') {
-                  const nameA = a.owner.name;
-                  const nameB = b.owner.name;
-  
-                  if (nameA < nameB)
-                      return -1
-                  if (nameA < nameB)
-                      return 1
-                  else return 0
-              }
-              else if (column === 'status') {
+    useEffect(() => {
+        if (!dataFetched) {
+            dispatch(fetchOptions()).then(() => {
+                setDataFetched(true);
+                let newPlanStatuses = planStatuses;
+                let allStatus = { value: -1, label: "Alle" };
+                if (!statusExists(-1, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allStatus);
 
-               const nameA = this.getMeasureStatusLabel(this.props.planStatuses, a)
-               const nameB = this.getMeasureStatusLabel(this.props.planStatuses, b)
+                let allActiveStatus = { value: 0, label: "Aktive" };
+                if (!statusExists(0, newPlanStatuses) && !!newPlanStatuses?.length) newPlanStatuses.unshift(allActiveStatus);
 
-               var preferredOrder = ['Oppstartsfase', 'Utredningsfase','Gjennomføringsfase', 'Avsluttende fase', 'Avsluttet','Inngår i annet tiltak','Utgår'];
-                  return preferredOrder.indexOf(nameA) - preferredOrder.indexOf(nameB);
-               }
-               else if (column === 'name') {
+                setStatuses(newPlanStatuses);
+            });
+        }
+    }, [dataFetched, dispatch, planStatuses]);
+    
+    useEffect(() => {
+        setSortedMesaures(props.measures);
+    }, [props.measures]);
 
-                  const nameA = a.name
-                  const nameB = b.name
-   
-                  if (nameA < nameB)
-                      return -1
-                  if (nameA < nameB)
-                      return 1
-                  else return 0
-               }
-               else if (column === 'lastupdated') {
-
-                  const nameA = a.lastUpdatedActivity
-                  const nameB = b.lastUpdatedActivity
-
-                  return new Date(nameA) - new Date(nameB)
-               }
-               else if (column === 'no') {
-
-                  const nameA = a.no
-                  const nameB = b.no
-   
-                  if (nameA < nameB)
-                        return -1
-                  if (nameA < nameB)
-                        return 1
-                  else return 0
-               }
-              else {
-                  return a.first - b.first
-              }
-          })
-
-          if (direction === 'desc') {
-            sortedMeasures.reverse()
-          }
-          
-
-          this.setState({
-              measures: sortedMeasures,
-              sort: {
-                  column,
-                  direction,
-              },
-          })
-      }
-  }
-
-   render() {
-      if (!this.state.dataFetched) {
-         return '';
-      }
-
-      return (
-         <React.Fragment>
-
-            <p>{this.props.translate('MeasureActivitiesDescription')}</p>
+    return (
+        <React.Fragment>
+            <p>{dispatch(translate("MeasureActivitiesDescription"))}</p>
             <div>Status </div>
-            <div className={formsStyle.comboInput}>
-                  <SelectDropdown
-                    name="status"
-                    value={this.state.statusSelected}
-                    options={this.state.statuses}
-                    onSelect={this.handleChange}
-                    className={formsStyle.statusSelect}
-                  />
-
-            </div>
-            <ReactTooltip />
-            <table className={style.measuresTable}>
-               <thead>
-                  <tr>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('no')}><span data-tip="Unikt nummer på tiltaket">Nr</span><span className={this.setArrow('no')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('name')}><span data-tip="Overordnet beskrivelse av tiltaket">{this.props.translate('Measure')}</span><span className={this.setArrow('name')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('status')}><span data-tip="Viser fremdrift på tiltaket">Status</span><span className={this.setArrow('status')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('owner')}><span data-tip="Hovedansvarlig for gjennomføring av tiltaket">{this.props.translate('Owner')}</span><span className={this.setArrow('owner')}></span></th>
-                     <th style={{cursor : 'pointer'}} onClick={this.onSort('lastupdated')}><span data-tip="Sist oppdatert aktivitet/rapport">Sist&nbsp;oppdatert</span><span className={this.setArrow('lastupdated')}></span></th>
-                     <th></th>
-                  </tr>
-               </thead>
-               <tbody>
-                  {this.state.measures.map(measure => <MeasuresTableRow key={measure.id} measure={measure} planStatuses={this.props.planStatuses} />)}
-               </tbody>
-            </table>
-         </React.Fragment>
-      );
-   }
-}
-
-
-const mapStateToProps = state => ({
-   planStatuses: state.options.planStatuses,
-   selectedLanguage: state.selectedLanguage
-});
-
-const mapDispatchToProps = {
-   fetchMeasures,
-   fetchOptions,
-   translate
+            <gn-select>
+                <select onChange={(event) => handleChange(event.target.value)}>
+                    {statuses?.length
+                        ? statuses.map((status) => {
+                              return (
+                                  <option key={status.value} value={status.value}>
+                                      {status.label}
+                                  </option>
+                              );
+                          })
+                        : ""}
+                </select>
+            </gn-select>
+            <gn-table hoverable>
+                <table>
+                    <caption>Liste over handlingsplanens tiltak </caption>
+                    <thead>
+                        <tr>
+                            <th style={{ cursor: "pointer" }} onClick={onSort("no")}>
+                                <Tooltip anchorId="measure-no-title" />
+                                <span id="measure-no-title" data-tooltip-content="Unikt nummer på tiltaket">
+                                    Nr
+                                </span>
+                                <span className={setArrow("no")}></span>
+                            </th>
+                            <th style={{ cursor: "pointer" }} onClick={onSort("name")}>
+                                <Tooltip anchorId="measure-name-title" />
+                                <span id="measure-name-title" data-tooltip-content="Overordnet beskrivelse av tiltaket">
+                                    {dispatch(translate("Measure"))}
+                                </span>
+                                <span className={setArrow("name")}></span>
+                            </th>
+                            <th style={{ cursor: "pointer" }} onClick={onSort("status")}>
+                                <Tooltip anchorId="measure-status-title" />
+                                <span id="measure-status-title" data-tooltip-content="Viser fremdrift på tiltaket">
+                                    Status
+                                </span>
+                                <span className={setArrow("status")}></span>
+                            </th>
+                            <th style={{ cursor: "pointer" }} onClick={onSort("owner")}>
+                                <Tooltip anchorId="measure-owner-title" />
+                                <span
+                                    id="measure-owner-title"
+                                    data-tooltip-content="Hovedansvarlig for gjennomføring av tiltaket"
+                                >
+                                    {dispatch(translate("Owner"))}
+                                </span>
+                                <span className={setArrow("owner")}></span>
+                            </th>
+                            <th style={{ cursor: "pointer" }} onClick={onSort("lastupdated")}>
+                                <Tooltip anchorId="measure-lastUpated-title" />
+                                <span
+                                    id="measure-lastUpated-title"
+                                    data-tooltip-content="Sist oppdatert aktivitet/rapport"
+                                >
+                                    Sist&nbsp;oppdatert
+                                </span>
+                                <span className={setArrow("lastupdated")}></span>
+                            </th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {!!sortedMeasures?.length &&
+                            sortedMeasures
+                                .filter((measure) => {
+                                    if (statusSelected == -1) {
+                                        return true;
+                                    }
+                                    if (statusSelected !== 0) {
+                                        return measure.status === statusSelected;
+                                    } else return (measure.status != 5 && measure.status != 6 && measure.status != 7) ;
+                                })
+                                .map((measure) => {
+                                    return (
+                                        <MeasuresTableRow
+                                            key={measure.id}
+                                            measure={measure}
+                                            planStatuses={planStatuses}
+                                        />
+                                    );
+                                })}
+                    </tbody>
+                </table>
+            </gn-table>
+        </React.Fragment>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(MeasuresTable);
+export default MeasuresTable;

@@ -1,56 +1,77 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { saveAs } from 'file-saver';
-import Button from 'react-bootstrap/Button';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { saveAs } from "file-saver";
+// eslint-disable-next-line no-unused-vars
+import { BreadcrumbList, ContentContainer, GnButton, HeadingText } from "@kartverket/geonorge-web-components";
 
 // Components
-import Container from 'components/template/Container';
-import MeasureDetails from 'components/partials/MeasureDetails';
-import MeasuresTable from 'components/partials/MeasuresTable';
-import { translate } from 'actions/ConfigActions';
+import MeasureDetails from "components/partials/MeasureDetails";
+import MeasuresTable from "components/partials/MeasuresTable";
+import { translate } from "actions/ConfigActions";
+
 // Helpers
-import { convertMeasureReportsToCSV } from 'helpers/csvHelpers';
+import { convertMeasureReportsToCSV } from "helpers/csvHelpers";
+import { fetchMeasures } from "actions/MeasuresActions";
 
-// Actions
-import { fetchMeasures } from 'actions/MeasuresActions';
+const Measures = (props) => {
+    const dispatch = useDispatch();
 
+    // State
+    const [measures, setMeasures] = useState();
 
-class Measures extends Component {
+    // Redux store
+    const options = useSelector((state) => state.options);
 
+    const saveCSVFileForMeasureReports = () => {
+        const filename = "reports.csv";
+        const BOM = "\uFEFF";
+        const csvData = `${BOM} ${convertMeasureReportsToCSV(measures, options)}`;
+        const blob = new Blob([csvData], {
+            type: "text/csv;charset=utf-8"
+        });
+        saveAs(blob, filename);
+    };
 
-   saveCSVFileForMeasureReports() {
-      const filename = "reports.csv";
-      const BOM = "\uFEFF";
-      const csvData = `${BOM} ${convertMeasureReportsToCSV(this.props.measures, this.props.options)}`;
-      const blob = new Blob([csvData], {
-         type: "text/csv;charset=utf-8"
-      });
-      saveAs(blob, filename);
-   }
+    const pageTitle = dispatch(translate("infoLinkMeasure"));
+    const breadcrumbs = [
+        {
+            name: "Geonorge",
+            url: "@AppSettings.UrlGeonorgeRoot"
+        },
+        {
+            name: pageTitle,
+            url: "/"
+        }
+    ];
 
-   render() {
-      return (
-         <Container>
-            <h1>{this.props.translate('MeasureActivitiesTitle')}</h1>
-            <MeasureDetails newMeasure />
-            <MeasuresTable measures={this.props.measures} />
-            <Button variant="primary" onClick={() => this.saveCSVFileForMeasureReports()}>Lagre som CSV</Button>
-         </Container>
-      )
-   }
-}
+    const handleMeasureDetailsUpdate = () => {
+        dispatch(fetchMeasures()).then((response) => {
+            setMeasures(response.payload);
+        });
+    };
 
-const mapStateToProps = state => ({
-   authInfo: state.authInfo,
-   measures: state.measures.measures,
-   options: state.options,
-   selectedLanguage: state.selectedLanguage
-});
+    useEffect(() => {
+        dispatch(fetchMeasures()).then((response) => {
+            setMeasures(response.payload);
+        });
+    }, [dispatch]);
 
-const mapDispatchToProps = {
-   fetchMeasures,
-   translate
+    return (
+        <content-container>
+            <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
+            <div id="main-content">
+                <heading-text>
+                    <h1 underline="true">{pageTitle}</h1>
+                </heading-text>
+                <MeasureDetails newMeasure onUpdate={handleMeasureDetailsUpdate} />
+                {measures?.length && <MeasuresTable measures={measures} />}
+                <gn-button color="default">
+                    <button onClick={() => saveCSVFileForMeasureReports()}>Lagre som CSV</button>
+                </gn-button>
+            </div>
+        </content-container>
+    );
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(Measures);
+export default Measures;

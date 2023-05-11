@@ -1,435 +1,397 @@
 // Dependencies
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import DatePicker from "react-datepicker";
-import SimpleMDE from "react-simplemde-editor";
-import { registerLocale } from "react-datepicker";
-import nb from 'date-fns/locale/nb';
-import DayJS from 'react-dayjs';
-import { Typeahead } from 'react-bootstrap-typeahead';
-import { toastr } from 'react-redux-toastr'
-import Modal from 'react-bootstrap/Modal';
-import { withRouter, Redirect } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import DayJS from "react-dayjs";
+import { Typeahead } from "react-bootstrap-typeahead";
+import { toastr } from "react-redux-toastr";
+import { Link, useNavigate, useParams } from "react-router-dom";
+import MDEditor from "@uiw/react-md-editor";
+
+// Geonorge WebComponents
+/* eslint-disable */
+import {
+    GnButton,
+    GnDialog,
+    GnFieldContainer,
+    GnLabel,
+    GnInput,
+    HeadingText
+} from "@kartverket/geonorge-web-components/GnTable";
+/* eslint-enable */
 
 // Components
-import { SelectDropdown } from 'components/custom-elements';
-import { translate } from 'actions/ConfigActions';
-import ValidationErrors from 'components/partials/ValidationErrors';
+import { translate } from "actions/ConfigActions";
+import ValidationErrors from "components/partials/ValidationErrors";
 
 // Models
-import { Activity } from 'models/activity';
+import { Activity } from "models/activity";
 
 // Actions
-import { createActivity, updateActivity, deleteActivity } from 'actions/ActivityActions';
-import { fetchOrganizations } from 'actions/OrganizationsActions';
-import { fetchOptions } from 'actions/OptionsActions';
+import { createActivity, updateActivity, deleteActivity } from "actions/ActivityActions";
+import { fetchOrganizations } from "actions/OrganizationsActions";
+import { fetchOptions } from "actions/OptionsActions";
 
 // Helpers
-import { canDeleteActivity, canEditActivity } from 'helpers/authorizationHelpers';
+import { canDeleteActivity, canEditActivity } from "helpers/authorizationHelpers";
+import { formatInputDateValue } from "helpers/formatHelpers";
 
 // Stylesheets
-import formsStyle from 'components/partials/forms.module.scss';
+import formsStyle from "components/partials/forms.module.scss";
 
+const ActivityDetails = (props) => {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
 
-const editableMdeOptions = {
-  toolbar: ["bold", "italic", "link", "unordered-list", "|", "preview"],
-  spellChecker: false
-};
+    // Redux store
+    const selectedMeasure = useSelector((state) => state.options.selectedMeasure);
+    const authInfo = useSelector((state) => state.authInfo);
+    const selectedActivity = useSelector((state) => state.activities.selectedActivity);
+    const user = useSelector((state) => state.oidc.user);
+    const planStatuses = useSelector((state) => state.options.planStatuses);
+    const organizations = useSelector((state) =>
+        state.organizations.map((organization) => {
+            return {
+                organizationId: organization.id,
+                name: organization.name
+            };
+        })
+    );
 
-const readOnlyMdeOptions = {
-  toolbar: false,
-  status: false,
-  spellChecker: false,
-  readOnly: true
-};
+    // State
+    const [activity, setActivity] = useState(
+        props.newActivity ? new Activity({ measureId: selectedMeasure?.id }) : selectedActivity
+    );
+    const [activityDescriptionMarkdown, setActivityDescriptionMarkdown] = useState(activity?.description || "");
+    const [editable, setEditable] = useState(props.location?.state?.editable || props.newActivity ? true : false);
+    const [dataFetched, setDataFetched] = useState(false);
+    const [dialogOpen, setDialogOpen] = useState([false]);
+    const [validationErrors, setValidationErrors] = useState(false);
 
-registerLocale('nb', nb)
+    // Params
+    const { measureNumber } = useParams();
 
-class ActivityDetails extends Component {
-  constructor(props) {
-    super(props);
+    useEffect(() => {
+        Promise.all([dispatch(fetchOrganizations()), dispatch(fetchOptions())]).then(() => {
+            setDataFetched(true);
+        });
+    }, [dispatch]);
 
-    this.state = {
-      activity: this.props.newActivity
-        ? new Activity({ measureId: this.props.selectedMeasure.id })
-        : props.selectedActivity,
-      editable: (this.props.location.state && this.props.location.state.editable) || this.props.newActivity ? true : false,
-      dataFetched: false,
-      modalOpen: false,
-      validationErrors: [],
-      redirect: null
+    const handleChange = (data) => {
+        const { name, value, type } = data.target ? data.target : data;
+        let newValue = value;
+
+        if (type !== "date") {
+            const parsed = parseInt(value);
+            newValue = isNaN(parsed) ? value : parsed;
+        }
+        activity[name] = newValue;
+        setActivity(activity);
     };
 
-    this.getMdeInstance = this.getMdeInstance.bind(this);
-    this.handleChange = this.handleChange.bind(this);
-    this.handleParticipantsChange = this.handleParticipantsChange.bind(this);
-    this.saveActivity = this.saveActivity.bind(this);
-    this.handleDelete = this.handleDelete.bind(this);
-    this.openModal = this.openModal.bind(this);
-    this.closeModal = this.closeModal.bind(this);
-  }
+    const handleParticipantsChange = (participants) => {
+        if (!participants.length) {
+            return;
+        }
 
-  componentDidMount() {
-    Promise.all([
-      this.props.fetchOrganizations(),
-      this.props.fetchOptions()
-    ])
-      .then(() => {
-        this.setState({ dataFetched: true });
-      });
-  }
+        participants.forEach((participant) => {
+            if (participant.customOption) {
+                delete participant.id;
+                delete participant.customOption;
+            }
+            participant.activityId = activity.id;
+        });
 
-  handleChange(data) {
-    const activity = this.state.activity;
-    const { name, value } = data.target ? data.target : data;
-    let newValue;
-
-    if (value instanceof Date) {
-      newValue = this.formatDate(value);
-    } else {
-      const parsed = parseInt(value);
-      newValue = isNaN(parsed) ? value : parsed;
-    }
-
-    activity[name] = newValue;
-
-    this.setState({ activity });
-  }
-
-  openModal() {
-    this.setState({ modalOpen: true });
-  }
-
-  closeModal() {
-    this.setState({ modalOpen: false });
-  }
-
-  handleParticipantsChange(participants) {
-    if (!participants.length) {
-      return;
-    }
-
-    participants.forEach(participant => {
-      if (participant.customOption) {
-        delete participant.id;
-        delete participant.customOption
-      }
-      participant.activityId = this.state.activity.id;
-    });
-
-    this.handleChange({
-      name: 'participants',
-      value: participants
-    });
-  }
-
-  getActivityStatusLabel(planStatuses, activity) {
-
-    let allStatus = {value:0, label: "Alle"};
-    if(!this.statusExists(0, planStatuses))
-       planStatuses.unshift(allStatus);
-
-    return planStatuses && activity.status && planStatuses[activity.status] &&
-      planStatuses[activity.status].label ? planStatuses[activity.status].label : '';
-  }
-
-  statusExists(status, arr) {
-    return arr.some(function(el) {
-      return el.value === status;
-    }); 
-  }
-
-  formatDate(date) {
-
-    const diff = 120 // max diff norway
-    var newDateObj = new Date(date.getTime() + diff * 60000);
-    return newDateObj;
-
-  }
-
-  handleDelete() {
-    this.props.deleteActivity(this.state.activity, this.props.user)
-      .then(() => {
-        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
-      });
-  }
-
-  getMeasureNumber() {
-    return this.props.match && this.props.match.params && this.props.match.params.measureNumber
-      ? parseInt(this.props.match.params.measureNumber)
-      : null;
-  }
-
-  saveActivity() {
-    this.props.newActivity ? this.createActivity() : this.updateActivity();
-  }
-
-  createActivity() {
-    this.props.createActivity(this.state.activity, this.props.user)
-      .then(_ => {
-        this.setState({ validationErrors: [] });
-        this.props.history.push(`/tiltak/${this.getMeasureNumber()}`);
-      })
-      .catch(({ response }) => {
-        toastr.error('Kunne ikke opprette aktivitet');
-        this.setState({ validationErrors: response.data });
-        window.scroll(0, 0);
-      });
-  }
-
-  updateActivity() {
-    this.props.updateActivity(this.state.activity, this.props.user)
-      .then(_ => {
-        this.setState({ validationErrors: [] });
-        toastr.success('Aktiviteten ble oppdatert');
-      })
-      .catch(({ response }) => {
-        toastr.error('Kunne ikke oppdatere aktivitet');
-        this.setState({ validationErrors: response.data });
-        window.scroll(0, 0);
-      });
-  }
-
-  getMdeInstance(instance) {
-    const container = instance?.element?.nextSibling;
-    container.setAttribute('tabIndex', '0');
-
-    if (!this.state.editable) {
-      const editableElement = container.getElementsByClassName('CodeMirror-scroll')?.[0]
-      editableElement.style.display = 'none';
-      instance.togglePreview();
-      instance.codemirror.options.readOnly = true;
-      container.classList.add(formsStyle.mdePreview);
-    }
-  }
-
-  getParticipants() {
-    if (this.state.activity && this.state.activity.participants) {
-      return this.state.activity.participants.map((participant, index) => <div key={`participant-${index}`}>{participant.name}</div>)
-    }
-    return '';
-  }
-
-  render() {
-    if (this.state.redirect) {
-      return <Redirect to={this.state.redirect} />;
-    }
-
-    if (!this.state.dataFetched) {
-      return '';
-    }
-
-    return this.state.activity ? (
-      <React.Fragment>
-        <ValidationErrors errors={this.state.validationErrors} />
-
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('labelNumber')}</Form.Label>
-          {this.state.editable
-            ? (
-              <div className={formsStyle.comboInput}>
-                <Form.Control type="number" min="0" name="no" value={this.state.activity.no} onChange={this.handleChange} />
-              </div>
-            )
-            : (
-              <div>{this.state.activity.no}</div>
-            )}
-        </Form.Group>
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Activity')} </Form.Label>
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <Form.Control type="text" name="name" value={this.state.activity.name} onChange={this.handleChange} />
-                </div>
-              )
-              : (
-                <div>{this.state.activity.name}</div>
-              )
-          }
-        </Form.Group>
-
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Description')}  </Form.Label>
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput} style={{ display: 'block' }}>
-                  <SimpleMDE
-                    value={this.state.activity?.description || ''}
-                    onChange={value => this.handleChange({ name: 'description', value })}
-                    options={editableMdeOptions}
-                    getMdeInstance={this.getMdeInstance}
-                  />
-                </div>
-              )
-              : (
-                <SimpleMDE
-                  value={this.state.activity?.description || ''}
-                  options={readOnlyMdeOptions}
-                  getMdeInstance={this.getMdeInstance} />
-              )
-          }
-        </Form.Group>
-
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Start </Form.Label>
-
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationStart" placeholderText="Sett startdato" selected={this.state.activity.implementationStart ? new Date(this.state.activity.implementationStart) : null} onChange={(date) => this.handleChange({ name: 'implementationStart', value: date })} />
-                </div>
-              )
-              : (
-                <div><DayJS format="MMMM YYYY">{this.state.activity.implementationStart}</DayJS></div>
-              )
-          }
-        </Form.Group>
-
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('End')}  </Form.Label>
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <DatePicker dateFormat="dd.MM.yyyy" locale="nb" name="implementationEnd" placeholderText="Sett sluttdato" selected={this.state.activity.implementationEnd ? new Date(this.state.activity.implementationEnd) : null} onChange={(date) => this.handleChange({ name: 'implementationEnd', value: date })} />
-                </div>
-              )
-              : (
-                <div><DayJS format="MMMM YYYY" locale="nb">{this.state.activity.implementationEnd}</DayJS></div>
-              )
-          }
-        </Form.Group>
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>Status </Form.Label>
-          {
-            this.state.editable
-              ? (
-                <div className={formsStyle.comboInput}>
-                  <SelectDropdown
-                    name="status"
-                    value={this.state.activity.status || 1}
-                    options={this.props.planStatuses}
-                    onSelect={this.handleChange}
-                    className={formsStyle.statusSelect}
-                  />
-
-                </div>
-              )
-              : (
-                <span>{this.getActivityStatusLabel(this.props.planStatuses, this.state.activity)}</span>
-              )
-          }
-
-        </Form.Group>
-        <Form.Group controlId="formName" className={formsStyle.form}>
-          <Form.Label>{this.props.translate('Participants')}  </Form.Label>
-          {
-            this.state.editable
-              ? (
-                <Typeahead
-                  allowNew
-                  multiple
-                  id="basic-typeahead-multiple"
-                  labelKey="name"
-                  onChange={this.handleParticipantsChange}
-                  options={this.props.organizations}
-                  selected={this.state.activity.participants}
-                  placeholder="Legg til deltakere..."
-                  newSelectionPrefix="Legg til "
-                />
-              )
-              : (
-                <div>{this.getParticipants()}</div>
-              )
-          }
-        </Form.Group>
-        <div className={formsStyle.btngroup}>
-          {this.state.editable ? (
-            <div>
-              {
-                this.props.newActivity
-                  ? (
-                    <React.Fragment>
-                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ redirect: `/tiltak/${this.props.selectedMeasure.no}/` }) }}>Avbryt oppretting</Button>
-                      <Button variant="primary" onClick={this.saveActivity}>Opprett</Button>
-                    </React.Fragment>
-                  )
-                  : (
-                    <React.Fragment>
-                      <Button className="mr-2" variant="secondary" onClick={(event) => { this.setState({ editable: false }) }}>Avslutt redigering</Button>
-                      <Button variant="primary" onClick={this.saveActivity}>Lagre</Button>
-                    </React.Fragment>
-                  )
-              }
-            </div>
-          ) : (
-            <div>
-              {
-                canDeleteActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
-                  ? <Button className="mr-2" variant="secondary" onClick={this.openModal} >Slett aktivitet</Button>
-                  : ''
-              }
-              {
-                canEditActivity(this.props.authInfo, this.props.selectedActivity.responsibleAgency)
-                  ? <Button variant="primary" onClick={(event) => { this.setState({ editable: true }) }}>Rediger aktivitet</Button>
-                  : ''
-              }
-            </div>
-          )}
-        </div>
-        {<Modal
-          show={this.state.modalOpen}
-          onHide={this.closeModal}
-          keyboard={false}
-          animation={false}
-          centered
-          backdrop="static"
-          aria-labelledby="form-dialog-title">
-          <Modal.Header closeButton>
-            <Modal.Title>Slett aktivitet</Modal.Title>
-          </Modal.Header>
-
-          <Modal.Body>
-            <p>Er du sikker på at du vil slette {this.state.activity.name}?</p>
-          </Modal.Body>
-
-          <Modal.Footer>
-            <Button variant="secondary" onClick={this.closeModal}>{this.props.translate('btnCancel')} </Button>
-            <Button variant="danger" onClick={this.handleDelete}>{this.props.translate('btnDelete')} </Button>
-          </Modal.Footer>
-        </Modal>}
-      </React.Fragment>
-    ) : ''
-  }
-}
-
-const mapStateToProps = state => ({
-  selectedMeasure: state.measures.selectedMeasure,
-  selectedActivity: state.activities.selectedActivity,
-  organizations: state.organizations.map(organization => {
-    return {
-      organizationId: organization.id,
-      name: organization.name
+        handleChange({
+            name: "participants",
+            value: participants
+        });
     };
-  }),
-  planStatuses: state.options.planStatuses,
-  user: state.oidc.user,
-  authInfo: state.authInfo
-});
 
-const mapDispatchToProps = {
-  createActivity,
-  updateActivity,
-  fetchOrganizations,
-  fetchOptions,
-  deleteActivity,
-  translate
+    const getActivityStatusLabel = (planStatuses, activity) => {
+        let allStatus = { value: 0, label: "Alle" };
+        if (!statusExists(0, planStatuses)) planStatuses.unshift(allStatus);
+
+        return planStatuses && activity.status && planStatuses[activity.status] && planStatuses[activity.status].label
+            ? planStatuses[activity.status].label
+            : "";
+    };
+
+    const statusExists = (status, arr) => {
+        return arr.some(function (el) {
+            return el.value === status;
+        });
+    };
+
+    const handleDelete = () => {
+        dispatch(
+            deleteActivity(activity, user).then(() => {
+                navigate(`/tiltak/${measureNumber}`);
+            })
+        );
+    };
+
+    const saveActivity = () => {
+        props.newActivity ? createNewActivity() : updateCurrentActivity();
+    };
+
+    const createNewActivity = () => {
+        dispatch(createActivity(activity, user))
+            .then(() => {
+                setValidationErrors([]);
+                navigate(`/tiltak/${measureNumber}`);
+            })
+            .catch(({ response }) => {
+                toastr.error("Kunne ikke opprette aktivitet");
+                setValidationErrors(response.data);
+                window.scroll(0, 0);
+            });
+    };
+
+    const updateCurrentActivity = () => {
+        dispatch(updateActivity(activity, user))
+            .then((_) => {
+                setValidationErrors([]);
+                toastr.success("Aktiviteten ble oppdatert");
+            })
+            .catch(({ response }) => {
+                toastr.error("Kunne ikke oppdatere aktivitet");
+                setValidationErrors(response.data);
+                window.scroll(0, 0);
+            });
+    };
+
+    const getParticipants = () => {
+        if (activity?.participants?.length) {
+            return activity.participants.map((participant, index) => (
+                <div key={`participant-${index}`}>{participant.name}</div>
+            ));
+        }
+        return "";
+    };
+
+    if (!dataFetched) {
+        return "";
+    }
+
+    const openDialog = () => {
+        setDialogOpen(false);
+        setTimeout(() => {
+            setDialogOpen(true);
+        });
+    };
+
+    const closeDialog = () => {
+        setDialogOpen(false);
+    };
+
+    return activity ? (
+        <React.Fragment>
+            <ValidationErrors errors={validationErrors} />
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-no">{dispatch(translate("labelNumber"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input>
+                        <input
+                            id="activity-no"
+                            name="no"
+                            defaultValue={activity.no}
+                            type="number"
+                            min="0"
+                            onChange={handleChange}
+                        />
+                    </gn-input>
+                ) : (
+                    <div>{activity.no}</div>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-name">{dispatch(translate("Activity"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input block fullWidth>
+                        <input id="activity-name" name="name" defaultValue={activity.name} onChange={handleChange} />
+                    </gn-input>
+                ) : (
+                    <div>{activity.name}</div>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-description">{dispatch(translate("Description"))}</label>
+                </gn-label>
+                <div data-color-mode="light">
+                    {editable ? (
+                        <MDEditor
+                            id="activity-description"
+                            preview="edit"
+                            height={200}
+                            name="description"
+                            value={activityDescriptionMarkdown || ""}
+                            onChange={(value) => {
+                                handleChange({ name: "description", value });
+                                setActivityDescriptionMarkdown(value);
+                            }}
+                        />
+                    ) : (
+                        <MDEditor.Markdown id="activity-description" source={activityDescriptionMarkdown || ""} />
+                    )}
+                </div>
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-implementationStart">Start</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input>
+                        <input
+                            id="activity-implementationStart"
+                            name="implementationStart"
+                            defaultValue={
+                                activity.implementationStart?.length
+                                    ? formatInputDateValue(activity.implementationStart)
+                                    : ""
+                            }
+                            type="date"
+                            onChange={(event) =>
+                                handleChange({ name: "implementationStart", value: event.target.value, type: "date" })
+                            }
+                        />
+                    </gn-input>
+                ) : (
+                    <DayJS format="MMMM YYYY" locale="nb">
+                        {activity.implementationStart}
+                    </DayJS>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-implementationEnd">{dispatch(translate("End"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input>
+                        <input
+                            id="activity-implementationEnd"
+                            name="implementationEnd"
+                            defaultValue={
+                                activity.implementationEnd?.length
+                                    ? formatInputDateValue(activity.implementationEnd)
+                                    : ""
+                            }
+                            type="date"
+                            onChange={(event) =>
+                                handleChange({ name: "implementationEnd", value: event.target.value, type: "date" })
+                            }
+                        />
+                    </gn-input>
+                ) : (
+                    <DayJS format="MMMM YYYY" locale="nb">
+                        {activity.implementationEnd}
+                    </DayJS>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-status">Status</label>
+                </gn-label>
+                {editable ? (
+                    <gn-select>
+                        <select name="status" defaultValue={activity.status || 1} onChange={handleChange}>
+                            {planStatuses.map((planStatus) => {
+                                return (
+                                    <option key={planStatus.value} value={planStatus.value}>
+                                        {planStatus.label}
+                                    </option>
+                                );
+                            })}
+                        </select>
+                    </gn-select>
+                ) : (
+                    <span id="activity-status">{getActivityStatusLabel(planStatuses, activity)}</span>
+                )}
+            </gn-field-container>
+
+            <gn-field-container block>
+                <gn-label block>
+                    <label htmlFor="activity-participants">{dispatch(translate("Participants"))}</label>
+                </gn-label>
+                {editable ? (
+                    <gn-input block fullwidth>
+                        <Typeahead
+                            allowNew
+                            multiple
+                            id="activity-participants"
+                            labelKey="name"
+                            onChange={handleParticipantsChange}
+                            options={organizations}
+                            defaultSelected={activity.participants}
+                            placeholder="Legg til deltakere..."
+                            newSelectionPrefix="Legg til "
+                        />
+                    </gn-input>
+                ) : (
+                    <div>{getParticipants()}</div>
+                )}
+            </gn-field-container>
+
+            <div className={formsStyle.btngroup}>
+                {editable ? (
+                    props.newActivity ? (
+                        <div>
+                            <gn-button color="default">
+                                <Link to={`/tiltak/${measureNumber}/`}>Avbryt oppretting</Link>
+                            </gn-button>
+                            <gn-button color="primary">
+                                <button onClick={saveActivity}>Opprett</button>
+                            </gn-button>
+                        </div>
+                    ) : (
+                        <div>
+                            <gn-button color="default">
+                                <button onClick={() => setEditable(false)}>Avslutt redigering</button>
+                            </gn-button>
+                            <gn-button color="primary">
+                                <button onClick={saveActivity}>Lagre</button>
+                            </gn-button>
+                        </div>
+                    )
+                ) : (
+                    <div>
+                        {canDeleteActivity(authInfo, selectedActivity.responsibleAgency) ? (
+                            <gn-button color="default">
+                                <button onClick={() => openDialog()}>Slett aktivitet</button>
+                            </gn-button>
+                        ) : null}
+                        {canEditActivity(authInfo, selectedActivity.responsibleAgency) ? (
+                            <gn-button color="primary">
+                                <button onClick={() => setEditable(true)}>Rediger aktivitet</button>
+                            </gn-button>
+                        ) : null}
+                    </div>
+                )}
+            </div>
+            <gn-dialog show={dialogOpen}>
+                <heading-text>
+                    <h2>Slett aktivitet</h2>
+                </heading-text>
+                <p>Er du sikker på at du vil slette {activity.name}?</p>
+                <gn-button color="default">
+                    <button onClick={() => closeDialog()}>{dispatch(translate("btnCancel"))} </button>
+                </gn-button>
+                <gn-button color="danger">
+                    <button onClick={handleDelete}>{dispatch(translate("btnDelete"))} </button>
+                </gn-button>
+            </gn-dialog>
+        </React.Fragment>
+    ) : null;
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(withRouter(ActivityDetails));
+export default ActivityDetails;
