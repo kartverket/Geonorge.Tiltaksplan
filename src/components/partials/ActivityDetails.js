@@ -124,10 +124,10 @@ const ActivityDetails = (props) => {
 
     const handleDelete = () => {
         dispatch(
-            deleteActivity(activity, user).then(() => {
-                navigate(`/tiltak/${measureNumber}`);
-            })
-        );
+            deleteActivity(activity, user)
+        ).then(() => {
+            navigate(`/tiltak/${measureNumber}`);
+        });
     };
 
     const saveActivity = () => {
