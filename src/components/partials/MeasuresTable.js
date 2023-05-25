@@ -200,12 +200,12 @@ const MeasuresTable = (props) => {
                         {!!sortedMeasures?.length &&
                             sortedMeasures
                                 .filter((measure) => {
-                                    if (statusSelected == -1) {
+                                    if (statusSelected === -1) {
                                         return true;
                                     }
                                     if (statusSelected !== 0) {
                                         return measure.status === statusSelected;
-                                    } else return (measure.status != 5 && measure.status != 6 && measure.status != 7) ;
+                                    } else return (measure.status !== 5 && measure.status !== 6 && measure.status !== 7) ;
                                 })
                                 .map((measure) => {
                                     return (
