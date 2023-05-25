@@ -43,7 +43,7 @@ const ActivityDetails = (props) => {
     const navigate = useNavigate();
 
     // Redux store
-    const selectedMeasure = useSelector((state) => state.options.selectedMeasure);
+    const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
     const authInfo = useSelector((state) => state.authInfo);
     const selectedActivity = useSelector((state) => state.activities.selectedActivity);
     const user = useSelector((state) => state.oidc.user);
@@ -124,10 +124,10 @@ const ActivityDetails = (props) => {
 
     const handleDelete = () => {
         dispatch(
-            deleteActivity(activity, user).then(() => {
-                navigate(`/tiltak/${measureNumber}`);
-            })
-        );
+            deleteActivity(activity, user)
+        ).then(() => {
+            navigate(`/tiltak/${measureNumber}`);
+        });
     };
 
     const saveActivity = () => {
