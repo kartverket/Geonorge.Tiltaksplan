@@ -53,11 +53,11 @@ const Activity = (props) => {
             url: urlGeonorgeRoot
         },
         {
-            name: measureActivitiesTitle,
+            name: "Tiltaksplan",
             url: "/"
         },
         {
-            name: measureTitle,
+            name: `Tiltak ${measureNumber}`,
             url: `/tiltak/${measureNumber}`
         },
         {

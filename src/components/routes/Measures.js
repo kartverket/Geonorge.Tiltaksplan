@@ -42,7 +42,7 @@ const Measures = (props) => {
             url: urlGeonorgeRoot
         },
         {
-            name: pageTitle,
+            name: "Tiltaksplan",
             url: "/"
         }
     ];
