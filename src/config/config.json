@@ -1,5 +1,6 @@
 {
     "environment": "dev",
+    "UrlGeonorgeRoot": "https://www.test.geonorge.no",
     "BuildVersionNumber": "0.0.0",
     "apiBaseURL": "https://tiltaksplan.dev.geonorge.no/api",
     "oidc": {
