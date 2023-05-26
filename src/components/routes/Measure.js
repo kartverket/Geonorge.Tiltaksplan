@@ -20,6 +20,7 @@ import { translate } from "actions/ConfigActions";
 
 // Helpers
 import { canDeleteMeasure, canAddActivity } from "helpers/authorizationHelpers";
+import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
 // Stylesheets
 import style from "components/routes/Measure.module.scss";
@@ -60,10 +61,11 @@ const Measure = (props) => {
 
     const measureActivitiesTitle = dispatch(translate("MeasureActivitiesTitle"));
     const pageTitle = dispatch(translate("infoLinkMeasure"));
+    const urlGeonorgeRoot = getEnvironmentVariable("UrlGeonorgeRoot");
     const breadcrumbs = [
         {
             name: "Geonorge",
-            url: "@AppSettings.UrlGeonorgeRoot"
+            url: urlGeonorgeRoot
         },
         {
             name: measureActivitiesTitle,

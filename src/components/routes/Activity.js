@@ -15,6 +15,9 @@ import { fetchMeasure } from "actions/MeasuresActions";
 import { fetchActivity } from "actions/ActivityActions";
 import { translate } from "actions/ConfigActions";
 
+// Helpers
+import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
+
 const Activity = (props) => {
     // Redux store
     const activity = useSelector((state) => state.activities.selectedActivity);
@@ -43,10 +46,11 @@ const Activity = (props) => {
     const measureTitle = dispatch(translate("infoLinkMeasure"));
     const pageTitle = !!activityNumber ? activity.name : "Opprett aktivitet";
     const pageUrl = !!activityNumber ? `/tiltak/${measureNumber}/aktivitet/${activityNumber}` : `/tiltak/${measureNumber}/ny-aktivitet`;
+    const urlGeonorgeRoot = getEnvironmentVariable("UrlGeonorgeRoot");
     const breadcrumbs = [
         {
             name: "Geonorge",
-            url: "@AppSettings.UrlGeonorgeRoot"
+            url: urlGeonorgeRoot
         },
         {
             name: measureActivitiesTitle,

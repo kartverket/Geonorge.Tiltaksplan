@@ -13,6 +13,7 @@ import { translate } from "actions/ConfigActions";
 // Helpers
 import { convertMeasureReportsToCSV } from "helpers/csvHelpers";
 import { fetchMeasures } from "actions/MeasuresActions";
+import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
 const Measures = (props) => {
     const dispatch = useDispatch();
@@ -34,10 +35,11 @@ const Measures = (props) => {
     };
 
     const pageTitle = dispatch(translate("infoLinkMeasure"));
+    const urlGeonorgeRoot = getEnvironmentVariable("UrlGeonorgeRoot");
     const breadcrumbs = [
         {
             name: "Geonorge",
-            url: "@AppSettings.UrlGeonorgeRoot"
+            url: urlGeonorgeRoot
         },
         {
             name: pageTitle,
