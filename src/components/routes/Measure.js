@@ -20,6 +20,7 @@ import { translate } from "actions/ConfigActions";
 
 // Helpers
 import { canDeleteMeasure, canAddActivity } from "helpers/authorizationHelpers";
+import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
 // Stylesheets
 import style from "components/routes/Measure.module.scss";
@@ -60,17 +61,18 @@ const Measure = (props) => {
 
     const measureActivitiesTitle = dispatch(translate("MeasureActivitiesTitle"));
     const pageTitle = dispatch(translate("infoLinkMeasure"));
+    const urlGeonorgeRoot = getEnvironmentVariable("UrlGeonorgeRoot");
     const breadcrumbs = [
         {
             name: "Geonorge",
-            url: "@AppSettings.UrlGeonorgeRoot"
+            url: urlGeonorgeRoot
         },
         {
-            name: measureActivitiesTitle,
+            name: "Tiltaksplan",
             url: "/"
         },
         {
-            name: pageTitle,
+            name: `Tiltak ${measureNumber}`,
             url: `/tiltak/${measureNumber}`
         }
     ];
@@ -99,19 +101,12 @@ const Measure = (props) => {
                             </h1>
                         </heading-text>
                         {measure.infoUrl ? (
-                            <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">
+                            <a href={`${measure.infoUrl}`} rel="noreferrer">
                                 {dispatch(translate("infoLinkMeasure"))}
                             </a>
                         ) : (
                             ""
                         )}
-                        <FontAwesomeIcon
-                            data-tip="Detaljert beskrivelse - aktiviteter"
-                            icon="external-link-alt"
-                            className={style.icon}
-                            color="#3767c7"
-                            tabIndex="-1"
-                        />
 
                         <p className="">
                             {dispatch(translate("OwnsBy"))} {measure.owner.name}

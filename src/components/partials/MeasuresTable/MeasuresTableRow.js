@@ -38,15 +38,8 @@ const MeasuresTableRow = (props) => {
                 {props.measure.infoUrl ? 
                     <Fragment>
                         <Tooltip anchorId={`measure-name-${props.measure.id}`} />
-                        <a id={`measure-name-${props.measure.id}`} href={props.measure.infoUrl} target="_blank" rel="noreferrer" data-tooltip-content="Overordnet beskrivelse av tiltaket">
+                        <a id={`measure-name-${props.measure.id}`} href={props.measure.infoUrl} rel="noreferrer" data-tooltip-content="Overordnet beskrivelse av tiltaket">
                             {props.measure.name}
-                            <FontAwesomeIcon
-                                data-tooltip-content="Detaljert beskrivelse - aktiviteter"                                              
-                                icon="external-link-alt"
-                                className={style.icon}
-                                color="#3767c7"
-                                tabIndex="-1"                        
-                            /> 
                         </a>  
                     </Fragment>: props.measure.name
                 }

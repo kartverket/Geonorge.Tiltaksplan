@@ -149,7 +149,6 @@ const MeasuresTable = (props) => {
             </gn-select>
             <gn-table hoverable>
                 <table>
-                    <caption>Liste over handlingsplanens tiltak </caption>
                     <thead>
                         <tr>
                             <th style={{ cursor: "pointer" }} onClick={onSort("no")}>
