@@ -101,19 +101,12 @@ const Measure = (props) => {
                             </h1>
                         </heading-text>
                         {measure.infoUrl ? (
-                            <a href={`${measure.infoUrl}`} target="_blank" rel="noreferrer">
+                            <a href={`${measure.infoUrl}`} rel="noreferrer">
                                 {dispatch(translate("infoLinkMeasure"))}
                             </a>
                         ) : (
                             ""
                         )}
-                        <FontAwesomeIcon
-                            data-tip="Detaljert beskrivelse - aktiviteter"
-                            icon="external-link-alt"
-                            className={style.icon}
-                            color="#3767c7"
-                            tabIndex="-1"
-                        />
 
                         <p className="">
                             {dispatch(translate("OwnsBy"))} {measure.owner.name}
