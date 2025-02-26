@@ -37,6 +37,7 @@ const NavigationBar = (props) => {
                 userManager.signinRedirect();
             },
             onSignOutClick: () => {
+                Cookies.set('_loggedIn', 'false', { domain: 'geonorge.no' });
                 userManager.signoutRedirect({ id_token_hint: oidc.user.id_token });
                 userManager.removeUser();
             },
