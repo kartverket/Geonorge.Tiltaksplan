@@ -63,23 +63,26 @@ const NavigationBar = (props) => {
         const isLoggedIn = !!oidc?.user;
         const hasAuthInfo = !!authInfo?.organizationNumber?.length;
         var loggedInCookie = Cookies.get('_loggedIn');
+        let autoRedirectPath = null;
 
         if(loggedInCookie === "true" && !isLoggedIn){
-            var path = window.location.pathname; var pathFormatted = path.substring(1);
-            sessionStorage.autoRedirectPath = pathFormatted;
+            sessionStorage.autoRedirectPath = window.location.pathname;
             console.log("redirecting to login");
             props.userManager.signinRedirect(); 
         }
         else if(sessionStorage?.autoRedirectPath){
-                let autoRedirectPath = sessionStorage.autoRedirectPath; 
-                sessionStorage.removeItem("autoRedirectPath");
-                console.log("autoRedirectPath: " + autoRedirectPath);
-                navigate(autoRedirectPath);
+                autoRedirectPath = sessionStorage.autoRedirectPath; 
         }
         if (isLoggedIn || hasAuthInfo) {
             dispatch(updateOidcCookie(oidc.user));
             dispatch(updateAuthInfo());
         }
+
+        if(autoRedirectPath !== null){
+            console.log("autoRedirectPath: " + autoRedirectPath);
+            navigate(autoRedirectPath);
+        }
+
     }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, oidc.user]);
 
     const environment = getEnvironmentVariable("environment");
