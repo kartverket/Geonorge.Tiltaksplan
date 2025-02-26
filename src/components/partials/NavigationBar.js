@@ -3,6 +3,7 @@ import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MainNavigation } from "@kartverket/geonorge-web-components/MainNavigation";
 import { Helmet } from "react-helmet";
+import { useNavigate } from "react-router-dom";
 
 // Actions
 import { updateOidcCookie } from "actions/AuthenticationActions";
@@ -12,8 +13,11 @@ import { updateSelectedLanguage } from "actions/SelectedLanguageActions";
 // Helpers
 import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
+import Cookies from 'js-cookie';
+
 const NavigationBar = (props) => {
     const dispatch = useDispatch();
+    const navigate = useNavigate();
     // State
     const [mainNavigationIsInitialized, setMainNavigationIsInitialized] = useState(false);
 
@@ -58,6 +62,20 @@ const NavigationBar = (props) => {
         }
         const isLoggedIn = !!oidc?.user;
         const hasAuthInfo = !!authInfo?.organizationNumber?.length;
+        var loggedInCookie = Cookies.get('_loggedIn');
+
+        if(loggedInCookie === "true" && !isLoggedIn){
+            var path = window.location.pathname; var pathFormatted = path.substring(1);
+            sessionStorage.autoRedirectPath = pathFormatted;
+            console.log("redirecting to login");
+            props.userManager.signinRedirect(); 
+        }
+        else if(sessionStorage?.autoRedirectPath){
+                let autoRedirectPath = sessionStorage.autoRedirectPath; 
+                sessionStorage.removeItem("autoRedirectPath");
+                console.log("autoRedirectPath: " + autoRedirectPath);
+                navigate(autoRedirectPath);
+        }
         if (isLoggedIn || hasAuthInfo) {
             dispatch(updateOidcCookie(oidc.user));
             dispatch(updateAuthInfo());
