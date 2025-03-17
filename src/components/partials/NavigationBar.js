@@ -88,10 +88,24 @@ const NavigationBar = (props) => {
 
     const environment = getEnvironmentVariable("environment");
     const language = selectedLanguage === "en-US" ? "en" : "no";
+
+    const userinfo = {
+        name: oidc?.user?.profile?.name,
+        email: oidc?.user?.profile?.email,
+    };
+
+    const orginfo = {
+        organizationNumber: authInfo?.organizationNumber,
+        organizationName: authInfo?.organizationName
+
+    }
+
     return (
         <Fragment>
             <Helmet htmlAttributes={{ lang: language }} />
             <main-navigation
+                userinfo={JSON.stringify(userinfo)}
+                orginfo={JSON.stringify(orginfo)}
                 language={language}
                 isLoggedIn={oidc.user ? true : false}
                 environment={environment}
