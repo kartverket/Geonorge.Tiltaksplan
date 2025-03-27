@@ -37,8 +37,6 @@
 <script type="text/javascript">
       function getCookie(cname) {
 
-        console.log(document.cookie);
-
       let name = cname + "=";
       let decodedCookie = decodeURIComponent(document.cookie);
       let ca = decodedCookie.split(';');
@@ -60,8 +58,6 @@
         document.cookie = cname + "=" + cvalue;
       else
         document.cookie = cname + "=" + cvalue + "; Domain=geonorge.no";
-
-        console.log('setCookie: ' + cname + '=' + cvalue);
     }
 
     function isLocalhost() {
