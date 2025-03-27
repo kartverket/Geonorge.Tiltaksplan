@@ -63,7 +63,7 @@ const NavigationBar = (props) => {
         }
         const isLoggedIn = !!oidc?.user;
         const hasAuthInfo = !!authInfo?.organizationNumber?.length;
-        var loggedInCookie = Cookies.get('_loggedIn');
+        var loggedInCookie = Cookies.get('_loggedInOtherApp');
         let autoRedirectPath = null;
 
         if(loggedInCookie === "true" && !isLoggedIn){
