@@ -4,10 +4,11 @@ import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
 import ValidationErrors from "components/partials/ValidationErrors";
+import { Helmet } from "react-helmet";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { GnButton, GnDialog, GnFieldContainer, GnInput, HeadingText } from "@kartverket/geonorge-web-components";
+import { GnButton, GnDialog, GnFieldContainer, GnInput, HeadingText, GnShortcutButton } from "@kartverket/geonorge-web-components";
 
 // Models
 import { Measure } from "models/measure";
@@ -33,15 +34,30 @@ const MeasureDetails = (props) => {
     const [dialogOpen, setDialogOpen] = useState([false]);
 
     // Redux store
+    const oidc = useSelector((state) => state.oidc);
     const organizations = useSelector((state) => state.organizations);
     const user = useSelector((state) => state.oidc.user);
     const authInfo = useSelector((state) => state.authInfo);
 
     useEffect(() => {
+
         dispatch(fetchOrganizations()).then(() => {
             setDataFetched(true);
         });
     }, [dispatch]);
+
+    useEffect(() => {
+        const isLoggedIn = !!oidc?.user?.access_token?.length;
+
+        if (isLoggedIn) {
+            GnShortcutButton.setup("gn-shortcut-button", {
+                getAuthToken: () => {
+                    const token = oidc?.user?.access_token;
+                    return token?.length ? token : null;
+                }
+            });
+        }
+    }, [oidc]);
 
     const handleOwnerSelect = (data) => {
         if (data) {
@@ -119,7 +135,6 @@ const MeasureDetails = (props) => {
             <gn-button color="primary">
                 <button onClick={() => openDialog()}>{props.newMeasure ? "Opprett tiltak" : "Rediger tiltak"}</button>
             </gn-button>
-
             <gn-dialog show={dialogOpen}>
                 <heading-text>
                     <h2>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name}`}</h2>
@@ -195,6 +210,7 @@ const MeasureDetails = (props) => {
                     <button onClick={saveMeasure}>Lagre</button>
                 </gn-button>
             </gn-dialog>
+            <Helmet><title>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name} | tiltaksplan`}</title></Helmet>
         </React.Fragment>
     ) : null;
 };
