@@ -40,7 +40,6 @@ const Measure = (props) => {
     const measure = useSelector((state) => state.measures.selectedMeasure);
     const user = useSelector((state) => state.oidc.user);
     const authInfo = useSelector((state) => state.authInfo);
-    const environment = useSelector((state) => state.environment);
     const selectedLanguage = useSelector((state) => state.selectedLanguage);
 
     const hasMeasure = measure && Object.keys(measure)?.length;
@@ -118,7 +117,7 @@ const Measure = (props) => {
                                 <button onClick={() => openDeleteMeasureDialog()}>Slett tiltaket</button>
                             </gn-button>
                         ) : null}
-                        <gn-shortcut-button language={selectedLanguage} environment={environment}></gn-shortcut-button>
+                        <gn-shortcut-button language={selectedLanguage} environment={getEnvironmentVariable('environment')}></gn-shortcut-button>
                         <MeasureDetails selectedMeasure={measure} />
 
                         <gn-accordion title={dispatch(translate("progressReportTitle"))}>
