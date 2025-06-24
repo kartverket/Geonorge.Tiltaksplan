@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { BreadcrumbList, ContentContainer, GnAccordion, GnButton, GnDialog, HeadingText } from "@kartverket/geonorge-web-components";
+import { BreadcrumbList, ContentContainer, GnAccordion, GnButton, GnDialog, HeadingText,GnShortcutButton } from "@kartverket/geonorge-web-components";
 
 // Components
 import MeasureDetails from "components/partials/MeasureDetails";
@@ -40,6 +40,7 @@ const Measure = (props) => {
     const measure = useSelector((state) => state.measures.selectedMeasure);
     const user = useSelector((state) => state.oidc.user);
     const authInfo = useSelector((state) => state.authInfo);
+    const selectedLanguage = useSelector((state) => state.selectedLanguage);
 
     const hasMeasure = measure && Object.keys(measure)?.length;
 
@@ -116,7 +117,7 @@ const Measure = (props) => {
                                 <button onClick={() => openDeleteMeasureDialog()}>Slett tiltaket</button>
                             </gn-button>
                         ) : null}
-
+                        <gn-shortcut-button language={selectedLanguage} environment={getEnvironmentVariable('environment')}></gn-shortcut-button>
                         <MeasureDetails selectedMeasure={measure} />
 
                         <gn-accordion title={dispatch(translate("progressReportTitle"))}>
