@@ -2,7 +2,6 @@
 import React, { Fragment, useCallback, useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { MainNavigation } from "@kartverket/geonorge-web-components/MainNavigation";
-import { Helmet } from "react-helmet";
 import { useNavigate } from "react-router-dom";
 
 // Actions
@@ -102,7 +101,6 @@ const NavigationBar = (props) => {
 
     return (
         <Fragment>
-            <Helmet htmlAttributes={{ lang: language }} />
             <main-navigation
                 userinfo={JSON.stringify(userinfo)}
                 orginfo={JSON.stringify(orginfo)}
