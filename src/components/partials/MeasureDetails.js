@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
 import ValidationErrors from "components/partials/ValidationErrors";
-import { Helmet } from "react-helmet";
+import { Helmet } from "react-helmet-async";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
