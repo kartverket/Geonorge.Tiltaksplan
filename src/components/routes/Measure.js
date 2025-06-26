@@ -24,6 +24,7 @@ import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
 
 // Stylesheets
 import style from "components/routes/Measure.module.scss";
+import { Helmet } from "react-helmet-async";
 
 const Measure = (props) => {
     const dispatch = useDispatch();
@@ -92,9 +93,11 @@ const Measure = (props) => {
    
     return (
         <content-container>
+           
             <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
             {dataFetched && hasMeasure ? (
                 <Fragment>
+                     <Helmet><title>{measure.no + ' - ' + measure.name}</title></Helmet>
                     <div id="main-content">
                         <heading-text>
                             <h1 underline="true">

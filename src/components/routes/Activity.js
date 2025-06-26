@@ -17,6 +17,7 @@ import { translate } from "actions/ConfigActions";
 
 // Helpers
 import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
+import { Helmet } from "react-helmet-async";
 
 const Activity = (props) => {
     // Redux store
@@ -70,7 +71,9 @@ const Activity = (props) => {
         dataFetched && (
             <content-container>
                 <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
+                 <Helmet><title>{pageTitle}</title></Helmet>
                 <div id="main-content">
+                    
                     <heading-text>
                         <h1 underline="true">{pageTitle}</h1>
                     </heading-text>
