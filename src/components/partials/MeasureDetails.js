@@ -4,7 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Typeahead } from "react-bootstrap-typeahead";
 import { toastr } from "react-redux-toastr";
 import ValidationErrors from "components/partials/ValidationErrors";
-import { Helmet } from "react-helmet-async";
+
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
@@ -210,7 +210,7 @@ const MeasureDetails = (props) => {
                     <button onClick={saveMeasure}>Lagre</button>
                 </gn-button>
             </gn-dialog>
-            <Helmet><title>{props.newMeasure ? "Nytt tiltak" : `${measure.no} - ${measure.name} | tiltaksplan`}</title></Helmet>
+            
         </React.Fragment>
     ) : null;
 };
