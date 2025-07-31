@@ -70,6 +70,7 @@ const App = (props) => {
                         <Helmet></Helmet>
                     <Router history={history}>
                         <NavigationBar userManager={userManager} />
+                        <gn-shortcut-button></gn-shortcut-button>
                         <Routes>
                             <Route exact path="/" element={<Measures />} />
                             <Route exact path="/signin-oidc" element={<OidcCallback userManager={userManager} />} />

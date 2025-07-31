@@ -5,7 +5,7 @@ import { useParams } from "react-router";
 
 // Geonorge WebComponents
 // eslint-disable-next-line no-unused-vars
-import { BreadcrumbList, ContentContainer, HeadingText,GnShortcutButton } from "@kartverket/geonorge-web-components";
+import { BreadcrumbList, ContentContainer, HeadingText, GnShortcutButton } from "@kartverket/geonorge-web-components";
 
 // Components
 import ActivityDetails from "components/partials/ActivityDetails";
@@ -75,13 +75,12 @@ const Activity = (props) => {
                 <breadcrumb-list id="breadcrumb-list" breadcrumbs={JSON.stringify(breadcrumbs)}></breadcrumb-list>
                  <Helmet><title>{pageTitle}</title></Helmet>
                 <div id="main-content">
-                    
+                    <gn-shortcut-button language={selectedLanguage} environment={getEnvironmentVariable('environment')}></gn-shortcut-button>
                     <heading-text>
                         <h1 underline="true">{pageTitle}</h1>
                     </heading-text>
-                    <ActivityDetails newActivity={!activityNumber} />
+                    <ActivityDetails newActivity={!activityNumber} />                    
                 </div>
-                <gn-shortcut-button language={selectedLanguage} environment={getEnvironmentVariable('environment')}></gn-shortcut-button>
             </content-container>
         )
     );
