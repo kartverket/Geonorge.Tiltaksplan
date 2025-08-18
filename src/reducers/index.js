@@ -1,7 +1,6 @@
 // Dependencies
 import {combineReducers} from 'redux';
 import {connectRouter} from 'connected-react-router';
-import { reducer as oidcReducer } from 'redux-oidc';
 
 // Reducers
 import AuthInfoReducer from 'reducers/AuthInfoReducer';
@@ -13,9 +12,12 @@ import OrganizationsReducer from 'reducers/OrganizationsReducer';
 import SelectedLanguageReducer from 'reducers/SelectedLanguageReducer';
 import { reducer as toastrReducer } from 'react-redux-toastr'
 
+// Add your own authentication reducer
+import authReducer from 'reducers/authReducer';
+
 const reducers = history => combineReducers({
   router: connectRouter(history),
-  oidc: oidcReducer,
+  auth: authReducer, // Add your own auth reducer
   authInfo: AuthInfoReducer,
   config: ConfigReducer,
   measures: MeasuresReducer,

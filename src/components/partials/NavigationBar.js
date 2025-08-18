@@ -51,10 +51,11 @@ const NavigationBar = (props) => {
     }, [dispatch, oidc?.user?.id_token, props.userManager]);
 
     useEffect(() => {
-        if (!oidc.isLoadingUser) {
+        console.log("oidc: " + oidc);
+        if (!oidc?.isLoadingUser) {
             initMainNavigation();
         }
-    }, [initMainNavigation, oidc.isLoadingUser]);
+    }, [initMainNavigation, oidc?.isLoadingUser]);
 
     useEffect(() => {
         if (!mainNavigationIsInitialized) {
@@ -83,7 +84,7 @@ const NavigationBar = (props) => {
             navigate(autoRedirectPath);
         }
 
-    }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, oidc.user]);
+    }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, oidc?.user]);
 
     const environment = getEnvironmentVariable("environment");
     const language = selectedLanguage === "en-US" ? "en" : "no";
@@ -105,7 +106,7 @@ const NavigationBar = (props) => {
                 userinfo={JSON.stringify(userinfo)}
                 orginfo={JSON.stringify(orginfo)}
                 language={language}
-                isLoggedIn={oidc.user ? true : false}
+                isLoggedIn={oidc?.user ? true : false}
                 environment={environment}
                 maincontentid="main-content"
             ></main-navigation>

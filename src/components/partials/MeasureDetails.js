@@ -36,7 +36,7 @@ const MeasureDetails = (props) => {
     // Redux store
     const oidc = useSelector((state) => state.oidc);
     const organizations = useSelector((state) => state.organizations);
-    const user = useSelector((state) => state.oidc.user);
+    const user = useSelector((state) => state.oidc?.user);
     const authInfo = useSelector((state) => state.authInfo);
 
     useEffect(() => {

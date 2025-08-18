@@ -4,7 +4,6 @@ import { Provider } from "react-redux";
 import { Route, Routes } from "react-router";
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import ReduxToastr from "react-redux-toastr";
-import { OidcProvider } from "redux-oidc";
 import { Helmet, HelmetProvider } from "react-helmet-async";
 
 // Utils
@@ -65,9 +64,8 @@ const App = (props) => {
     if (userManager && userManagerIsLoaded && storeIsLoaded) {
         return (
             <Provider store={store}>
-                <OidcProvider userManager={userManager} store={store}>
-                 <HelmetProvider>
-                        <Helmet></Helmet>
+                <HelmetProvider>
+                    <Helmet></Helmet>
                     <Router history={history}>
                         <NavigationBar userManager={userManager} />
                         <gn-shortcut-button></gn-shortcut-button>
@@ -102,8 +100,7 @@ const App = (props) => {
                             closeOnToastrClick
                         />
                     </Router>
-                    </HelmetProvider>
-                </OidcProvider>
+                </HelmetProvider>
             </Provider>
         );
     } else return null;
