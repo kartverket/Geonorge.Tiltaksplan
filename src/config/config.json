@@ -12,6 +12,7 @@
         "metadata": {
             "issuer": "https://test2.geoid.no/realms/geoid",
             "authorization_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/auth",
+            "token_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/token",
             "userinfo_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/userinfo",
             "end_session_endpoint": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/logout",
             "jwks_uri": "https://test2.geoid.no/realms/geoid/protocol/openid-connect/certs"

@@ -2,23 +2,27 @@
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+const processSigninResponse = async (userManager, navigate) => {
+  try {
+    const user = await userManager.signinRedirectCallback();
+    // Handle user object (e.g., dispatch to Redux)
+    const autoRedirectPath = sessionStorage?.autoRedirectPath || "/";
+    sessionStorage.removeItem("autoRedirectPath");
+    navigate(autoRedirectPath);
+  } catch (error) {
+    console.error("Sign-in response error:", error);
+    navigate("/");
+  }
+};
+
 const OidcCallback = ({ userManager }) => {
-    const navigate = useNavigate();
+  const navigate = useNavigate();
 
-    useEffect(() => {
-        userManager.signinRedirectCallback()
-            .then((user)  => {
-                console.log("User logged in:", user);
-                const autoRedirectPath = sessionStorage?.autoRedirectPath || "/";
-                sessionStorage.removeItem("autoRedirectPath");
-                navigate(autoRedirectPath);
-            })
-            .catch(() => {
-                navigate("/");
-            });
-    }, [navigate, userManager]);
+  useEffect(() => {
+    processSigninResponse(userManager, navigate);
+  }, [navigate, userManager]);
 
-    return <div>Logger inn...</div>;
+  return <div>Logger inn...</div>;
 };
 
 export default OidcCallback;
