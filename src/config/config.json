@@ -29,6 +29,7 @@
         ],
         "response_type": "code",
         "scope": "openid profile",
+        "pkceMethod": "S256",
         "automaticSilentRenew": true,
         "loadUserInfo": true
     }

@@ -46,7 +46,7 @@ const ActivityDetails = (props) => {
     const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
     const authInfo = useSelector((state) => state.authInfo);
     const selectedActivity = useSelector((state) => state.activities.selectedActivity);
-    const user = useSelector((state) => state.oidc.user);
+    const user = useSelector((state) => state.auth.user);
     const planStatuses = useSelector((state) => state.options.planStatuses);
     const organizations = useSelector((state) =>
         state.organizations.map((organization) => {

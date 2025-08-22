@@ -21,7 +21,7 @@ const NavigationBar = (props) => {
     const [mainNavigationIsInitialized, setMainNavigationIsInitialized] = useState(false);
 
     // Redux store
-    const oidc = useSelector((state) => state.oidc);
+    const auth = useSelector((state) => state.auth);
     const authInfo = useSelector((state) => state.authInfo);
     const selectedLanguage = useSelector((state) => state.selectedLanguage);
 
@@ -37,7 +37,7 @@ const NavigationBar = (props) => {
             },
             onSignOutClick: () => {
                 Cookies.set('_loggedIn', 'false', { domain: 'geonorge.no' });
-                userManager.signoutRedirect({ id_token_hint: oidc.user.id_token });
+                userManager.signoutRedirect({ id_token_hint: auth.user.id_token });
                 userManager.removeUser();
             },
             onNorwegianLanguageSelect: () => {
@@ -48,20 +48,20 @@ const NavigationBar = (props) => {
             }
         });
         setMainNavigationIsInitialized(true);
-    }, [dispatch, oidc?.user?.id_token, props.userManager]);
+    }, [dispatch, auth?.user?.id_token, props.userManager]);
 
     useEffect(() => {
-        console.log("oidc: " + oidc);
-        if (!oidc?.isLoadingUser) {
+        console.log("auth: " + auth);
+        if (!auth?.isLoadingUser) {
             initMainNavigation();
         }
-    }, [initMainNavigation, oidc?.isLoadingUser]);
+    }, [initMainNavigation, auth?.isLoadingUser]);
 
     useEffect(() => {
         if (!mainNavigationIsInitialized) {
             initMainNavigation();
         }
-        const isLoggedIn = !!oidc?.user;
+        const isLoggedIn = !!auth?.user;
         const hasAuthInfo = !!authInfo?.organizationNumber?.length;
         var loggedInCookie = Cookies.get('_loggedInOtherApp');
         let autoRedirectPath = null;
@@ -75,7 +75,7 @@ const NavigationBar = (props) => {
                 autoRedirectPath = sessionStorage.autoRedirectPath; 
         }
         if (isLoggedIn || hasAuthInfo) {
-            dispatch(updateOidcCookie(oidc.user));
+            dispatch(updateOidcCookie(auth.user));
             dispatch(updateAuthInfo());
         }
 
@@ -84,14 +84,14 @@ const NavigationBar = (props) => {
             navigate(autoRedirectPath);
         }
 
-    }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, oidc?.user]);
+    }, [authInfo?.organizationNumber?.length, dispatch, initMainNavigation, mainNavigationIsInitialized, auth?.user]);
 
     const environment = getEnvironmentVariable("environment");
     const language = selectedLanguage === "en-US" ? "en" : "no";
 
     const userinfo = {
-        name: oidc?.user?.profile?.name,
-        email: oidc?.user?.profile?.email,
+        name: auth?.user?.profile?.name,
+        email: auth?.user?.profile?.email,
     };
 
     const orginfo = {
@@ -106,7 +106,7 @@ const NavigationBar = (props) => {
                 userinfo={JSON.stringify(userinfo)}
                 orginfo={JSON.stringify(orginfo)}
                 language={language}
-                isLoggedIn={oidc?.user ? true : false}
+                isLoggedIn={auth?.user ? true : false}
                 environment={environment}
                 maincontentid="main-content"
             ></main-navigation>

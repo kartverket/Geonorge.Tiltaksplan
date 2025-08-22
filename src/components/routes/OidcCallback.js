@@ -1,11 +1,14 @@
 // Dependencies
 import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { userLoaded } from "reducers/authActions"; // Create this action
 
-const processSigninResponse = async (userManager, navigate) => {
+const processSigninResponse = async (userManager, navigate, dispatch) => {
   try {
     const user = await userManager.signinRedirectCallback();
-    // Handle user object (e.g., dispatch to Redux)
+    console.log("User signed in:", user);
+    dispatch(userLoaded(user)); // Dispatch to Redux
     const autoRedirectPath = sessionStorage?.autoRedirectPath || "/";
     sessionStorage.removeItem("autoRedirectPath");
     navigate(autoRedirectPath);
@@ -17,10 +20,11 @@ const processSigninResponse = async (userManager, navigate) => {
 
 const OidcCallback = ({ userManager }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   useEffect(() => {
-    processSigninResponse(userManager, navigate);
-  }, [navigate, userManager]);
+    processSigninResponse(userManager, navigate, dispatch);
+  }, [navigate, userManager, dispatch]);
 
   return <div>Logger inn...</div>;
 };

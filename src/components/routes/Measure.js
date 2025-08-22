@@ -39,7 +39,7 @@ const Measure = (props) => {
 
     // Redux store
     const measure = useSelector((state) => state.measures.selectedMeasure);
-    const user = useSelector((state) => state.oidc.user);
+    const user = useSelector((state) => state.auth.user);
     const authInfo = useSelector((state) => state.authInfo);
     const selectedLanguage = useSelector((state) => state.selectedLanguage);
 

@@ -4,8 +4,8 @@ import Cookies from 'js-cookie';
 
 export const updateAuthInfo = () => (dispatch, getState) => {
   const store = getState();
-  const user = store && store.oidc && store.oidc.user
-    ? store.oidc.user
+  const user = store && store.auth && store.auth.user
+    ? store.auth.user
     : null;
   const savedAuthInfo = store && store.authInfo && Object.keys(store.authInfo).length
     ? store.authInfo
