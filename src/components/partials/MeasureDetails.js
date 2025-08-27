@@ -102,8 +102,10 @@ const MeasureDetails = (props) => {
                       props.onUpdate();
                   })
                   .catch(({ response }) => {
+                    if (response !== undefined) {
                       toastr.error("Kunne ikke oppdatere tiltak");
                       setValidationErrors(response.data);
+                    }
                   });
     };
 
