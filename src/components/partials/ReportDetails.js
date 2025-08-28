@@ -39,7 +39,7 @@ const ReportDetails = (props) => {
     const dispatch = useDispatch();
 
     // Redux store
-    const user = useSelector((state) => state.oidc.user);
+    const user = useSelector((state) => state.auth.user);
     const selectedMeasure = useSelector((state) => state.measures.selectedMeasure);
     const measureVolume = useSelector((state) => state.options.measureVolume);
     const measureResults = useSelector((state) => state.options.measureResults);
