@@ -1,6 +1,7 @@
 {
   "name": "geonorge-tiltaksplan",
   "version": "0.1.0",
+  "packageManager": "yarn@1.22.22",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.2.1",
