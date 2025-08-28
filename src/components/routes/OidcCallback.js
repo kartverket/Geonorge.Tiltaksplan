@@ -7,7 +7,6 @@ import { userLoaded } from "reducers/authActions"; // Create this action
 const processSigninResponse = async (userManager, navigate, dispatch) => {
   try {
     const user = await userManager.signinRedirectCallback();
-    console.log("User signed in:", user);
     dispatch(userLoaded(user)); // Dispatch to Redux
     const autoRedirectPath = sessionStorage?.autoRedirectPath || "/";
     sessionStorage.removeItem("autoRedirectPath");

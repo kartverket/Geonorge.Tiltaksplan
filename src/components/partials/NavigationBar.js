@@ -61,7 +61,6 @@ const NavigationBar = (props) => {
     }, [dispatch, auth?.user?.id_token, props.userManager]);
 
     useEffect(() => {
-        console.log("auth: " + auth);
         if (!auth?.isLoadingUser) {
             initMainNavigation();
         }
