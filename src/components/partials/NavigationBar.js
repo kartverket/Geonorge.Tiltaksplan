@@ -45,7 +45,7 @@ const NavigationBar = (props) => {
             onSignOutClick: () => {
                 if(auth != null && auth.user != null && auth.user.id_token != null){
                 userManager.signoutRedirect({ id_token_hint: auth.user.id_token });
-                Cookies.set('_loggedIn', 'false');
+                Cookies.set('_loggedIn', 'false', { domain: 'geonorge.no' });
                 userManager.signoutRedirect({ id_token_hint: auth.id_token });
                 userManager.removeUser();
                 }
