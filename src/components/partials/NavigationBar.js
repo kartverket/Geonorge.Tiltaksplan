@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { updateOidcCookie } from "actions/AuthenticationActions";
 import { updateAuthInfo } from "actions/AuthorizationActions";
 import { updateSelectedLanguage } from "actions/SelectedLanguageActions";
+import { userLoaded } from "reducers/authActions";
 
 // Helpers
 import { getEnvironmentVariable } from "helpers/environmentVariableHelpers.js";
@@ -27,6 +28,12 @@ const NavigationBar = (props) => {
 
     const initMainNavigation = useCallback(() => {
         const userManager = props.userManager;
+
+        // Listen for silent renew and update Redux state when user is loaded
+        userManager.events.addUserLoaded(function(user) {
+            dispatch(userLoaded(user)); // <-- update Redux state
+        });
+
         userManager.events.addAccessTokenExpiring(function(){
             console.log("token expiring...");
             userManager.startSilentRenew(); 
