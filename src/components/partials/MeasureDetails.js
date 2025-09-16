@@ -34,9 +34,9 @@ const MeasureDetails = (props) => {
     const [dialogOpen, setDialogOpen] = useState([false]);
 
     // Redux store
-    const oidc = useSelector((state) => state.oidc);
+    const auth = useSelector((state) => state.auth);
     const organizations = useSelector((state) => state.organizations);
-    const user = useSelector((state) => state.oidc.user);
+    const user = useSelector((state) => state.auth?.user);
     const authInfo = useSelector((state) => state.authInfo);
 
     useEffect(() => {
@@ -47,17 +47,17 @@ const MeasureDetails = (props) => {
     }, [dispatch]);
 
     useEffect(() => {
-        const isLoggedIn = !!oidc?.user?.access_token?.length;
+        const isLoggedIn = !!auth?.user?.access_token?.length;
 
         if (isLoggedIn) {
             GnShortcutButton.setup("gn-shortcut-button", {
                 getAuthToken: () => {
-                    const token = oidc?.user?.access_token;
+                    const token = auth?.user?.access_token;
                     return token?.length ? token : null;
                 }
             });
         }
-    }, [oidc]);
+    }, [auth]);
 
     const handleOwnerSelect = (data) => {
         if (data) {
@@ -102,8 +102,10 @@ const MeasureDetails = (props) => {
                       props.onUpdate();
                   })
                   .catch(({ response }) => {
+                    if (response !== undefined) {
                       toastr.error("Kunne ikke oppdatere tiltak");
                       setValidationErrors(response.data);
+                    }
                   });
     };
 
