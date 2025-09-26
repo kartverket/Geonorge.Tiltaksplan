@@ -88,7 +88,7 @@ const NavigationBar = (props) => {
             dispatch(updateAuthInfo());
         }
 
-        if(autoRedirectPath !== null){
+        if(autoRedirectPath !== null && window.location.pathname !== "/signin-oidc"){
             console.log("autoRedirectPath: " + autoRedirectPath);
             navigate(autoRedirectPath);
         }
